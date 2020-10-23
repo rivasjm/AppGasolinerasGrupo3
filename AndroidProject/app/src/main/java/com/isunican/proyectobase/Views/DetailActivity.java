@@ -11,6 +11,7 @@ import com.isunican.proyectobase.Model.*;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
@@ -41,7 +42,7 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
 
     /**
      * onCreate
-     *
+     * <p>
      * Crea los elementos que conforman la actividad
      *
      * @param savedInstanceState
@@ -56,7 +57,7 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
         getSupportActionBar().setIcon(R.drawable.por_defecto_mod);
 
         ActivityCompat.requestPermissions(this,
-                new String[] { Manifest.permission.ACCESS_COARSE_LOCATION },
+                new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
                 99);
 
         mapDir = (MapView) findViewById(R.id.mapGasolinera);
@@ -75,8 +76,8 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
         g = getIntent().getExtras().getParcelable(getResources().getString(R.string.pasoDatosGasolinera));
 
         txtNomG.setText(g.getRotulo());
-        txtPrecioGasoil.setText("Diesel " +g.getGasoleoA() + "€");
-        txtPrecioGasolina.setText("Gasolina "+ g.getGasolina95()+ "€");
+        txtPrecioGasoil.setText("Diesel " + g.getGasoleoA() + "€");
+        txtPrecioGasolina.setText("Gasolina " + g.getGasolina95() + "€");
         txtDir.setText(g.getDireccion());
 
         String rotuleImageID = g.getRotulo().toLowerCase();
@@ -150,7 +151,7 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
         mapDir.onLowMemory();
     }
 
-
+    /*
     public void onRequestPermissionsResults(int requestCode, String[] permissions,
                                             int[] grantResults) {
         switch (requestCode) {
@@ -160,16 +161,14 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
                         grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // Permission is granted. Continue the action or workflow
                     // in your app.
-                }  else {
+                }  //else {
                     // Explain to the user that the feature is unavailable because
                     // the features requires a permission that the user has denied.
                     // At the same time, respect the user's decision. Don't link to
                     // system settings in an effort to convince the user to change
                     // their decision.
-                }
+               // }
                 return;
-        }
-        // Other 'case' lines to check for other
-        // permissions this app might request.
-    }
+    }*/
 }
+

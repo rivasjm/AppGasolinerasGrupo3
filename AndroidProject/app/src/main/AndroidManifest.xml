@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.isunican.proyectobase">
 
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -20,6 +21,10 @@
         </activity>
         <activity android:name=".Views.InfoActivity"></activity>
         <activity android:name=".Views.DetailActivity"></activity>
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyDMVF_2tvfCjpjqhvHuufuK_lnp8a6gNms"/>
     </application>
 
 </manifest>

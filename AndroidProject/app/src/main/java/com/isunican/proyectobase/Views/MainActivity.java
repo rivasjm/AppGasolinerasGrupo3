@@ -5,7 +5,9 @@ import com.isunican.proyectobase.Model.*;
 import com.isunican.proyectobase.R;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -25,6 +27,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -41,7 +44,7 @@ import android.widget.Toast;
 
 ------------------------------------------------------------------
 */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     PresenterGasolineras presenterGasolineras;
 
@@ -54,6 +57,16 @@ public class MainActivity extends AppCompatActivity {
 
     // Swipe and refresh (para recargar la lista con un swipe)
     SwipeRefreshLayout mSwipeRefreshLayout;
+
+    //Botones de filtro y ordenacion
+    Button buttonFiltros;
+    Button buttonOrden;
+
+    //Variables para modificar filtros y ordenaciones
+    String ordenFiltro="Gasóleo A"; //Por defecto
+    boolean esAsc = true; //Por defecto ascendente
+
+    Activity ac = this;
 
     /**
      * onCreate
@@ -95,6 +108,12 @@ public class MainActivity extends AppCompatActivity {
         // se lanza una tarea para cargar los datos de las gasolineras
         // Esto se ha de hacer en segundo plano definiendo una tarea asíncrona
         new CargaDatosGasolinerasTask(this).execute();
+
+        //Añadir los listener a los botones
+        buttonFiltros = findViewById(R.id.buttonFiltros);
+        buttonOrden = findViewById(R.id.buttonOrden);
+        buttonFiltros.setOnClickListener(this);
+        buttonOrden.setOnClickListener(this);
     }
 
 
@@ -127,6 +146,111 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    @Override
+    public void onClick(View v) {
+        if(v.getId()==R.id.buttonFiltros) {
+
+            String [] items = {"Gasolina 1","Gasolina 2"};
+            boolean [] checked = {true, false};
+            int opcion=111;
+
+            final ArrayList<Integer> selectedItems = new ArrayList<>();
+
+
+            /*AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Titulo del dialogo");
+            builder.setMessage("Texto descriptivo...");
+            builder.setMultiChoiceItems(R.array.operacionesArray, null,
+                    new DialogInterface.OnMultiChoiceClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which,
+                                            boolean isChecked) {
+                            if (isChecked) {
+                                // If the user checked the item, add it to the selected items
+                                selectedItems.add(which);
+                            } else if (selectedItems.contains(which)) {
+                                // Else, if the item is already in the array, remove it
+                                selectedItems.remove(Integer.valueOf(which));
+                            }
+                        }
+                    });
+            builder.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    System.out.println("IMPRESION");
+                    System.out.println(selectedItems);
+                }
+            });
+            builder.create();
+            builder.show();*/
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            // Set the dialog title
+            builder.setTitle("Filtros")
+                    // Specify the list array, the items to be selected by default (null for none),
+                    // and the listener through which to receive callbacks when items are selected
+                    .setMultiChoiceItems(R.array.operacionesArray, null,
+                            new DialogInterface.OnMultiChoiceClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which,
+                                                    boolean isChecked) {
+                                    if (isChecked) {
+                                        // If the user checked the item, add it to the selected items
+                                        selectedItems.add(which);
+                                    } else if (selectedItems.contains(which)) {
+                                        // Else, if the item is already in the array, remove it
+                                        selectedItems.remove(Integer.valueOf(which));
+                                    }
+                                }
+                            })
+                    // Set the action buttons
+                    .setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int id) {
+                            // User clicked OK, so save the selectedItems results somewhere
+                            // or return them to the component that opened the dialog
+                            switch(selectedItems.get(0)) {
+                                case 0:
+                                    ordenFiltro = "Gasóleo A";
+                                    break;
+                                case 1:
+                                    ordenFiltro = "Gasolina 95";
+                                    break;
+                                case 2:
+                                    ordenFiltro = "Gasolina 98";
+                                    break;
+                                case 3:
+                                    ordenFiltro = "Biodiésel";
+                                    break;
+                                case 4:
+                                    ordenFiltro = "Gasóleo Premium";
+                                    break;
+                            }
+                            System.out.println("ESCOGIDO: "+ordenFiltro);
+                            refresca();
+                        }
+                    })
+                    .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int id) {
+                        }
+                    });
+
+            builder.create();
+            builder.show();
+
+
+
+        } else if(v.getId()==R.id.buttonOrden) {
+
+        }
+    }
+
+    private void refresca() {
+        //Refrescar automáticamente la lista de gasolineras
+        mSwipeRefreshLayout.setRefreshing(true);
+        new CargaDatosGasolinerasTask(ac).execute();
+    }
 
     /**
      * CargaDatosGasolinerasTask
@@ -205,6 +329,52 @@ public class MainActivity extends AppCompatActivity {
             if (res) {
                 // Definimos el array adapter
                 adapter = new GasolineraArrayAdapter(activity, 0, (ArrayList<Gasolinera>) presenterGasolineras.getGasolineras());
+
+                //Recorrer el array adapter para que no muestre las gasolineras con precios negativos
+                for(int i=0;i<adapter.getCount();i++) {
+                    switch(ordenFiltro) {
+                        case "Gasóleo A":
+                            if(adapter.getItem(i).getGasoleoA()==-1.0) {
+                                Gasolinera g = adapter.getItem(i);
+                                adapter.remove(g);
+                                adapter.notifyDataSetChanged();
+                                i--;
+                            }
+                            break;
+                        case "Gasolina 95":
+                            if(adapter.getItem(i).getGasolina95()==-1.0) {
+                                Gasolinera g = adapter.getItem(i);
+                                adapter.remove(g);
+                                adapter.notifyDataSetChanged();
+                                i--;
+                            }
+                            break;
+                        case "Gasolina 98":
+                            if(adapter.getItem(i).getGasolina98()==-1.0) {
+                                Gasolinera g = adapter.getItem(i);
+                                adapter.remove(g);
+                                adapter.notifyDataSetChanged();
+                                i--;
+                            }
+                            break;
+                        case "Biodiésel":
+                            if(adapter.getItem(i).getBiodiesel()==-1.0) {
+                                Gasolinera g = adapter.getItem(i);
+                                adapter.remove(g);
+                                adapter.notifyDataSetChanged();
+                                i--;
+                            }
+                            break;
+                        case "Gasóleo Premium":
+                            if(adapter.getItem(i).getGasoleoPremium()==-1.0) {
+                                Gasolinera g = adapter.getItem(i);
+                                adapter.remove(g);
+                                adapter.notifyDataSetChanged();
+                                i--;
+                            }
+                            break;
+                    }
+                }
 
                 // Obtenemos la vista de la lista
                 listViewGasolineras = findViewById(R.id.listViewGasolineras);
@@ -291,14 +461,30 @@ public class MainActivity extends AppCompatActivity {
             ImageView logo = view.findViewById(R.id.imageViewLogo);
             TextView rotulo = view.findViewById(R.id.textViewRotulo);
             TextView direccion = view.findViewById(R.id.textViewDireccion);
-            TextView gasoleoA = view.findViewById(R.id.textViewGasoleoA);
-            TextView gasolina95 = view.findViewById(R.id.textViewGasolina95);
+            TextView labelGasolina = view.findViewById(R.id.textViewTipoGasolina);
+            TextView precio = view.findViewById(R.id.textViewGasoleoA);
 
             // Y carga los datos del item
             rotulo.setText(gasolinera.getRotulo());
             direccion.setText(gasolinera.getDireccion());
-            gasoleoA.setText(" " + gasolinera.getGasoleoA() + getResources().getString(R.string.moneda));
-            gasolina95.setText(" " + gasolinera.getGasolina95() + getResources().getString(R.string.moneda));
+            labelGasolina.setText(ordenFiltro);
+            switch(ordenFiltro) {
+                case "Gasóleo A":
+                    precio.setText(gasolinera.getGasoleoA() + getResources().getString(R.string.moneda));
+                    break;
+                case "Gasolina 95":
+                    precio.setText(gasolinera.getGasolina95() + getResources().getString(R.string.moneda));
+                    break;
+                case "Gasolina 98":
+                    precio.setText(gasolinera.getGasolina98() + getResources().getString(R.string.moneda));
+                    break;
+                case "Biodiésel":
+                    precio.setText(gasolinera.getBiodiesel() + getResources().getString(R.string.moneda));
+                    break;
+                case "Gasóleo Premium":
+                    precio.setText(gasolinera.getGasoleoPremium() + getResources().getString(R.string.moneda));
+                    break;
+            }
 
             // carga icono
             {
@@ -321,7 +507,7 @@ public class MainActivity extends AppCompatActivity {
             // reducimos el texto de las etiquetas para que se vea correctamente
             DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
             if (displayMetrics.widthPixels < 720) {
-                TextView tv = view.findViewById(R.id.textViewGasoleoALabel);
+                TextView tv = view.findViewById(R.id.textViewTipoGasolina);
                 RelativeLayout.LayoutParams params = ((RelativeLayout.LayoutParams) tv.getLayoutParams());
                 params.setMargins(15, 0, 0, 0);
                 tv.setTextSize(11);

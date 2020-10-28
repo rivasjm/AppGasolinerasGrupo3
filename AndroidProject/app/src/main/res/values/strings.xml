@@ -13,4 +13,11 @@
     <string name="menuInfo">Info</string>
     <string name="pasoDatosInfo">DatosInfo</string>
     <string name="pasoDatosGasolinera">DatosGasolinera</string>
+    <string-array name="operacionesArray">
+        <item>Gasóleo A</item>
+        <item>Gasolina 95</item>
+        <item>Gasolina 98</item>
+        <item>Biodiésel</item>
+        <item>Gasóleo Premium</item>
+    </string-array>
 </resources>

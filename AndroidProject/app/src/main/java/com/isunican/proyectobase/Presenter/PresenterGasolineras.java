@@ -73,11 +73,11 @@ public class PresenterGasolineras {
      * @return boolean
      */
     public boolean cargaDatosDummy(){
-        this.gasolineras.add(new Gasolinera(1000,SANTANDER,SANTANDER, "Av Valdecilla", 1.299,1.359,"AVIA"));
-        this.gasolineras.add(new Gasolinera(1053,SANTANDER,SANTANDER, "Plaza Matias Montero", 1.270,1.349,"CAMPSA"));
-        this.gasolineras.add(new Gasolinera(420,SANTANDER,SANTANDER, "Area Arrabal Puerto de Raos", 1.249,1.279,"E.E.S.S. MAS, S.L."));
-        this.gasolineras.add(new Gasolinera(9564,SANTANDER,SANTANDER, "Av Parayas", 1.189,1.269,"EASYGAS"));
-        this.gasolineras.add(new Gasolinera(1025,SANTANDER,SANTANDER, "Calle el Empalme", 1.259,1.319,"CARREFOUR"));
+        this.gasolineras.add(new Gasolinera(1000,SANTANDER,SANTANDER, "Av Valdecilla", 1.299,1.359, 1.3,1.2,2,"AVIA"));
+        this.gasolineras.add(new Gasolinera(1053,SANTANDER,SANTANDER, "Plaza Matias Montero", 1.270,1.349,1.22,1.11,1.21,"CAMPSA"));
+        this.gasolineras.add(new Gasolinera(420,SANTANDER,SANTANDER, "Area Arrabal Puerto de Raos", 1.249,1.279,1.3,1.2,1.5,"E.E.S.S. MAS, S.L."));
+        this.gasolineras.add(new Gasolinera(9564,SANTANDER,SANTANDER, "Av Parayas", 1.189,1.269,1.11,1.28,1.25,"EASYGAS"));
+        this.gasolineras.add(new Gasolinera(1025,SANTANDER,SANTANDER, "Calle el Empalme", 1.259,1.319,1.65,1.27,1.01,"CARREFOUR"));
         return true;
     }
 
@@ -88,7 +88,7 @@ public class PresenterGasolineras {
      * Parsea la información para obtener una lista de gasolineras.
      * Finalmente, dicha lista queda almacenada en la clase.
      *
-     * @param String Nombre del fichero
+     * @param fichero
      * @return boolean Devuelve true si se han podido cargar los datos
      */
     public boolean cargaDatosLocales(String fichero){
@@ -105,7 +105,7 @@ public class PresenterGasolineras {
      * y extraer una lista de gasolineras.
      * Finalmente, dicha lista queda almacenada en la clase.
      *
-     * @param String Dirección URL del JSON con los datos
+     * @param direccion URL del JSON con los datos
      * @return boolean Devuelve true si se han podido cargar los datos
      */
     public boolean cargaDatosRemotos(String direccion){

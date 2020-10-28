@@ -19,19 +19,25 @@ public class Gasolinera implements Parcelable {
     private String direccion;
     private double gasoleoA;
     private double gasolina95;
+    private double gasolina98;
+    private double biodiesel;
+    private double gasoleoPremium;
     private String rotulo;
 
 
     /**
      * Constructor, getters y setters
      */
-    public Gasolinera (int ideess, String localidad, String provincia, String direccion, double gasoleoA, double gasolina95, String rotulo){
+    public Gasolinera (int ideess, String localidad, String provincia, String direccion, double gasoleoA, double gasolina95, double gasolina98, double biodiesel, double gasoleoPremium, String rotulo){
         this.ideess = ideess;
         this.localidad = localidad;
         this.provincia = provincia;
         this.direccion = direccion;
         this.gasoleoA = gasoleoA;
         this.gasolina95 = gasolina95;
+        this.gasolina98 = gasolina98;
+        this.biodiesel = biodiesel;
+        this.gasoleoPremium = gasoleoPremium;
         this.rotulo = rotulo;
     }
 
@@ -56,6 +62,29 @@ public class Gasolinera implements Parcelable {
     public double getGasolina95() { return gasolina95; }
     public void setGasolina95(double gasolina95) { this.gasolina95 = gasolina95; }
 
+    public double getGasolina98() {
+        return gasolina98;
+    }
+
+    public void setGasolina98(double gasolina98) {
+        this.gasolina98 = gasolina98;
+    }
+
+    public double getBiodiesel() {
+        return biodiesel;
+    }
+
+    public void setBiodiesel(double biodiesel) {
+        this.biodiesel = biodiesel;
+    }
+
+    public double getGasoleoPremium() {
+        return gasoleoPremium;
+    }
+
+    public void setGasoleoPremium(double gasoleoPremium) {
+        this.gasoleoPremium = gasoleoPremium;
+    }
 
     /**
      * toString
@@ -98,6 +127,9 @@ public class Gasolinera implements Parcelable {
         direccion = in.readString();
         gasoleoA = in.readDouble();
         gasolina95 = in.readDouble();
+        gasolina98 = in.readDouble();
+        biodiesel = in.readDouble();
+        gasoleoPremium = in.readDouble();
         rotulo = in.readString();
     }
 
@@ -114,6 +146,9 @@ public class Gasolinera implements Parcelable {
         dest.writeString(direccion);
         dest.writeDouble(gasoleoA);
         dest.writeDouble(gasolina95);
+        dest.writeDouble(gasolina98);
+        dest.writeDouble(biodiesel);
+        dest.writeDouble(gasoleoPremium);
         dest.writeString(rotulo);
     }
 

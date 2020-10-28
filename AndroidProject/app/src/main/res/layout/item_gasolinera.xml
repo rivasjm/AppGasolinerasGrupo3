@@ -41,7 +41,7 @@
         android:layout_toRightOf="@id/imageViewLogo">
 
         <TextView
-            android:id="@+id/textViewGasoleoALabel"
+            android:id="@+id/textViewTipoGasolina"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/marginLeftPrecios"
@@ -53,7 +53,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/marginLabelsPrecio"
-            android:layout_toRightOf="@+id/textViewGasoleoALabel" />
+            android:layout_toRightOf="@+id/textViewTipoGasolina" />
 
         <TextView
             android:id="@+id/textViewGasolina95Label"
@@ -61,7 +61,6 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/marginTextView"
             android:layout_toRightOf="@+id/textViewGasoleoA"
-            android:text="@string/gasolina95"
             android:textStyle="bold" />
 
         <TextView

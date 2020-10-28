@@ -14,10 +14,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
-import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,6 +28,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,7 +41,8 @@ import android.widget.Toast;
 
 ------------------------------------------------------------------
 */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity
+        implements AdapterView.OnItemSelectedListener{
 
     PresenterGasolineras presenterGasolineras;
 
@@ -54,6 +55,12 @@ public class MainActivity extends AppCompatActivity {
 
     // Swipe and refresh (para recargar la lista con un swipe)
     SwipeRefreshLayout mSwipeRefreshLayout;
+
+    //Spinner
+    Spinner spinnerFiltro;
+
+    // Almacenará la opción que se ha seleccionado en el spinner
+    String opcionFiltro="";
 
     /**
      * onCreate
@@ -80,6 +87,15 @@ public class MainActivity extends AppCompatActivity {
         // Muestra el logo en el actionBar
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setIcon(R.drawable.por_defecto_mod);
+
+        //Spinner filtros
+        spinnerFiltro = findViewById(R.id.spinnerFiltros);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.operacionesArray, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerFiltro.setAdapter(adapter);
+        getSupportActionBar().setCustomView(spinnerFiltro);
+        spinnerFiltro.setOnItemSelectedListener(this);
 
         // Swipe and refresh
         // Al hacer swipe en la lista, lanza la tarea asíncrona de carga de datos
@@ -125,6 +141,35 @@ public class MainActivity extends AppCompatActivity {
             MainActivity.this.startActivity(myIntent);
             }
         return true;
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        switch(position) {
+            case 0:
+                opcionFiltro = "Gasóleo A";
+                break;
+            case 1:
+                opcionFiltro = "Gasolina 95";
+                break;
+            case 2:
+                opcionFiltro = "Gasolina 98";
+                break;
+            case 3:
+                opcionFiltro = "Biodiésel";
+                break;
+            case 4:
+                opcionFiltro = "Gasóleo Premium";
+                break;
+        }
+        //Refrescar automáticamente la lista de gasolineras
+        mSwipeRefreshLayout.setRefreshing(true);
+        new CargaDatosGasolinerasTask(this).execute();
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+        opcionFiltro = "Gasoleo A";
     }
 
 
@@ -205,6 +250,52 @@ public class MainActivity extends AppCompatActivity {
             if (res) {
                 // Definimos el array adapter
                 adapter = new GasolineraArrayAdapter(activity, 0, (ArrayList<Gasolinera>) presenterGasolineras.getGasolineras());
+
+                //Recorrer el array adapter para que no muestre las gasolineras con precios negativos
+                for(int i=0;i<adapter.getCount();i++) {
+                    switch(opcionFiltro) {
+                        case "Gasóleo A":
+                            if(adapter.getItem(i).getGasoleoA()==-1.0) {
+                                Gasolinera g = adapter.getItem(i);
+                                adapter.remove(g);
+                                adapter.notifyDataSetChanged();
+                                i--;
+                            }
+                            break;
+                        case "Gasolina 95":
+                            if(adapter.getItem(i).getGasolina95()==-1.0) {
+                                Gasolinera g = adapter.getItem(i);
+                                adapter.remove(g);
+                                adapter.notifyDataSetChanged();
+                                i--;
+                            }
+                            break;
+                        case "Gasolina 98":
+                            if(adapter.getItem(i).getGasolina98()==-1.0) {
+                                Gasolinera g = adapter.getItem(i);
+                                adapter.remove(g);
+                                adapter.notifyDataSetChanged();
+                                i--;
+                            }
+                            break;
+                        case "Biodiésel":
+                            if(adapter.getItem(i).getBiodiesel()==-1.0) {
+                                Gasolinera g = adapter.getItem(i);
+                                adapter.remove(g);
+                                adapter.notifyDataSetChanged();
+                                i--;
+                            }
+                            break;
+                        case "Gasóleo Premium":
+                            if(adapter.getItem(i).getGasoleoPremium()==-1.0) {
+                                Gasolinera g = adapter.getItem(i);
+                                adapter.remove(g);
+                                adapter.notifyDataSetChanged();
+                                i--;
+                            }
+                            break;
+                    }
+                }
 
                 // Obtenemos la vista de la lista
                 listViewGasolineras = findViewById(R.id.listViewGasolineras);
@@ -291,14 +382,31 @@ public class MainActivity extends AppCompatActivity {
             ImageView logo = view.findViewById(R.id.imageViewLogo);
             TextView rotulo = view.findViewById(R.id.textViewRotulo);
             TextView direccion = view.findViewById(R.id.textViewDireccion);
-            TextView gasoleoA = view.findViewById(R.id.textViewGasoleoA);
-            TextView gasolina95 = view.findViewById(R.id.textViewGasolina95);
+            TextView labelGasolina = view.findViewById(R.id.textViewTipoGasolina);
+            TextView precio = view.findViewById(R.id.textViewGasoleoA);
 
             // Y carga los datos del item
             rotulo.setText(gasolinera.getRotulo());
             direccion.setText(gasolinera.getDireccion());
-            gasoleoA.setText(" " + gasolinera.getGasoleoA() + getResources().getString(R.string.moneda));
-            gasolina95.setText(" " + gasolinera.getGasolina95() + getResources().getString(R.string.moneda));
+            labelGasolina.setText(opcionFiltro);
+            switch(opcionFiltro) {
+                case "Gasóleo A":
+                    precio.setText(gasolinera.getGasoleoA() + getResources().getString(R.string.moneda));
+                    break;
+                case "Gasolina 95":
+                    precio.setText(gasolinera.getGasolina95() + getResources().getString(R.string.moneda));
+                    break;
+                case "Gasolina 98":
+                    precio.setText(gasolinera.getGasolina98() + getResources().getString(R.string.moneda));
+                    break;
+                case "Biodiésel":
+                    precio.setText(gasolinera.getBiodiesel() + getResources().getString(R.string.moneda));
+                    break;
+                case "Gasóleo Premium":
+                    precio.setText(gasolinera.getGasoleoPremium() + getResources().getString(R.string.moneda));
+                    break;
+            }
+            //precio.setText(gasolinera.getGasoleoA() + getResources().getString(R.string.moneda));
 
             // carga icono
             {
@@ -321,7 +429,7 @@ public class MainActivity extends AppCompatActivity {
             // reducimos el texto de las etiquetas para que se vea correctamente
             DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
             if (displayMetrics.widthPixels < 720) {
-                TextView tv = view.findViewById(R.id.textViewGasoleoALabel);
+                TextView tv = view.findViewById(R.id.textViewTipoGasolina);
                 RelativeLayout.LayoutParams params = ((RelativeLayout.LayoutParams) tv.getLayoutParams());
                 params.setMargins(15, 0, 0, 0);
                 tv.setTextSize(11);

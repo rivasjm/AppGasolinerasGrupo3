@@ -21,4 +21,13 @@
         <item>Biodiésel</item>
         <item>Gasóleo Premium</item>
     </string-array>
+
+    <string-array name="distanciasArray">
+        <item>Distancia</item>
+        <item>100 km</item>
+        <item>50 km</item>
+        <item>25 km</item>
+        <item>10 km</item>
+        <item>5 km</item>
+    </string-array>
 </resources>

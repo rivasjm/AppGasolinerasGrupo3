@@ -186,6 +186,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             mSpinner.setAdapter(adapter);
 
+            final Spinner mSpinner2 = (Spinner) mView.findViewById(R.id.spinner2);    // New spinner object
+            ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(MainActivity.this,
+                    android.R.layout.simple_spinner_item,
+                    getResources().getStringArray(R.array.distanciasArray));
+            adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            mSpinner2.setAdapter(adapter2);
+
             // Set the action buttons
             builder.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
                 @Override
@@ -194,6 +201,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     // If the user does not select nothing, don't do anything
                     if (!mSpinner.getSelectedItem().toString().equalsIgnoreCase("Tipo de Combustible")) {
                         ordenFiltro = mSpinner.getSelectedItem().toString();
+                    }
+                    if (!mSpinner2.getSelectedItem().toString().equalsIgnoreCase("Distancia")) {
+                        Toast.makeText(MainActivity.this,
+                                mSpinner2.getSelectedItem().toString(),
+                                Toast.LENGTH_LONG)
+                                .show();
+                        dialog.dismiss();
                     }
                     refresca();
                 }

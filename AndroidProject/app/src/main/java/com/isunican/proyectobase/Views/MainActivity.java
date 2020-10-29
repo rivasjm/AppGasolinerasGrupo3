@@ -63,9 +63,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button buttonOrden;
 
 
-
-
-
     /*Variables para modificar filtros y ordenaciones*/
 
     //Posibles filtros para tipo de combustible
@@ -146,6 +143,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         getMenuInflater().inflate(R.menu.menu, menu);
         return true;
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId()==R.id.itemActualizar){
@@ -163,39 +161,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         if(v.getId()==R.id.buttonFiltros) {
 
-            String [] items = {"Gasolina 1","Gasolina 2"};
-            boolean [] checked = {true, false};
-            int opcion=111;
-
             final ArrayList<Integer> selectedItems = new ArrayList<>();
-
-
-            /*AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Titulo del dialogo");
-            builder.setMessage("Texto descriptivo...");
-            builder.setMultiChoiceItems(R.array.operacionesArray, null,
-                    new DialogInterface.OnMultiChoiceClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which,
-                                            boolean isChecked) {
-                            if (isChecked) {
-                                // If the user checked the item, add it to the selected items
-                                selectedItems.add(which);
-                            } else if (selectedItems.contains(which)) {
-                                // Else, if the item is already in the array, remove it
-                                selectedItems.remove(Integer.valueOf(which));
-                            }
-                        }
-                    });
-            builder.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    System.out.println("IMPRESION");
-                    System.out.println(selectedItems);
-                }
-            });
-            builder.create();
-            builder.show();*/
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             // Set the dialog title
@@ -251,8 +217,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             builder.create();
             builder.show();
-
-
 
         } else if(v.getId()==R.id.buttonOrden) {
 
@@ -344,7 +308,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 adapter = new GasolineraArrayAdapter(activity, 0, (ArrayList<Gasolinera>) presenterGasolineras.getGasolineras());
                 //Recorrer el array adapter para que no muestre las gasolineras con precios negativos
                 for(int i=0;i<adapter.getCount();i++) {
-                    eliminarGasolinerasConPrecioNegativo(i);
+                    i = eliminarGasolinerasConPrecioNegativo(i);
                 }
 
                 // Obtenemos la vista de la lista
@@ -399,7 +363,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
          * Elimina la gasolinera en la posicion indicada si su precio es negativo
          * @param i posicion de la gasolinera que se quiere comprobar
          */
-        private void eliminarGasolinerasConPrecioNegativo(int i){
+        private int eliminarGasolinerasConPrecioNegativo(int i){
             switch(ordenFiltro) {
                 case gasoleoA:
                     if(adapter.getItem(i).getGasoleoA()<0) {
@@ -442,6 +406,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                     break;
             }
+            return i;
         }
     }
 

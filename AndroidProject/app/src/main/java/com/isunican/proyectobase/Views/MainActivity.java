@@ -62,8 +62,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button buttonFiltros;
     Button buttonOrden;
 
-    //Variables para modificar filtros y ordenaciones
-    String ordenFiltro="Gasóleo A"; //Por defecto
+
+
+
+
+    /*Variables para modificar filtros y ordenaciones*/
+
+    //Posibles filtros para tipo de combustible
+    final String gasoleoA= "Gasóleo A";
+    final String gasolina95 = "Gasolina 95";
+    final String gasolina98 = "Gasolina 98";
+    final String biodiesel = "Biodiésel";
+    final String gasoleoPremium = "Gasóleo Premium";
+
+
+    String ordenFiltro=gasoleoA; //Por defecto
     boolean esAsc = true; //Por defecto ascendente
 
     Activity ac = this;
@@ -199,7 +212,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                         selectedItems.add(which);
                                     } else if (selectedItems.contains(which)) {
                                         // Else, if the item is already in the array, remove it
-                                        selectedItems.remove(Integer.valueOf(which));
+                                        selectedItems.remove(which);
                                     }
                                 }
                             })
@@ -211,19 +224,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             // or return them to the component that opened the dialog
                             switch(selectedItems.get(0)) {
                                 case 0:
-                                    ordenFiltro = "Gasóleo A";
+                                    ordenFiltro = gasoleoA;
                                     break;
                                 case 1:
-                                    ordenFiltro = "Gasolina 95";
+                                    ordenFiltro = gasolina95;
                                     break;
                                 case 2:
-                                    ordenFiltro = "Gasolina 98";
+                                    ordenFiltro = gasolina98;
                                     break;
                                 case 3:
-                                    ordenFiltro = "Biodiésel";
+                                    ordenFiltro = biodiesel;
                                     break;
                                 case 4:
-                                    ordenFiltro = "Gasóleo Premium";
+                                    ordenFiltro = gasoleoPremium;
                                     break;
                             }
                             System.out.println("ESCOGIDO: "+ordenFiltro);
@@ -329,51 +342,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (res) {
                 // Definimos el array adapter
                 adapter = new GasolineraArrayAdapter(activity, 0, (ArrayList<Gasolinera>) presenterGasolineras.getGasolineras());
-
                 //Recorrer el array adapter para que no muestre las gasolineras con precios negativos
                 for(int i=0;i<adapter.getCount();i++) {
-                    switch(ordenFiltro) {
-                        case "Gasóleo A":
-                            if(adapter.getItem(i).getGasoleoA()==-1.0) {
-                                Gasolinera g = adapter.getItem(i);
-                                adapter.remove(g);
-                                adapter.notifyDataSetChanged();
-                                i--;
-                            }
-                            break;
-                        case "Gasolina 95":
-                            if(adapter.getItem(i).getGasolina95()==-1.0) {
-                                Gasolinera g = adapter.getItem(i);
-                                adapter.remove(g);
-                                adapter.notifyDataSetChanged();
-                                i--;
-                            }
-                            break;
-                        case "Gasolina 98":
-                            if(adapter.getItem(i).getGasolina98()==-1.0) {
-                                Gasolinera g = adapter.getItem(i);
-                                adapter.remove(g);
-                                adapter.notifyDataSetChanged();
-                                i--;
-                            }
-                            break;
-                        case "Biodiésel":
-                            if(adapter.getItem(i).getBiodiesel()==-1.0) {
-                                Gasolinera g = adapter.getItem(i);
-                                adapter.remove(g);
-                                adapter.notifyDataSetChanged();
-                                i--;
-                            }
-                            break;
-                        case "Gasóleo Premium":
-                            if(adapter.getItem(i).getGasoleoPremium()==-1.0) {
-                                Gasolinera g = adapter.getItem(i);
-                                adapter.remove(g);
-                                adapter.notifyDataSetChanged();
-                                i--;
-                            }
-                            break;
-                    }
+                    eliminarGasolinerasConPrecioNegativo(i);
                 }
 
                 // Obtenemos la vista de la lista
@@ -423,6 +394,55 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             });
         }
+
+        /**
+         * Elimina la gasolinera en la posicion indicada si su precio es negativo
+         * @param i posicion de la gasolinera que se quiere comprobar
+         */
+        private void eliminarGasolinerasConPrecioNegativo(int i){
+            switch(ordenFiltro) {
+                case gasoleoA:
+                    if(adapter.getItem(i).getGasoleoA()<0) {
+                        Gasolinera g = adapter.getItem(i);
+                        adapter.remove(g);
+                        adapter.notifyDataSetChanged();
+                        i--;
+                    }
+                    break;
+                case gasolina95:
+                    if(adapter.getItem(i).getGasolina95()<0) {
+                        Gasolinera g = adapter.getItem(i);
+                        adapter.remove(g);
+                        adapter.notifyDataSetChanged();
+                        i--;
+                    }
+                    break;
+                case gasolina98:
+                    if(adapter.getItem(i).getGasolina98()<0) {
+                        Gasolinera g = adapter.getItem(i);
+                        adapter.remove(g);
+                        adapter.notifyDataSetChanged();
+                        i--;
+                    }
+                    break;
+                case biodiesel:
+                    if(adapter.getItem(i).getBiodiesel()<0) {
+                        Gasolinera g = adapter.getItem(i);
+                        adapter.remove(g);
+                        adapter.notifyDataSetChanged();
+                        i--;
+                    }
+                    break;
+                case gasoleoPremium:
+                    if(adapter.getItem(i).getGasoleoPremium()<0) {
+                        Gasolinera g = adapter.getItem(i);
+                        adapter.remove(g);
+                        adapter.notifyDataSetChanged();
+                        i--;
+                    }
+                    break;
+            }
+        }
     }
 
 
@@ -454,7 +474,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Gasolinera gasolinera = listaGasolineras.get(position);
 
             // Indica el layout a usar en cada elemento de la lista
-            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View view = inflater.inflate(R.layout.item_gasolinera, null);
 
             // Asocia las variables de dicho layout
@@ -469,19 +489,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             direccion.setText(gasolinera.getDireccion());
             labelGasolina.setText(ordenFiltro);
             switch(ordenFiltro) {
-                case "Gasóleo A":
+                case gasoleoA:
                     precio.setText(gasolinera.getGasoleoA() + getResources().getString(R.string.moneda));
                     break;
-                case "Gasolina 95":
+                case gasolina95:
                     precio.setText(gasolinera.getGasolina95() + getResources().getString(R.string.moneda));
                     break;
-                case "Gasolina 98":
+                case gasolina98:
                     precio.setText(gasolinera.getGasolina98() + getResources().getString(R.string.moneda));
                     break;
-                case "Biodiésel":
+                case biodiesel:
                     precio.setText(gasolinera.getBiodiesel() + getResources().getString(R.string.moneda));
                     break;
-                case "Gasóleo Premium":
+                case gasoleoPremium:
                     precio.setText(gasolinera.getGasoleoPremium() + getResources().getString(R.string.moneda));
                     break;
             }

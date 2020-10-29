@@ -18,8 +18,7 @@ import android.util.DisplayMetrics;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.util.Log;
-import android.view.Gravity;
+
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,6 +31,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -72,6 +72,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     final String biodiesel = "Biodiésel";
     final String gasoleoPremium = "Gasóleo Premium";
 
+    // Variable para saber que tipo de combustible esta seleccionado en Filtros
+    final int[] itemSeleccionado = {0};
 
     String ordenFiltro=gasoleoA; //Por defecto
     boolean esAsc = true; //Por defecto ascendente
@@ -83,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      *
      * Crea los elementos que conforman la actividad
      *
-     * @param savedInstanceState
+     * @param savedInstanceState savedInstanceState
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -164,10 +166,74 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             final ArrayList<Integer> selectedItems = new ArrayList<>();
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
+<<<<<<< HEAD
             // Set the dialog title
             builder.setTitle("Filtros")
                     // Specify the list array, the items to be selected by default (null for none),
+=======
+
+            // Vista escondida del nuevo layout para los diferentes spinners a implementar para los filtros
+            View mView = getLayoutInflater().inflate(R.layout.dialog_spinner, null);
+
+            // Set the dialog title
+            builder.setTitle("Filtros");
+            final Spinner mSpinner = (Spinner) mView.findViewById(R.id.spinner);    // New spinner object
+            // El spinner creado contiene todos los items del array de Strings "operacionesArray"
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this,
+                    android.R.layout.simple_spinner_item,
+                    getResources().getStringArray(R.array.operacionesArray));
+            // Al abrir el spinner la lista se abre hacia abajo
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            mSpinner.setAdapter(adapter);
+
+            // Set the action buttons
+            builder.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int id) {
+                    // User clicked Aceptar, save the item selected in the spinner
+                    // If the user does not select nothing, don't do anything
+                    if (!mSpinner.getSelectedItem().toString().equalsIgnoreCase("Tipo de Combustible")) {
+                        ordenFiltro = mSpinner.getSelectedItem().toString();
+                    }
+                    refresca();
+                }
+            });
+            builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.dismiss();
+                }
+            });
+
+            builder.setView(mView);
+
+
+                /*  IMPLEMENTACION 2: SINGLE CHOICE ITEMS
+                builder.setTitle("Filtros")
+                    // Specify the list array, the item which is selected,
+>>>>>>> b64802838764ac38a117ca5bcebb2e17b646285e
                     // and the listener through which to receive callbacks when items are selected
+                    .setSingleChoiceItems(R.array.operacionesArray, itemSeleccionado[0],
+                            new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                            // If the user checked the item, but the list selectedItems isn't empty,
+                            // delete the first item and add the new item
+                            if (!selectedItems.isEmpty()) {
+                                selectedItems.remove(0);
+                                selectedItems.add(which);
+                                itemSeleccionado[0] = which;
+                            } else {
+                                // If the user checked the item, add it to the selected items
+                                selectedItems.add(which);
+                                itemSeleccionado[0] = which;
+                            }
+
+                        }
+                    })*/
+
+                    /*  IMPLEMENTACION 3: MULTI CHOICE ITEMS
                     .setMultiChoiceItems(R.array.operacionesArray, null,
                             new DialogInterface.OnMultiChoiceClickListener() {
                                 @Override
@@ -176,35 +242,42 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                     if (isChecked) {
                                         // If the user checked the item, add it to the selected items
                                         selectedItems.add(which);
+
                                     } else if (selectedItems.contains(which)) {
                                         // Else, if the item is already in the array, remove it
                                         selectedItems.remove(which);
                                     }
                                 }
-                            })
+                            })*/
+                    /*
                     // Set the action buttons
                     .setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int id) {
                             // User clicked OK, so save the selectedItems results somewhere
                             // or return them to the component that opened the dialog
-                            switch(selectedItems.get(0)) {
-                                case 0:
-                                    ordenFiltro = gasoleoA;
-                                    break;
-                                case 1:
-                                    ordenFiltro = gasolina95;
-                                    break;
-                                case 2:
-                                    ordenFiltro = gasolina98;
-                                    break;
-                                case 3:
-                                    ordenFiltro = biodiesel;
-                                    break;
-                                case 4:
-                                    ordenFiltro = gasoleoPremium;
-                                    break;
+                            if (!selectedItems.isEmpty()) { // Caso de error en el cual no se ha seleccionado ningún tipo de combustible
+                                switch(selectedItems.get(0)) {
+                                    case 0:
+                                        ordenFiltro = gasoleoA;
+                                        break;
+                                    case 1:
+                                        ordenFiltro = gasolina95;
+                                        break;
+                                    case 2:
+                                        ordenFiltro = gasolina98;
+                                        break;
+                                    case 3:
+                                        ordenFiltro = biodiesel;
+                                        break;
+                                    case 4:
+                                        ordenFiltro = gasoleoPremium;
+                                        break;
+                                    default:
+                                        break;
+                                }
                             }
+
                             System.out.println("ESCOGIDO: "+ordenFiltro);
                             refresca();
                         }
@@ -213,11 +286,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         @Override
                         public void onClick(DialogInterface dialog, int id) {
                         }
-                    });
+                    });*/
 
             builder.create();
             builder.show();
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> b64802838764ac38a117ca5bcebb2e17b646285e
         } else if(v.getId()==R.id.buttonOrden) {
 
         }

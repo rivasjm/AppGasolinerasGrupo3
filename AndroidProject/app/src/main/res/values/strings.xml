@@ -14,6 +14,7 @@
     <string name="pasoDatosInfo">DatosInfo</string>
     <string name="pasoDatosGasolinera">DatosGasolinera</string>
     <string-array name="operacionesArray">
+        <item>Tipo de Combustible</item>
         <item>Gasóleo A</item>
         <item>Gasolina 95</item>
         <item>Gasolina 98</item>

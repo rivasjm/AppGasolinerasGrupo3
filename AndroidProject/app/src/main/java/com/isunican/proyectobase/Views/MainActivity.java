@@ -18,8 +18,7 @@ import android.util.DisplayMetrics;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.util.Log;
-import android.view.Gravity;
+
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -75,6 +74,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     final String biodiesel = "Biodiésel";
     final String gasoleoPremium = "Gasóleo Premium";
 
+    // Variable para saber que tipo de combustible esta seleccionado en Filtros
+    final int[] itemSeleccionado = {0};
 
     String ordenFiltro=gasoleoA; //Por defecto
     boolean esAsc = true; //Por defecto ascendente
@@ -86,7 +87,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      *
      * Crea los elementos que conforman la actividad
      *
-     * @param savedInstanceState
+     * @param savedInstanceState savedInstanceState
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -163,45 +164,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         if(v.getId()==R.id.buttonFiltros) {
 
-            String [] items = {"Gasolina 1","Gasolina 2"};
-            boolean [] checked = {true, false};
-            int opcion=111;
-
             final ArrayList<Integer> selectedItems = new ArrayList<>();
-
-
-            /*AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Titulo del dialogo");
-            builder.setMessage("Texto descriptivo...");
-            builder.setMultiChoiceItems(R.array.operacionesArray, null,
-                    new DialogInterface.OnMultiChoiceClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which,
-                                            boolean isChecked) {
-                            if (isChecked) {
-                                // If the user checked the item, add it to the selected items
-                                selectedItems.add(which);
-                            } else if (selectedItems.contains(which)) {
-                                // Else, if the item is already in the array, remove it
-                                selectedItems.remove(Integer.valueOf(which));
-                            }
-                        }
-                    });
-            builder.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    System.out.println("IMPRESION");
-                    System.out.println(selectedItems);
-                }
-            });
-            builder.create();
-            builder.show();*/
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             // Set the dialog title
             builder.setTitle("Filtros")
-                    // Specify the list array, the items to be selected by default (null for none),
+                    // Specify the list array, the item which is selected,
                     // and the listener through which to receive callbacks when items are selected
+                    .setSingleChoiceItems(R.array.operacionesArray, itemSeleccionado[0],
+                            new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                            // If the user checked the item, but the list selectedItems isn't empty,
+                            // delete the first item and add the new item
+                            if (!selectedItems.isEmpty()) {
+                                selectedItems.remove(0);
+                                selectedItems.add(which);
+                                itemSeleccionado[0] = which;
+                            } else {
+                                // If the user checked the item, add it to the selected items
+                                selectedItems.add(which);
+                                itemSeleccionado[0] = which;
+                            }
+
+                        }
+                    })
+                    /*
                     .setMultiChoiceItems(R.array.operacionesArray, null,
                             new DialogInterface.OnMultiChoiceClickListener() {
                                 @Override
@@ -210,35 +199,41 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                     if (isChecked) {
                                         // If the user checked the item, add it to the selected items
                                         selectedItems.add(which);
+
                                     } else if (selectedItems.contains(which)) {
                                         // Else, if the item is already in the array, remove it
                                         selectedItems.remove(which);
                                     }
                                 }
-                            })
+                            })*/
                     // Set the action buttons
                     .setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int id) {
                             // User clicked OK, so save the selectedItems results somewhere
                             // or return them to the component that opened the dialog
-                            switch(selectedItems.get(0)) {
-                                case 0:
-                                    ordenFiltro = gasoleoA;
-                                    break;
-                                case 1:
-                                    ordenFiltro = gasolina95;
-                                    break;
-                                case 2:
-                                    ordenFiltro = gasolina98;
-                                    break;
-                                case 3:
-                                    ordenFiltro = biodiesel;
-                                    break;
-                                case 4:
-                                    ordenFiltro = gasoleoPremium;
-                                    break;
+                            if (!selectedItems.isEmpty()) { // Caso de error en el cual no se ha seleccionado ningún tipo de combustible
+                                switch(selectedItems.get(0)) {
+                                    case 0:
+                                        ordenFiltro = gasoleoA;
+                                        break;
+                                    case 1:
+                                        ordenFiltro = gasolina95;
+                                        break;
+                                    case 2:
+                                        ordenFiltro = gasolina98;
+                                        break;
+                                    case 3:
+                                        ordenFiltro = biodiesel;
+                                        break;
+                                    case 4:
+                                        ordenFiltro = gasoleoPremium;
+                                        break;
+                                    default:
+                                        break;
+                                }
                             }
+
                             System.out.println("ESCOGIDO: "+ordenFiltro);
                             refresca();
                         }

@@ -21,7 +21,13 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.anything;
 
-
+/*
+ * Clase para realizar las pruebas de interfaz de usuario (UI Test) para la historia
+ * de usuario "Buscar gasolineras por un tipo de combustible".
+ *
+ * @author Juan David Corrales Gil (jcg700@alumnos.unican.es)
+ * @version Octubre - 2020
+ */
 @RunWith(AndroidJUnit4.class)
 public class BuscarGasolinerasPorUnTipoDeCombustibleUITest {
 
@@ -29,6 +35,7 @@ public class BuscarGasolinerasPorUnTipoDeCombustibleUITest {
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
 
+    // Variable global para los tipos de combustible existentes.
     String[] arrayOperaciones;
 
     @Before

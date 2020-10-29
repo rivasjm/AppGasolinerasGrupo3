@@ -31,6 +31,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -167,8 +168,45 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             final ArrayList<Integer> selectedItems = new ArrayList<>();
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+            // Vista escondida del nuevo layout para los diferentes spinners a implementar para los filtros
+            View mView = getLayoutInflater().inflate(R.layout.dialog_spinner, null);
+
             // Set the dialog title
-            builder.setTitle("Filtros")
+            builder.setTitle("Filtros");
+            final Spinner mSpinner = (Spinner) mView.findViewById(R.id.spinner);    // New spinner object
+            // El spinner creado contiene todos los items del array de Strings "operacionesArray"
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this,
+                    android.R.layout.simple_spinner_item,
+                    getResources().getStringArray(R.array.operacionesArray));
+            // Al abrir el spinner la lista se abre hacia abajo
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            mSpinner.setAdapter(adapter);
+
+            // Set the action buttons
+            builder.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int id) {
+                    // User clicked Aceptar, save the item selected in the spinner
+                    // If the user does not select nothing, don't do anything
+                    if (!mSpinner.getSelectedItem().toString().equalsIgnoreCase("Tipo de Combustible")) {
+                        ordenFiltro = mSpinner.getSelectedItem().toString();
+                    }
+                    refresca();
+                }
+            });
+            builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.dismiss();
+                }
+            });
+
+            builder.setView(mView);
+
+
+                /*  IMPLEMENTACION 2: SINGLE CHOICE ITEMS
+                builder.setTitle("Filtros")
                     // Specify the list array, the item which is selected,
                     // and the listener through which to receive callbacks when items are selected
                     .setSingleChoiceItems(R.array.operacionesArray, itemSeleccionado[0],
@@ -189,8 +227,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             }
 
                         }
-                    })
-                    /*
+                    })*/
+
+                    /*  IMPLEMENTACION 3: MULTI CHOICE ITEMS
                     .setMultiChoiceItems(R.array.operacionesArray, null,
                             new DialogInterface.OnMultiChoiceClickListener() {
                                 @Override
@@ -206,6 +245,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                     }
                                 }
                             })*/
+                    /*
                     // Set the action buttons
                     .setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
                         @Override
@@ -242,11 +282,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         @Override
                         public void onClick(DialogInterface dialog, int id) {
                         }
-                    });
+                    });*/
 
             builder.create();
             builder.show();
-
 
 
         } else if(v.getId()==R.id.buttonOrden) {

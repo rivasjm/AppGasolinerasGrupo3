@@ -224,8 +224,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
             //comienzo de ordenar
-
-
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
             // Vista escondida del nuevo layout para los diferentes spinners a implementar para los filtros

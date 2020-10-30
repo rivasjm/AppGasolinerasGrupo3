@@ -243,9 +243,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             imgOrdenPrecio.setImageResource(getResources().getIdentifier(id_imgOrdernPrecio[0],
                     "drawable", getPackageName()));
 
+            final String[]  valorActualOrdenPrecio={"Precio (asc)"};
+            final String[]  valorActualIconoPrecio={"flecha_arriba"};
             mb.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    valorActualOrdenPrecio[0] = buttonString[0];
+                    valorActualIconoPrecio[0] = id_imgOrdernPrecio[0];
                     esAsc = !esAsc;
                     if (esAsc) {
                         id_imgOrdernPrecio[0] = "flecha_arriba";
@@ -266,14 +270,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             builder.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int id) {
-
-
                     refresca();
                 }
             });
+
             builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int id) {
+                    id_imgOrdernPrecio[0]=valorActualIconoPrecio[0];
+                    buttonString[0]=valorActualOrdenPrecio[0];
+                    esAsc = !esAsc;
                     dialog.dismiss();
                 }
             });
@@ -378,6 +384,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 for (int i = 0; i < adapter.getCount(); i++) {
                     adapter2.add(i, adapter.getItem(i));
                 }
+
                 for (int i = 0; i < adapter2.size(); i++) {
                     for (int j = 0; j < adapter2.size() - 1; j++) {
                         if (esAsc) {

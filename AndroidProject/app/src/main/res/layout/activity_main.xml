@@ -17,37 +17,41 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:id="@+id/imageView2"
-            android:layout_width="0dp"
+            android:id="@+id/imageView"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            app:srcCompat="@drawable/filter_icon" />
+
+        <Button
+            android:id="@+id/buttonFiltros"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            app:srcCompat="@android:drawable/ic_input_get" />
-
-        <Spinner
-            android:id="@+id/spinnerFiltros"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="3" />
+            android:text="Filtros" />
 
         <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="0dp"
+            android:id="@+id/imageView2"
+            android:layout_width="30dp"
+            android:layout_height="35dp"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            app:srcCompat="@drawable/sort_icon" />
+
+        <Button
+            android:id="@+id/buttonOrden"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            app:srcCompat="@android:drawable/ic_menu_sort_by_size" />
-
-        <Spinner
-            android:id="@+id/spinnerOrden"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="3" />
+            android:text="Ordenar" />
     </LinearLayout>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swiperefresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="30dp">
+        android:layout_marginTop="50dp">
 
         <ListView
             android:id="@+id/listViewGasolineras"

@@ -100,10 +100,10 @@ public class Gasolinera implements Parcelable {
         String textoGasolineras = "";
         textoGasolineras +=
                 getRotulo() + "\n"+
-                getDireccion() + "\n" +
-                getLocalidad() + "\n" +
-                "Precio diesel: " + getGasoleoA() + " " + "\n" +
-                "Precio gasolina 95: " + getGasolina95() + " " + "\n\n";
+                        getDireccion() + "\n" +
+                        getLocalidad() + "\n" +
+                        "Precio diesel: " + getGasoleoA() + " " + "\n" +
+                        "Precio gasolina 95: " + getGasolina95() + " " + "\n\n";
 
         return textoGasolineras;
     }

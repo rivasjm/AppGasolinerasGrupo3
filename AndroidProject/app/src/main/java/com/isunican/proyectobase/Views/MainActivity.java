@@ -9,6 +9,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -474,11 +475,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             } else {
                 // error en la obtencion de datos desde el servidor
-                toast = Toast.makeText(getApplicationContext(), getResources().getString(R.string.datos_no_obtenidos), Toast.LENGTH_LONG);
+                if (isNetworkConnected()) {
+                    toast = Toast.makeText(getApplicationContext(), getResources().getString(R.string.datos_no_obtenidos), Toast.LENGTH_LONG);
+                }
+                else{
+                    toast=Toast.makeText(getApplicationContext(),"No hay conexión a internet",Toast.LENGTH_LONG);
+                }
+
             }
+
 
             // Muestra el mensaje del resultado de la operación en un toast
             if (toast != null) {
+
                 toast.show();
             }
 
@@ -490,21 +499,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
              * Para poder pasar un objeto Gasolinera mediante una intent con putExtra / getExtra,
              * hemos tenido que hacer que el objeto Gasolinera implemente la interfaz Parcelable
              */
-            listViewGasolineras.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                public void onItemClick(AdapterView<?> a, View v, int position, long id) {
+            try {
+                listViewGasolineras.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
-                    /* Obtengo el elemento directamente de su posicion,
-                     * ya que es la misma que ocupa en la lista
-                     * Alternativa 1: a partir de posicion obtener algun atributo int opcionSeleccionada = ((Gasolinera) a.getItemAtPosition(position)).getIdeess();
-                     * Alternativa 2: a partir de la vista obtener algun atributo String opcionSeleccionada = ((TextView)v.findViewById(R.id.textViewRotulo)).getText().toString();
-                     */
-                    Intent myIntent = new Intent(MainActivity.this, DetailActivity.class);
-                    myIntent.putExtra(getResources().getString(R.string.pasoDatosGasolinera),
-                            presenterGasolineras.getGasolineras().get(position));
-                    MainActivity.this.startActivity(myIntent);
+                    public void onItemClick(AdapterView<?> a, View v, int position, long id) {
 
-                }
-            });
+                        /* Obtengo el elemento directamente de su posicion,
+                         * ya que es la misma que ocupa en la lista
+                         * Alternativa 1: a partir de posicion obtener algun atributo int opcionSeleccionada = ((Gasolinera) a.getItemAtPosition(position)).getIdeess();
+                         * Alternativa 2: a partir de la vista obtener algun atributo String opcionSeleccionada = ((TextView)v.findViewById(R.id.textViewRotulo)).getText().toString();
+                         */
+                        Intent myIntent = new Intent(MainActivity.this, DetailActivity.class);
+                        myIntent.putExtra(getResources().getString(R.string.pasoDatosGasolinera),
+                                presenterGasolineras.getGasolineras().get(position));
+                        MainActivity.this.startActivity(myIntent);
+
+                    }
+                });
+            }
+            catch(Exception e1){
+                e1.getStackTrace();
+            }
+            ////////////////////////////////////////////////////////////////////////////////////////////////////
         }
 
         /**
@@ -655,6 +671,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             return view;
         }
+    }
+    private boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
     }
 
 }

@@ -41,21 +41,12 @@ public class BuscarGasolinerasPorUnTipoDeCombustibleUITest {
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
 
-    // Variable global para los tipos de combustible existentes.
-    //String[] arrayOperaciones;
-
 
     @Before
     public void preparacionTest() {
 
-        // Context of the app under test.
-        //Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-
         // Se pulsa el boton para acceder a los Filtros.
         onView(withId(R.id.buttonFiltros)).perform(click());
-
-        // Se guarda en un array los tipos de combustible que existen.
-        //arrayOperaciones = appContext.getResources().getStringArray(R.array.operacionesArray);
 
         // Antes de cada test se pulsa el spinner para ver su contenido
         onView((withId(R.id.spinner))).perform(click());

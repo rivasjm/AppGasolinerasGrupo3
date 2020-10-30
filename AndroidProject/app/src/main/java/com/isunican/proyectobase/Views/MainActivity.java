@@ -11,10 +11,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,7 +69,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     /*Variables para modificar filtros y ordenaciones*/
 
     //Posibles filtros para tipo de combustible
-    final String gasoleoA= "Gasóleo A";
+    final String gasoleoA = "Gasóleo A";
     final String gasolina95 = "Gasolina 95";
     final String gasolina98 = "Gasolina 98";
     final String biodiesel = "Biodiésel";
@@ -75,14 +78,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     // Variable para saber que tipo de combustible esta seleccionado en Filtros
     final int[] itemSeleccionado = {0};
 
-    String ordenFiltro=gasoleoA; //Por defecto
+    String ordenFiltro = gasoleoA; //Por defecto
     boolean esAsc = true; //Por defecto ascendente
 
     Activity ac = this;
 
     /**
      * onCreate
-     *
+     * <p>
      * Crea los elementos que conforman la actividad
      *
      * @param savedInstanceState savedInstanceState
@@ -96,11 +99,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         // Barra de progreso
         // https://materialdoc.com/components/progress/
-        progressBar = new ProgressBar(MainActivity.this,null,android.R.attr.progressBarStyleLarge);
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(100,100);
+        progressBar = new ProgressBar(MainActivity.this, null, android.R.attr.progressBarStyleLarge);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(100, 100);
         params.addRule(RelativeLayout.CENTER_IN_PARENT);
         RelativeLayout layout = findViewById(R.id.activity_precio_gasolina);
-        layout.addView(progressBar,params);
+        layout.addView(progressBar, params);
 
         // Muestra el logo en el actionBar
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -131,12 +134,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     /**
      * Menú action bar
-     *
+     * <p>
      * Redefine métodos para el uso de un menú de tipo action bar.
-     *
+     * <p>
      * onCreateOptionsMenu
      * Carga las opciones del menú a partir del fichero de recursos menu/menu.xml
-     *
+     * <p>
      * onOptionsItemSelected
      * Define las respuestas a las distintas opciones del menú
      */
@@ -148,21 +151,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId()==R.id.itemActualizar){
+        if (item.getItemId() == R.id.itemActualizar) {
             mSwipeRefreshLayout.setRefreshing(true);
             new CargaDatosGasolinerasTask(this).execute();
-        }
-        else if(item.getItemId()==R.id.itemInfo){
+        } else if (item.getItemId() == R.id.itemInfo) {
             Intent myIntent = new Intent(MainActivity.this, InfoActivity.class);
             MainActivity.this.startActivity(myIntent);
-            }
+        }
         return true;
     }
 
     @Override
     public void onClick(View v) {
 
-        if(v.getId()==R.id.buttonFiltros) {
+        if (v.getId() == R.id.buttonFiltros) {
 
             final ArrayList<Integer> selectedItems = new ArrayList<>();
 
@@ -219,7 +221,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             builder.create();
             builder.show();
 
-        } else if(v.getId()==R.id.buttonOrden) {
+        } else if (v.getId() == R.id.buttonOrden) {
 
 
             //comienzo de ordenar
@@ -232,24 +234,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
             builder.setTitle("Ordenar");
-                final Button mb = (Button) mView.findViewById(R.id.buttonprecio);
+            final Button mb = (Button) mView.findViewById(R.id.buttonprecio);
 
+            mb.setText(buttonString[0]);
+            mb.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    esAsc = !esAsc;
+                    if (esAsc) {
+                        buttonString[0] = "Precio (asc)";
+                    } else {
+                        buttonString[0] = "Precio (des)";
+
+                    }
                     mb.setText(buttonString[0]);
-           mb.setOnClickListener(new View.OnClickListener() {
-               @Override
-               public void onClick(View v) {
-                   esAsc=!esAsc;
-                   if(esAsc) {
-                      buttonString[0] ="Precio (asc)";
-                   }
-                   else{
-                       buttonString[0] ="Precio (des)";
-
-                   }
-                   mb.setText(buttonString[0]);
-               }
-           });
-
+                }
+            });
 
 
             builder.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
@@ -280,17 +280,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     /**
      * CargaDatosGasolinerasTask
-     *
+     * <p>
      * Tarea asincrona para obtener los datos de las gasolineras
      * en segundo plano.
-     *
+     * <p>
      * Redefinimos varios métodos que se ejecutan en el siguiente orden:
      * onPreExecute: activamos el dialogo de progreso
      * doInBackground: solicitamos que el presenter cargue los datos
      * onPostExecute: desactiva el dialogo de progreso,
-     *    muestra las gasolineras en formato lista (a partir de un adapter)
-     *    y define la acción al realizar al seleccionar alguna de ellas
-     *
+     * muestra las gasolineras en formato lista (a partir de un adapter)
+     * y define la acción al realizar al seleccionar alguna de ellas
+     * <p>
      * http://www.sgoliver.net/blog/tareas-en-segundo-plano-en-android-i-thread-y-asynctask/
      */
     private class CargaDatosGasolinerasTask extends AsyncTask<Void, Void, Boolean> {
@@ -299,6 +299,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         /**
          * Constructor de la tarea asincrona
+         *
          * @param activity
          */
         public CargaDatosGasolinerasTask(Activity activity) {
@@ -307,7 +308,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         /**
          * onPreExecute
-         *
+         * <p>
          * Metodo ejecutado de forma previa a la ejecucion de la tarea definida en el metodo doInBackground()
          * Muestra un diálogo de progreso
          */
@@ -318,9 +319,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         /**
          * doInBackground
-         *
+         * <p>
          * Tarea ejecutada en segundo plano
          * Llama al presenter para que lance el método de carga de los datos de las gasolineras
+         *
          * @param params
          * @return boolean
          */
@@ -331,7 +333,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         /**
          * onPostExecute
-         *
+         * <p>
          * Se ejecuta al finalizar doInBackground
          * Oculta el diálogo de progreso.
          * Muestra en una lista los datos de las gasolineras cargadas,
@@ -356,108 +358,44 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 // Definimos el array adapter
                 adapter = new GasolineraArrayAdapter(activity, 0, (ArrayList<Gasolinera>) presenterGasolineras.getGasolineras());
                 //Recorrer el array adapter para que no muestre las gasolineras con precios negativos
-                for(int i=0;i<adapter.getCount();i++) {
+                for (int i = 0; i < adapter.getCount(); i++) {
                     i = eliminarGasolinerasConPrecioNegativo(i);
                 }
 
                 //ordenacion
                 ArrayList<Gasolinera> adapter2 = new ArrayList<Gasolinera>();
-                for (int i=0;i<adapter.getCount();i++){
-                    adapter2.add(i,adapter.getItem(i));
+                for (int i = 0; i < adapter.getCount(); i++) {
+                    adapter2.add(i, adapter.getItem(i));
                 }
-                for (int i =0;i<adapter2.size();i++){
-                    for(int j=0;j<adapter2.size()-1;j++){
-                        if(esAsc){
-                            switch (ordenFiltro){
-                                case gasoleoA:
-                                    if (adapter2.get(j).getGasoleoA()>adapter2.get(j+1).getGasoleoA()){
-                                        Gasolinera tmp = adapter2.get(j+1);
-                                        adapter2.remove(tmp);
-                                        adapter2.add(j,tmp);
-                                    }
-                                    break;
-                                case gasolina95:
-                                    if (adapter2.get(j).getGasolina95()>adapter2.get(j+1).getGasolina95()){
-                                        Gasolinera tmp = adapter2.get(j+1);
-                                        adapter2.remove(tmp);
-                                        adapter2.add(j,tmp);
-                                    }
-                                    break;
-                                case gasolina98:
-                                    if (adapter2.get(j).getGasolina98()>adapter2.get(j+1).getGasolina98()){
-                                        Gasolinera tmp = adapter2.get(j+1);
-                                        adapter2.remove(tmp);
-                                        adapter2.add(j,tmp);
-                                    }
-                                    break;
-                                case biodiesel:
-                                    if (adapter2.get(j).getBiodiesel()>adapter2.get(j+1).getBiodiesel()){
-                                        Gasolinera tmp = adapter2.get(j+1);
-                                        adapter2.remove(tmp);
-                                        adapter2.add(j,tmp);
-                                    }
-                                    break;
-                                case gasoleoPremium:
-                                    if (adapter2.get(j).getGasoleoPremium()>adapter2.get(j+1).getGasoleoPremium()){
-                                        Gasolinera tmp = adapter2.get(j+1);
-                                        adapter2.remove(tmp);
-                                        adapter2.add(j,tmp);
-                                    }
-                                    break;
+                for (int i = 0; i < adapter2.size(); i++) {
+                    for (int j = 0; j < adapter2.size() - 1; j++) {
+                        if (esAsc) {
+                            if (adapter2.get(j).getGasoleoA() > adapter2.get(j + 1).getGasoleoA()) {
+                                Gasolinera tmp = adapter2.get(j + 1);
+                                adapter2.remove(tmp);
+                                adapter2.add(j, tmp);
                             }
-                        }
-                        else {
-                            switch (ordenFiltro){
-                                case gasoleoA:
-                                    if (adapter2.get(j).getGasoleoA()<adapter2.get(j+1).getGasoleoA()){
-                                        Gasolinera tmp = adapter2.get(j+1);
-                                        adapter2.remove(tmp);
-                                        adapter2.add(j,tmp);
-                                    }
-                                    break;
-                                case gasolina95:
-                                    if (adapter2.get(j).getGasolina95()<adapter2.get(j+1).getGasolina95()){
-                                        Gasolinera tmp = adapter2.get(j+1);
-                                        adapter2.remove(tmp);
-                                        adapter2.add(j,tmp);
-                                    }
-                                    break;
-                                case gasolina98:
-                                    if (adapter2.get(j).getGasolina98()<adapter2.get(j+1).getGasolina98()){
-                                        Gasolinera tmp = adapter2.get(j+1);
-                                        adapter2.remove(tmp);
-                                        adapter2.add(j,tmp);
-                                    }
-                                    break;
-                                case biodiesel:
-                                    if (adapter2.get(j).getBiodiesel()<adapter2.get(j+1).getBiodiesel()){
-                                        Gasolinera tmp = adapter2.get(j+1);
-                                        adapter2.remove(tmp);
-                                        adapter2.add(j,tmp);
-                                    }
-                                    break;
-                                case gasoleoPremium:
-                                    if (adapter2.get(j).getGasoleoPremium()<adapter2.get(j+1).getGasoleoPremium()){
-                                        Gasolinera tmp = adapter2.get(j+1);
-                                        adapter2.remove(tmp);
-                                        adapter2.add(j,tmp);
-                                    }
-                                    break;
+
+                        } else {
+
+                            if (adapter2.get(j).getGasoleoA() < adapter2.get(j + 1).getGasoleoA()) {
+                                Gasolinera tmp = adapter2.get(j + 1);
+                                adapter2.remove(tmp);
+                                adapter2.add(j, tmp);
                             }
+
                         }
-
-
                     }
                 }
-                System.out.println("jjjjjjjjjjjj"+adapter2.size());
+                System.out.println("jjjjjjjjjjjj" + adapter2.size());
                 adapter.clear();
                 adapter.notifyDataSetChanged();
-                for (int i=0;i<adapter2.size();i++){
+                for (int i = 0; i < adapter2.size(); i++) {
 
                     adapter.add(adapter2.get(i));
                     adapter.notifyDataSetChanged();
                 }
-                System.out.println(adapter.getCount()+"dddddddddddddddddddddddddddddddd");
+                System.out.println(adapter.getCount() + "dddddddddddddddddddddddddddddddd");
                 adapter.notifyDataSetChanged();
                 // Obtenemos la vista de la lista
                 listViewGasolineras = findViewById(R.id.listViewGasolineras);
@@ -509,12 +447,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         /**
          * Elimina la gasolinera en la posicion indicada si su precio es negativo
+         *
          * @param i posicion de la gasolinera que se quiere comprobar
          */
-        private int eliminarGasolinerasConPrecioNegativo(int i){
-            switch(ordenFiltro) {
+        private int eliminarGasolinerasConPrecioNegativo(int i) {
+            switch (ordenFiltro) {
                 case gasoleoA:
-                    if(adapter.getItem(i).getGasoleoA()<0) {
+                    if (adapter.getItem(i).getGasoleoA() < 0) {
                         Gasolinera g = adapter.getItem(i);
                         adapter.remove(g);
                         adapter.notifyDataSetChanged();
@@ -522,7 +461,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                     break;
                 case gasolina95:
-                    if(adapter.getItem(i).getGasolina95()<0) {
+                    if (adapter.getItem(i).getGasolina95() < 0) {
                         Gasolinera g = adapter.getItem(i);
                         adapter.remove(g);
                         adapter.notifyDataSetChanged();
@@ -530,7 +469,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                     break;
                 case gasolina98:
-                    if(adapter.getItem(i).getGasolina98()<0) {
+                    if (adapter.getItem(i).getGasolina98() < 0) {
                         Gasolinera g = adapter.getItem(i);
                         adapter.remove(g);
                         adapter.notifyDataSetChanged();
@@ -538,7 +477,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                     break;
                 case biodiesel:
-                    if(adapter.getItem(i).getBiodiesel()<0) {
+                    if (adapter.getItem(i).getBiodiesel() < 0) {
                         Gasolinera g = adapter.getItem(i);
                         adapter.remove(g);
                         adapter.notifyDataSetChanged();
@@ -546,7 +485,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                     break;
                 case gasoleoPremium:
-                    if(adapter.getItem(i).getGasoleoPremium()<0) {
+                    if (adapter.getItem(i).getGasoleoPremium() < 0) {
                         Gasolinera g = adapter.getItem(i);
                         adapter.remove(g);
                         adapter.notifyDataSetChanged();
@@ -601,7 +540,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             rotulo.setText(gasolinera.getRotulo());
             direccion.setText(gasolinera.getDireccion());
             labelGasolina.setText(ordenFiltro);
-            switch(ordenFiltro) {
+            switch (ordenFiltro) {
                 case gasoleoA:
                     precio.setText(gasolinera.getGasoleoA() + getResources().getString(R.string.moneda));
                     break;

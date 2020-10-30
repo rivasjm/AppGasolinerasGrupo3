@@ -17,9 +17,15 @@ import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.RootMatchers.isPlatformPopup;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withSpinnerText;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.anything;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
 
 /*
  * Clase para realizar las pruebas de interfaz de usuario (UI Test) para la historia
@@ -36,54 +42,70 @@ public class BuscarGasolinerasPorUnTipoDeCombustibleUITest {
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
 
     // Variable global para los tipos de combustible existentes.
-    String[] arrayOperaciones;
+    //String[] arrayOperaciones;
+
 
     @Before
     public void preparacionTest() {
 
         // Context of the app under test.
-        Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
+        //Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
 
         // Se pulsa el boton para acceder a los Filtros.
         onView(withId(R.id.buttonFiltros)).perform(click());
 
         // Se guarda en un array los tipos de combustible que existen.
-        arrayOperaciones = appContext.getResources().getStringArray(R.array.operacionesArray);
+        //arrayOperaciones = appContext.getResources().getStringArray(R.array.operacionesArray);
+
+        // Antes de cada test se pulsa el spinner para ver su contenido
+        onView((withId(R.id.spinner))).perform(click());
+
     }
 
     @Test
     public void tiposCombustible_Test() {
 
-        // Se comprueba seleccionando todos los tipos existentes y se comprueba su correspondiente nombre
-        onView(withText(arrayOperaciones[0])).perform(click());
-        onView(withText(arrayOperaciones[0])).check(matches(withText("Gasóleo A")));
+        // Se comprueba seleccionando cada elemento existente dentro del spinner
+        // y se comprueba su correspondiente nombre si es el correcto
+        onData(allOf(is(instanceOf(String.class)),
+                is("Tipo de Combustible"))).inRoot(isPlatformPopup()).perform(click());
+        onView(withId(R.id.spinner)).check(matches(withSpinnerText(containsString("Tipo de Combustible"))));
 
-        onView(withText(arrayOperaciones[1])).perform(click());
-        onView(withText(arrayOperaciones[1])).check(matches(withText("Gasolina 95")));
 
-        onView(withText(arrayOperaciones[2])).perform(click());
-        onView(withText(arrayOperaciones[2])).check(matches(withText("Gasolina 98")));
+        onView((withId(R.id.spinner))).perform(click());
+        onData(allOf(is(instanceOf(String.class)),
+                is("Gasóleo A"))).inRoot(isPlatformPopup()).perform(click());
+        onView(withId(R.id.spinner)).check(matches(withSpinnerText(containsString("Gasóleo A"))));
 
-        onView(withText(arrayOperaciones[3])).perform(click());
-        onView(withText(arrayOperaciones[3])).check(matches(withText("Biodiésel")));
+        onView((withId(R.id.spinner))).perform(click());
+        onData(allOf(is(instanceOf(String.class)),
+                is("Gasolina 95"))).inRoot(isPlatformPopup()).perform(click());
+        onView(withId(R.id.spinner)).check(matches(withSpinnerText(containsString("Gasolina 95"))));
 
-        onView(withText(arrayOperaciones[4])).perform(click());
-        onView(withText(arrayOperaciones[4])).check(matches(withText("Gasóleo Premium")));
+        onView((withId(R.id.spinner))).perform(click());
+        onData(allOf(is(instanceOf(String.class)),
+                is("Gasolina 98"))).inRoot(isPlatformPopup()).perform(click());
+        onView(withId(R.id.spinner)).check(matches(withSpinnerText(containsString("Gasolina 98"))));
 
-        // Se deseleccionan todos los tipos de combustible existentes
-        onView(withText(arrayOperaciones[4])).perform(click());
-        onView(withText(arrayOperaciones[3])).perform(click());
-        onView(withText(arrayOperaciones[2])).perform(click());
-        onView(withText(arrayOperaciones[1])).perform(click());
-        onView(withText(arrayOperaciones[0])).perform(click());
+        onView((withId(R.id.spinner))).perform(click());
+        onData(allOf(is(instanceOf(String.class)),
+                is("Biodiésel"))).inRoot(isPlatformPopup()).perform(click());
+        onView(withId(R.id.spinner)).check(matches(withSpinnerText(containsString("Biodiésel"))));
+
+        onView((withId(R.id.spinner))).perform(click());
+        onData(allOf(is(instanceOf(String.class)),
+                is("Gasóleo Premium"))).inRoot(isPlatformPopup()).perform(click());
+        onView(withId(R.id.spinner)).check(matches(withSpinnerText(containsString("Gasóleo Premium"))));
 
     }
+
 
     @Test
     public void gasoleoA_Test() {
 
         // Se selecciona el segundo tipo de combustible que se corresponde con Gasolina 95
-        onView(withText(arrayOperaciones[0])).perform(click());
+        onData(allOf(is(instanceOf(String.class)),
+                is("Gasóleo A"))).inRoot(isPlatformPopup()).perform(click());
 
         // Se pulsa el botón Aceptar dentro del menú desplegable
         onView(withText("Aceptar")).perform(click());
@@ -102,7 +124,8 @@ public class BuscarGasolinerasPorUnTipoDeCombustibleUITest {
     public void gasolina95_Test() {
 
         // Se selecciona el segundo tipo de combustible que se corresponde con Gasolina 95
-        onView(withText(arrayOperaciones[1])).perform(click());
+        onData(allOf(is(instanceOf(String.class)),
+                is("Gasolina 95"))).inRoot(isPlatformPopup()).perform(click());
 
         onView(withText("Aceptar")).perform(click());
 
@@ -118,7 +141,8 @@ public class BuscarGasolinerasPorUnTipoDeCombustibleUITest {
     public void gasolina98_Test() {
 
         // Se selecciona el segundo tipo de combustible que se corresponde con Gasolina 98
-        onView(withText(arrayOperaciones[2])).perform(click());
+        onData(allOf(is(instanceOf(String.class)),
+                is("Gasolina 98"))).inRoot(isPlatformPopup()).perform(click());
 
         onView(withText("Aceptar")).perform(click());
 
@@ -134,7 +158,8 @@ public class BuscarGasolinerasPorUnTipoDeCombustibleUITest {
     public void biodiésel_Test() {
 
         // Se selecciona el segundo tipo de combustible que se corresponde con Biodiésel
-        onView(withText(arrayOperaciones[3])).perform(click());
+        onData(allOf(is(instanceOf(String.class)),
+                is("Biodiésel"))).inRoot(isPlatformPopup()).perform(click());
 
         onView(withText("Aceptar")).perform(click());
 
@@ -150,7 +175,8 @@ public class BuscarGasolinerasPorUnTipoDeCombustibleUITest {
     public void gasóleoPremium_Test() {
 
         // Se selecciona el segundo tipo de combustible que se corresponde con Gasóleo Premium
-        onView(withText(arrayOperaciones[4])).perform(click());
+        onData(allOf(is(instanceOf(String.class)),
+                is("Gasóleo Premium"))).inRoot(isPlatformPopup()).perform(click());
 
         onView(withText("Aceptar")).perform(click());
 
@@ -161,5 +187,6 @@ public class BuscarGasolinerasPorUnTipoDeCombustibleUITest {
                 .check(matches(withText("Gasóleo Premium")));
 
     }
+
 
 }

@@ -72,9 +72,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     final String biodiesel = "Biodiésel";
     final String gasoleoPremium = "Gasóleo Premium";
 
-    // Variable para saber que tipo de combustible esta seleccionado en Filtros
-    final int[] itemSeleccionado = {0};
-
     String ordenFiltro=gasoleoA; //Por defecto
     boolean esAsc = true; //Por defecto ascendente
 
@@ -172,23 +169,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             // Vista escondida del nuevo layout para los diferentes spinners a implementar para los filtros
             View mView = getLayoutInflater().inflate(R.layout.dialog_spinner, null);
 
-            // Set the dialog title
-            builder.setTitle("Filtros");
             final Spinner mSpinner = (Spinner) mView.findViewById(R.id.spinner);    // New spinner object
             // El spinner creado contiene todos los items del array de Strings "operacionesArray"
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this,
+            ArrayAdapter<String> adapterSpinner = new ArrayAdapter<String>(MainActivity.this,
                     android.R.layout.simple_spinner_item,
                     getResources().getStringArray(R.array.operacionesArray));
             // Al abrir el spinner la lista se abre hacia abajo
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            mSpinner.setAdapter(adapter);
-
-            final Spinner mSpinner2 = (Spinner) mView.findViewById(R.id.spinner2);    // New spinner object
-            ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(MainActivity.this,
-                    android.R.layout.simple_spinner_item,
-                    getResources().getStringArray(R.array.distanciasArray));
-            adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            mSpinner2.setAdapter(adapter2);
+            adapterSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            mSpinner.setAdapter(adapterSpinner);
 
             // Set the action buttons
             builder.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
@@ -199,13 +187,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     if (!mSpinner.getSelectedItem().toString().equalsIgnoreCase("Tipo de Combustible")) {
                         ordenFiltro = mSpinner.getSelectedItem().toString();
                     }
-                    if (!mSpinner2.getSelectedItem().toString().equalsIgnoreCase("Distancia")) {
-                        Toast.makeText(MainActivity.this,
-                                mSpinner2.getSelectedItem().toString(),
-                                Toast.LENGTH_LONG)
-                                .show();
-                        dialog.dismiss();
-                    }
+
                     refresca();
                 }
             });
@@ -215,7 +197,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     dialog.dismiss();
                 }
             });
-
             builder.setView(mView);
             builder.create();
             builder.show();
@@ -407,6 +388,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         i--;
                     }
                     break;
+                default:
+                    break;
             }
             return i;
         }
@@ -470,6 +453,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     break;
                 case gasoleoPremium:
                     precio.setText(gasolinera.getGasoleoPremium() + getResources().getString(R.string.moneda));
+                    break;
+                default:
                     break;
             }
 

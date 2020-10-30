@@ -9,12 +9,16 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+
 import java.util.ArrayList;
 import java.util.List;
 import android.view.LayoutInflater;
@@ -68,13 +72,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     /*Variables para modificar filtros y ordenaciones*/
 
     //Posibles filtros para tipo de combustible
-    final String gasoleoA= "Gasóleo A";
+    final String gasoleoA = "Gasóleo A";
     final String gasolina95 = "Gasolina 95";
     final String gasolina98 = "Gasolina 98";
     final String biodiesel = "Biodiésel";
     final String gasoleoPremium = "Gasóleo Premium";
 
     String tipoCombustible = gasoleoA; //Por defecto
+
+    //orden ascendente por defecto
+    final String[] buttonString = {"Precio (asc)"};
+    final String[] id_imgOrdernPrecio = {"flecha_arriba"};
+    // Variable para saber que tipo de combustible esta seleccionado en Filtros
+    final int[] itemSeleccionado = {0};
+
+
     boolean esAsc = true; //Por defecto ascendente
 
     Activity ac = this;
@@ -82,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     /**
      * onCreate
-     *
+     * <p>
      * Crea los elementos que conforman la actividad
      *
      * @param savedInstanceState savedInstanceState
@@ -96,11 +108,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         // Barra de progreso
         // https://materialdoc.com/components/progress/
-        progressBar = new ProgressBar(MainActivity.this,null,android.R.attr.progressBarStyleLarge);
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(100,100);
+        progressBar = new ProgressBar(MainActivity.this, null, android.R.attr.progressBarStyleLarge);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(100, 100);
         params.addRule(RelativeLayout.CENTER_IN_PARENT);
         RelativeLayout layout = findViewById(R.id.activity_precio_gasolina);
-        layout.addView(progressBar,params);
+        layout.addView(progressBar, params);
 
         // Muestra el logo en el actionBar
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -132,12 +144,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     /**
      * Menú action bar
-     *
+     * <p>
      * Redefine métodos para el uso de un menú de tipo action bar.
-     *
+     * <p>
      * onCreateOptionsMenu
      * Carga las opciones del menú a partir del fichero de recursos menu/menu.xml
-     *
+     * <p>
      * onOptionsItemSelected
      * Define las respuestas a las distintas opciones del menú
      */
@@ -149,19 +161,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId()==R.id.itemActualizar){
+        if (item.getItemId() == R.id.itemActualizar) {
             mSwipeRefreshLayout.setRefreshing(true);
             new CargaDatosGasolinerasTask(this).execute();
-        }
-        else if(item.getItemId()==R.id.itemInfo){
+        } else if (item.getItemId() == R.id.itemInfo) {
             Intent myIntent = new Intent(MainActivity.this, InfoActivity.class);
             MainActivity.this.startActivity(myIntent);
-            }
+        }
         return true;
     }
 
     public void onClick(View v) {
-        if(v.getId()==R.id.buttonFiltros) {
+
+        if (v.getId() == R.id.buttonFiltros) {
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
@@ -204,8 +216,67 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             builder.create();
             builder.show();
 
-        } else if(v.getId()==R.id.buttonOrden) {
+        } else if (v.getId() == R.id.buttonOrden) {
 
+
+            //comienzo de ordenar
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+            // Vista escondida del nuevo layout para los diferentes spinners a implementar para los filtros
+            View mView = getLayoutInflater().inflate(R.layout.ordenar_layout, null);
+
+
+            builder.setTitle("Ordenar");
+            final Button mb = (Button) mView.findViewById(R.id.buttonprecio);
+            final ImageView imgOrdenPrecio = mView.findViewById(R.id.iconoOrdenPrecio);
+
+            mb.setText(buttonString[0]);
+            imgOrdenPrecio.setImageResource(getResources().getIdentifier(id_imgOrdernPrecio[0],
+                    "drawable", getPackageName()));
+
+            final String[]  valorActualOrdenPrecio={"Precio (asc)"};
+            final String[]  valorActualIconoPrecio={"flecha_arriba"};
+            mb.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    valorActualOrdenPrecio[0] = buttonString[0];
+                    valorActualIconoPrecio[0] = id_imgOrdernPrecio[0];
+                    esAsc = !esAsc;
+                    if (esAsc) {
+                        id_imgOrdernPrecio[0] = "flecha_arriba";
+
+                        buttonString[0] = "Precio (asc)";
+                    } else {
+                        id_imgOrdernPrecio[0]="flecha_abajo";
+                        buttonString[0] = "Precio (des)";
+
+                    }
+                    imgOrdenPrecio.setImageResource(getResources().getIdentifier(id_imgOrdernPrecio[0],
+                            "drawable", getPackageName()));
+                    mb.setText(buttonString[0]);
+                }
+            });
+
+
+            builder.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int id) {
+                    refresca();
+                }
+            });
+
+            builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int id) {
+                    id_imgOrdernPrecio[0]=valorActualIconoPrecio[0];
+                    buttonString[0]=valorActualOrdenPrecio[0];
+                    esAsc = !esAsc;
+                    dialog.dismiss();
+                }
+            });
+            builder.setView(mView);
+            builder.create();
+            builder.show();
         }
     }
 
@@ -218,17 +289,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     /**
      * CargaDatosGasolinerasTask
-     *
+     * <p>
      * Tarea asincrona para obtener los datos de las gasolineras
      * en segundo plano.
-     *
+     * <p>
      * Redefinimos varios métodos que se ejecutan en el siguiente orden:
      * onPreExecute: activamos el dialogo de progreso
      * doInBackground: solicitamos que el presenter cargue los datos
      * onPostExecute: desactiva el dialogo de progreso,
-     *    muestra las gasolineras en formato lista (a partir de un adapter)
-     *    y define la acción al realizar al seleccionar alguna de ellas
-     *
+     * muestra las gasolineras en formato lista (a partir de un adapter)
+     * y define la acción al realizar al seleccionar alguna de ellas
+     * <p>
      * http://www.sgoliver.net/blog/tareas-en-segundo-plano-en-android-i-thread-y-asynctask/
      */
     private class CargaDatosGasolinerasTask extends AsyncTask<Void, Void, Boolean> {
@@ -237,6 +308,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         /**
          * Constructor de la tarea asincrona
+         *
          * @param activity
          */
         public CargaDatosGasolinerasTask(Activity activity) {
@@ -245,7 +317,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         /**
          * onPreExecute
-         *
+         * <p>
          * Metodo ejecutado de forma previa a la ejecucion de la tarea definida en el metodo doInBackground()
          * Muestra un diálogo de progreso
          */
@@ -256,9 +328,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         /**
          * doInBackground
-         *
+         * <p>
          * Tarea ejecutada en segundo plano
          * Llama al presenter para que lance el método de carga de los datos de las gasolineras
+         *
          * @param params
          * @return boolean
          */
@@ -269,7 +342,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         /**
          * onPostExecute
-         *
+         * <p>
          * Se ejecuta al finalizar doInBackground
          * Oculta el diálogo de progreso.
          * Muestra en una lista los datos de las gasolineras cargadas,
@@ -294,55 +367,44 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 // Definimos el array adapter
                 adapter = new GasolineraArrayAdapter(activity, 0, (ArrayList<Gasolinera>) presenterGasolineras.getGasolineras());
                 //Recorrer el array adapter para que no muestre las gasolineras con precios negativos
-                for(int i=0;i<adapter.getCount();i++) {
+                for (int i = 0; i < adapter.getCount(); i++) {
                     i = eliminarGasolinerasConPrecioNegativo(i);
                 }
 
+                //ordenacion
+                ArrayList<Gasolinera> adapter2 = new ArrayList<Gasolinera>();
+                for (int i = 0; i < adapter.getCount(); i++) {
+                    adapter2.add(i, adapter.getItem(i));
+                }
                 //Recorrer el array adapter para que no muestre las gasolineras con precios negativos
-                for(int i=0;i<adapter.getCount();i++) {
-                    switch(opcionFiltro) {
-                        case "Gasóleo A":
-                            if(adapter.getItem(i).getGasoleoA()==-1.0) {
-                                Gasolinera g = adapter.getItem(i);
-                                adapter.remove(g);
-                                adapter.notifyDataSetChanged();
-                                i--;
+                for (int i = 0; i < adapter2.size(); i++) {
+                    for (int j = 0; j < adapter2.size() - 1; j++) {
+                        if (esAsc) {
+                            if (adapter2.get(j).getGasoleoA() > adapter2.get(j + 1).getGasoleoA()) {
+                                Gasolinera tmp = adapter2.get(j + 1);
+                                adapter2.remove(tmp);
+                                adapter2.add(j, tmp);
                             }
-                            break;
-                        case "Gasolina 95":
-                            if(adapter.getItem(i).getGasolina95()==-1.0) {
-                                Gasolinera g = adapter.getItem(i);
-                                adapter.remove(g);
-                                adapter.notifyDataSetChanged();
-                                i--;
+
+                        } else {
+
+                            if (adapter2.get(j).getGasoleoA() < adapter2.get(j + 1).getGasoleoA()) {
+                                Gasolinera tmp = adapter2.get(j + 1);
+                                adapter2.remove(tmp);
+                                adapter2.add(j, tmp);
                             }
-                            break;
-                        case "Gasolina 98":
-                            if(adapter.getItem(i).getGasolina98()==-1.0) {
-                                Gasolinera g = adapter.getItem(i);
-                                adapter.remove(g);
-                                adapter.notifyDataSetChanged();
-                                i--;
-                            }
-                            break;
-                        case "Biodiésel":
-                            if(adapter.getItem(i).getBiodiesel()==-1.0) {
-                                Gasolinera g = adapter.getItem(i);
-                                adapter.remove(g);
-                                adapter.notifyDataSetChanged();
-                                i--;
-                            }
-                            break;
-                        case "Gasóleo Premium":
-                            if(adapter.getItem(i).getGasoleoPremium()==-1.0) {
-                                Gasolinera g = adapter.getItem(i);
-                                adapter.remove(g);
-                                adapter.notifyDataSetChanged();
-                                i--;
-                            }
-                            break;
+
+                        }
                     }
                 }
+                adapter.clear();
+                adapter.notifyDataSetChanged();
+                for (int i = 0; i < adapter2.size(); i++) {
+
+                    adapter.add(adapter2.get(i));
+                    adapter.notifyDataSetChanged();
+                }
+                adapter.notifyDataSetChanged();
 
                 // Obtenemos la vista de la lista
                 listViewGasolineras = findViewById(R.id.listViewGasolineras);
@@ -359,11 +421,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             } else {
                 // error en la obtencion de datos desde el servidor
-                toast = Toast.makeText(getApplicationContext(), getResources().getString(R.string.datos_no_obtenidos), Toast.LENGTH_LONG);
+                if (isNetworkConnected()) {
+                    toast = Toast.makeText(getApplicationContext(), getResources().getString(R.string.datos_no_obtenidos), Toast.LENGTH_LONG);
+                }
+                else{
+                    toast=Toast.makeText(getApplicationContext(),"No hay conexión a internet",Toast.LENGTH_LONG);
+                }
+
             }
+
 
             // Muestra el mensaje del resultado de la operación en un toast
             if (toast != null) {
+
                 toast.show();
             }
 
@@ -375,31 +445,39 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
              * Para poder pasar un objeto Gasolinera mediante una intent con putExtra / getExtra,
              * hemos tenido que hacer que el objeto Gasolinera implemente la interfaz Parcelable
              */
-            listViewGasolineras.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                public void onItemClick(AdapterView<?> a, View v, int position, long id) {
+            try {
+                listViewGasolineras.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
-                    /* Obtengo el elemento directamente de su posicion,
-                     * ya que es la misma que ocupa en la lista
-                     * Alternativa 1: a partir de posicion obtener algun atributo int opcionSeleccionada = ((Gasolinera) a.getItemAtPosition(position)).getIdeess();
-                     * Alternativa 2: a partir de la vista obtener algun atributo String opcionSeleccionada = ((TextView)v.findViewById(R.id.textViewRotulo)).getText().toString();
-                     */
-                    Intent myIntent = new Intent(MainActivity.this, DetailActivity.class);
-                    myIntent.putExtra(getResources().getString(R.string.pasoDatosGasolinera),
-                            presenterGasolineras.getGasolineras().get(position));
-                    MainActivity.this.startActivity(myIntent);
+                    public void onItemClick(AdapterView<?> a, View v, int position, long id) {
 
-                }
-            });
+                        /* Obtengo el elemento directamente de su posicion,
+                         * ya que es la misma que ocupa en la lista
+                         * Alternativa 1: a partir de posicion obtener algun atributo int opcionSeleccionada = ((Gasolinera) a.getItemAtPosition(position)).getIdeess();
+                         * Alternativa 2: a partir de la vista obtener algun atributo String opcionSeleccionada = ((TextView)v.findViewById(R.id.textViewRotulo)).getText().toString();
+                         */
+                        Intent myIntent = new Intent(MainActivity.this, DetailActivity.class);
+                        myIntent.putExtra(getResources().getString(R.string.pasoDatosGasolinera),
+                                presenterGasolineras.getGasolineras().get(position));
+                        MainActivity.this.startActivity(myIntent);
+
+                    }
+                });
+            }
+            catch(Exception e1){
+                e1.getStackTrace();
+            }
+            ////////////////////////////////////////////////////////////////////////////////////////////////////
         }
 
         /**
          * Elimina la gasolinera en la posicion indicada si su precio es negativo
+         *
          * @param i posicion de la gasolinera que se quiere comprobar
          */
         private int eliminarGasolinerasConPrecioNegativo(int i){
             switch(tipoCombustible) {
                 case gasoleoA:
-                    if(adapter.getItem(i).getGasoleoA()<0) {
+                    if (adapter.getItem(i).getGasoleoA() < 0) {
                         Gasolinera g = adapter.getItem(i);
                         adapter.remove(g);
                         adapter.notifyDataSetChanged();
@@ -407,7 +485,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                     break;
                 case gasolina95:
-                    if(adapter.getItem(i).getGasolina95()<0) {
+                    if (adapter.getItem(i).getGasolina95() < 0) {
                         Gasolinera g = adapter.getItem(i);
                         adapter.remove(g);
                         adapter.notifyDataSetChanged();
@@ -415,7 +493,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                     break;
                 case gasolina98:
-                    if(adapter.getItem(i).getGasolina98()<0) {
+                    if (adapter.getItem(i).getGasolina98() < 0) {
                         Gasolinera g = adapter.getItem(i);
                         adapter.remove(g);
                         adapter.notifyDataSetChanged();
@@ -423,7 +501,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                     break;
                 case biodiesel:
-                    if(adapter.getItem(i).getBiodiesel()<0) {
+                    if (adapter.getItem(i).getBiodiesel() < 0) {
                         Gasolinera g = adapter.getItem(i);
                         adapter.remove(g);
                         adapter.notifyDataSetChanged();
@@ -431,7 +509,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                     break;
                 case gasoleoPremium:
-                    if(adapter.getItem(i).getGasoleoPremium()<0) {
+                    if (adapter.getItem(i).getGasoleoPremium() < 0) {
                         Gasolinera g = adapter.getItem(i);
                         adapter.remove(g);
                         adapter.notifyDataSetChanged();
@@ -546,6 +624,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             return view;
         }
+    }
+    private boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
     }
 
 }

@@ -74,7 +74,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     final String gasolina98 = "Gasolina 98";
     final String biodiesel = "Biodiésel";
     final String gasoleoPremium = "Gasóleo Premium";
+    //orden ascendente por defecto
     final String[] buttonString = {"Precio (asc)"};
+    final String[] id_imgOrdernPrecio = {"flecha_arriba"};
     // Variable para saber que tipo de combustible esta seleccionado en Filtros
     final int[] itemSeleccionado = {0};
 
@@ -235,18 +237,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             builder.setTitle("Ordenar");
             final Button mb = (Button) mView.findViewById(R.id.buttonprecio);
+            final ImageView imgOrdenPrecio = mView.findViewById(R.id.iconoOrdenPrecio);
 
             mb.setText(buttonString[0]);
+            imgOrdenPrecio.setImageResource(getResources().getIdentifier(id_imgOrdernPrecio[0],
+                    "drawable", getPackageName()));
+
             mb.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     esAsc = !esAsc;
                     if (esAsc) {
+                        id_imgOrdernPrecio[0] = "flecha_arriba";
+
                         buttonString[0] = "Precio (asc)";
                     } else {
+                        id_imgOrdernPrecio[0]="flecha_abajo";
                         buttonString[0] = "Precio (des)";
 
                     }
+                    imgOrdenPrecio.setImageResource(getResources().getIdentifier(id_imgOrdernPrecio[0],
+                            "drawable", getPackageName()));
                     mb.setText(buttonString[0]);
                 }
             });
@@ -387,7 +398,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         }
                     }
                 }
-                System.out.println("jjjjjjjjjjjj" + adapter2.size());
                 adapter.clear();
                 adapter.notifyDataSetChanged();
                 for (int i = 0; i < adapter2.size(); i++) {
@@ -395,7 +405,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     adapter.add(adapter2.get(i));
                     adapter.notifyDataSetChanged();
                 }
-                System.out.println(adapter.getCount() + "dddddddddddddddddddddddddddddddd");
                 adapter.notifyDataSetChanged();
                 // Obtenemos la vista de la lista
                 listViewGasolineras = findViewById(R.id.listViewGasolineras);

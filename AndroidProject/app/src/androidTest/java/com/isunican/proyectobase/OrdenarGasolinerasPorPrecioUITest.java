@@ -1,9 +1,10 @@
 package com.isunican.proyectobase;
 
+import android.content.Context;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import androidx.test.espresso.ViewAssertion;
+import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.runner.AndroidJUnit4;
 
@@ -17,7 +18,6 @@ import static org.hamcrest.Matchers.anything;
 import com.isunican.proyectobase.Model.Gasolinera;
 import com.isunican.proyectobase.Views.MainActivity;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -41,7 +41,8 @@ public class OrdenarGasolinerasPorPrecioUITest {
     public void setUp() {
         //clickamos en la opcion de ordenar gasolineras
         onView(withId(R.id.buttonOrden)).perform(click());
-
+        // Context of the app under test.
+        Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
         ltmp = mActivityTestRule.getActivity().findViewById(R.id.listViewGasolineras);
         gBarata = ((ArrayAdapter<Gasolinera>) ltmp.getAdapter()).getItem(0);
         int lng = ltmp.getAdapter().getCount();
@@ -57,33 +58,28 @@ public class OrdenarGasolinerasPorPrecioUITest {
         onView(withId(R.id.buttonprecio)).check(matches(withText("Precio (asc)")));
 
         Gasolinera tmp1 = ((ArrayAdapter<Gasolinera>) ltmp.getAdapter()).getItem(1);
-        assertTrue(tmp1.getGasoleoA() > gBarata.getGasoleoA());
+        assertTrue(tmp1.getGasoleoA() >= gBarata.getGasoleoA());
         Gasolinera tmp2 = ((ArrayAdapter<Gasolinera>) ltmp.getAdapter()).getItem(2);
-        assertTrue(tmp2.getGasoleoA() > tmp1.getGasoleoA());
+        assertTrue(tmp2.getGasoleoA() >= tmp1.getGasoleoA());
 
 
         onView(withId(R.id.buttonprecio)).perform(click());
         onView(withId(R.id.buttonprecio)).check(matches(withText("Precio (des)")));
 
          tmp1 = ((ArrayAdapter<Gasolinera>) ltmp.getAdapter()).getItem(1);
-        assertTrue(tmp1.getGasoleoA() < gCara.getGasoleoA());
+        assertTrue(tmp1.getGasoleoA() <= gCara.getGasoleoA());
          tmp2 = ((ArrayAdapter<Gasolinera>) ltmp.getAdapter()).getItem(2);
-       // assertTrue(tmp2.getGasoleoA() < tmp1.getGasoleoA());
+       assertTrue(tmp2.getGasoleoA() <= tmp1.getGasoleoA());
 
-        onData(anything())
-                .inAdapterView(withId(R.id.listViewGasolineras))
-                .atPosition(0)
-                .onChildView(withId(R.id.textViewGasoleoA))
-                .check(matches(withText(gCara.getGasoleoA()+ "€")));
+
+        String precioCara= gCara.getGasoleoA()+"€";
+        onData(anything()).inAdapterView(withId(R.id.listViewGasolineras)).atPosition(0).onChildView(withId(R.id.textViewGasoleoA)).check(matches(withText(precioCara)));
 
 
         onView(withId(R.id.buttonprecio)).perform(click());
         onView(withId(R.id.buttonprecio)).check(matches(withText("Precio (asc)")));
-        onData(anything())
-                .inAdapterView(withId(R.id.listViewGasolineras))
-                .atPosition(0)
-                .onChildView(withId(R.id.textViewGasoleoA))
-                .check(matches(withText(gBarata.getGasoleoA() + "€")));
+
+        onData(anything()).inAdapterView(withId(R.id.listViewGasolineras)).atPosition(0).onChildView(withId(R.id.textViewGasoleoA)).check(matches(withText(gBarata.getGasoleoA() + "€")));
 
     }
 }

@@ -21,16 +21,16 @@ public class GasolineraTest {
 
     @Test
     public void constructorGasolineraTest(){
-        assertEquals( g.getLocalidad(), "Torrelavega");
-        assertEquals( g.getProvincia(), "Cantabria");
-        assertEquals(g.getDireccion(), "Calle 1");
+        assertEquals("Torrelavega", g.getLocalidad());
+        assertEquals("Cantabria", g.getProvincia());
+        assertEquals("Calle 1", g.getDireccion());
 
-        assertTrue( g.getGasoleoA() == 0.94);
-        assertTrue( g.getGasolina95() == 1.06);
-        assertTrue( g.getGasolina98() ==1.07);
-        assertTrue( g.getGasoleoPremium() == 0.97);
-        assertTrue( g.getBiodiesel() == 1.26);
+        assertEquals(0.94, g.getGasoleoA(), 0.001);
+        assertEquals(1.06, g.getGasolina95(), 0.001);
+        assertEquals(1.07, g.getGasolina98(), 0.001);
+        assertEquals(0.97, g.getGasoleoPremium(), 0.001);
+        assertEquals(1.26, g.getBiodiesel(), 0.001);
 
-        assertEquals(g.getRotulo(), "CEPSA");
+        assertEquals("CEPSA", g.getRotulo());
     }
 }

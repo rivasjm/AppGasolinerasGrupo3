@@ -66,13 +66,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     /*Variables para modificar filtros y ordenaciones*/
 
     //Posibles filtros para tipo de combustible
-    final String gasoleoA= "Gasóleo A";
-    final String gasolina95 = "Gasolina 95";
-    final String gasolina98 = "Gasolina 98";
-    final String biodiesel = "Biodiésel";
-    final String gasoleoPremium = "Gasóleo Premium";
+    static final String GASOLEO_A = "Gasóleo A";
+    static final String GASOLINA_95 = "Gasolina 95";
+    static final String GASOLINA_98 = "Gasolina 98";
+    static final String BIODIESEL = "Biodiésel";
+    static final String GASOLEO_PREMIUM = "Gasóleo Premium";
 
-    String ordenFiltro=gasoleoA; //Por defecto
+    String ordenFiltro= GASOLEO_A; //Por defecto
     boolean esAsc = true; //Por defecto ascendente
 
     Activity ac = this;
@@ -201,8 +201,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             builder.create();
             builder.show();
 
-        } else if(v.getId()==R.id.buttonOrden) {
-
         }
     }
 
@@ -330,8 +328,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                     /* Obtengo el elemento directamente de su posicion,
                      * ya que es la misma que ocupa en la lista
-                     * Alternativa 1: a partir de posicion obtener algun atributo int opcionSeleccionada = ((Gasolinera) a.getItemAtPosition(position)).getIdeess();
-                     * Alternativa 2: a partir de la vista obtener algun atributo String opcionSeleccionada = ((TextView)v.findViewById(R.id.textViewRotulo)).getText().toString();
                      */
                     Intent myIntent = new Intent(MainActivity.this, DetailActivity.class);
                     myIntent.putExtra(getResources().getString(R.string.pasoDatosGasolinera),
@@ -348,7 +344,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
          */
         private int eliminarGasolinerasConPrecioNegativo(int i){
             switch(ordenFiltro) {
-                case gasoleoA:
+                case GASOLEO_A:
                     if(adapter.getItem(i).getGasoleoA()<0) {
                         Gasolinera g = adapter.getItem(i);
                         adapter.remove(g);
@@ -356,7 +352,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         i--;
                     }
                     break;
-                case gasolina95:
+                case GASOLINA_95:
                     if(adapter.getItem(i).getGasolina95()<0) {
                         Gasolinera g = adapter.getItem(i);
                         adapter.remove(g);
@@ -364,7 +360,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         i--;
                     }
                     break;
-                case gasolina98:
+                case GASOLINA_98:
                     if(adapter.getItem(i).getGasolina98()<0) {
                         Gasolinera g = adapter.getItem(i);
                         adapter.remove(g);
@@ -372,7 +368,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         i--;
                     }
                     break;
-                case biodiesel:
+                case BIODIESEL:
                     if(adapter.getItem(i).getBiodiesel()<0) {
                         Gasolinera g = adapter.getItem(i);
                         adapter.remove(g);
@@ -380,7 +376,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         i--;
                     }
                     break;
-                case gasoleoPremium:
+                case GASOLEO_PREMIUM:
                     if(adapter.getItem(i).getGasoleoPremium()<0) {
                         Gasolinera g = adapter.getItem(i);
                         adapter.remove(g);
@@ -439,19 +435,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             direccion.setText(gasolinera.getDireccion());
             labelGasolina.setText(ordenFiltro);
             switch(ordenFiltro) {
-                case gasoleoA:
+                case GASOLEO_A:
                     precio.setText(gasolinera.getGasoleoA() + getResources().getString(R.string.moneda));
                     break;
-                case gasolina95:
+                case GASOLINA_95:
                     precio.setText(gasolinera.getGasolina95() + getResources().getString(R.string.moneda));
                     break;
-                case gasolina98:
+                case GASOLINA_98:
                     precio.setText(gasolinera.getGasolina98() + getResources().getString(R.string.moneda));
                     break;
-                case biodiesel:
+                case BIODIESEL:
                     precio.setText(gasolinera.getBiodiesel() + getResources().getString(R.string.moneda));
                     break;
-                case gasoleoPremium:
+                case GASOLEO_PREMIUM:
                     precio.setText(gasolinera.getGasoleoPremium() + getResources().getString(R.string.moneda));
                     break;
                 default:

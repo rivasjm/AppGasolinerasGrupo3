@@ -120,7 +120,6 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
                 != PackageManager.PERMISSION_GRANTED
                 && ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
             //    ActivityCompat#requestPermissions
             // here to request the missing permissions, and then overriding
             //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
@@ -152,24 +151,5 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
         mapDir.onLowMemory();
     }
 
-    /*
-    public void onRequestPermissionsResults(int requestCode, String[] permissions,
-                                            int[] grantResults) {
-        switch (requestCode) {
-            case 99:
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0 &&
-                        grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // Permission is granted. Continue the action or workflow
-                    // in your app.
-                }  //else {
-                    // Explain to the user that the feature is unavailable because
-                    // the features requires a permission that the user has denied.
-                    // At the same time, respect the user's decision. Don't link to
-                    // system settings in an effort to convince the user to change
-                    // their decision.
-               // }
-                return;
-    }*/
 }
 

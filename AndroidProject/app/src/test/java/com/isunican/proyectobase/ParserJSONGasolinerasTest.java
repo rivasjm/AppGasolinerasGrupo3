@@ -65,15 +65,15 @@ public class ParserJSONGasolinerasTest {
             fail();
         }
 
-        assertEquals(g.getLocalidad(), "Santander");
-        assertEquals(g.getProvincia(), "Cantabria");
-        assertEquals(g.getDireccion(), "Calle 001");
+        assertEquals("Santander", g.getLocalidad());
+        assertEquals("Cantabria", g.getProvincia());
+        assertEquals("Calle 001", g.getDireccion());
 
-        assertTrue(g.getGasoleoA() == 0.95);
-        assertTrue(g.getGasolina95() == 1.01);
-        assertTrue(g.getGasolina98() == 1.03);
-        assertTrue(g.getGasoleoPremium() == 0.99);
-        assertTrue(g.getBiodiesel() == 1.11);
+        assertEquals(0.95, g.getGasoleoA(), 0.001);
+        assertEquals(1.01, g.getGasolina95(), 0.001);
+        assertEquals(1.03, g.getGasolina98(), 0.001);
+        assertEquals(0.99, g.getGasoleoPremium(), 0.001);
+        assertEquals(1.11, g.getBiodiesel(), 0.001);
 
         //caso donde el Json pasado no tiene formato correcto
         reader = new JsonReader(new StringReader(""));
@@ -94,25 +94,25 @@ public class ParserJSONGasolinerasTest {
             fail();
         }
 
-        assertEquals(gasolineras.get(0).getLocalidad(), "Torrelavega");
-        assertEquals(gasolineras.get(0).getProvincia(), "Cantabria");
-        assertEquals(gasolineras.get(0).getDireccion(), "Calle 002");
+        assertEquals("Torrelavega", gasolineras.get(0).getLocalidad());
+        assertEquals("Cantabria", gasolineras.get(0).getProvincia());
+        assertEquals("Calle 002", gasolineras.get(0).getDireccion());
 
-        assertTrue(gasolineras.get(0).getGasoleoA() == 0.95);
-        assertTrue(gasolineras.get(0).getGasolina95() == 1.01);
-        assertTrue(gasolineras.get(0).getGasolina98() == 1.03);
-        assertTrue(gasolineras.get(0).getGasoleoPremium() == 0.99);
-        assertTrue(gasolineras.get(0).getBiodiesel() == 1.11);
+        assertEquals(0.95, gasolineras.get(0).getGasoleoA(), 0.001);
+        assertEquals(1.01, gasolineras.get(0).getGasolina95(), 0.001);
+        assertEquals(1.03, gasolineras.get(0).getGasolina98(), 0.001);
+        assertEquals(0.99, gasolineras.get(0).getGasoleoPremium(), 0.001);
+        assertEquals(1.11, gasolineras.get(0).getBiodiesel(), 0.001);
 
-        assertEquals(gasolineras.get(1).getLocalidad(), "Castro Urdiales");
-        assertEquals(gasolineras.get(1).getProvincia(), "Cantabria");
-        assertEquals(gasolineras.get(1).getDireccion(), "Calle 003");
+        assertEquals("Castro Urdiales", gasolineras.get(1).getLocalidad());
+        assertEquals("Cantabria", gasolineras.get(1).getProvincia());
+        assertEquals("Calle 003", gasolineras.get(1).getDireccion());
 
-        assertTrue(gasolineras.get(1).getGasoleoA() == 0.92);
-        assertTrue(gasolineras.get(1).getGasolina95() == 1.10);
-        assertTrue(gasolineras.get(1).getGasolina98() == 1.13);
-        assertTrue(gasolineras.get(1).getGasoleoPremium() == 0.97);
-        assertTrue(gasolineras.get(1).getBiodiesel() == 1.19);
+        assertEquals(0.92, gasolineras.get(1).getGasoleoA(), 0.001);
+        assertEquals(1.10, gasolineras.get(1).getGasolina95(), 0.001);
+        assertEquals(1.13, gasolineras.get(1).getGasolina98(), 0.001);
+        assertEquals(0.97, gasolineras.get(1).getGasoleoPremium(), 0.001);
+        assertEquals(1.19, gasolineras.get(1).getBiodiesel(), 0.001);
 
 
         //caso donde el Json pasado no tiene formato correcto

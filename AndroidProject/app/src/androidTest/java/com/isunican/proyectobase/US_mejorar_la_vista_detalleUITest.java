@@ -1,5 +1,5 @@
 package com.isunican.proyectobase;
-
+/*
 import android.content.Context;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -20,27 +20,21 @@ import com.isunican.proyectobase.Views.DetailActivity;
 import com.isunican.proyectobase.Views.MainActivity;
 
 import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
-import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
-import static androidx.test.espresso.action.ViewActions.replaceText;
+
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.Matchers.allOf;
-import static org.hamcrest.Matchers.is;
+
 @RunWith(AndroidJUnit4.class)
 public class US_mejorar_la_vista_detalleUITest {
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
     @Test
     public void gasolineraTest(){
-
 
         onData(anything()).inAdapterView(withId(R.id.listViewGasolineras)).atPosition(0).perform(click());
         ListView ltmp = mActivityTestRule.getActivity().findViewById(R.id.listViewGasolineras);
@@ -50,7 +44,5 @@ public class US_mejorar_la_vista_detalleUITest {
         onView(withId(R.id.txtPrecioGasoil)).check(matches(withText("Diesel "+g.getGasoleoA()+"€")));
         onView(withId(R.id.txtPrecioGasolina)).check(matches(withText("Gasolina "+g.getGasolina95()+"€")));
 
-
-
     }
-}
+}*/

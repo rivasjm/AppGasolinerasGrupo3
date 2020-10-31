@@ -16,15 +16,17 @@ import java.net.URL;
 
 public class RemoteFetch {
 
+    private RemoteFetch() { throw new IllegalStateException("RemoteFetch class"); }
+
     /**
      * cargaBufferDesdeURL
      *
      * Toma la direccion pasada como parámetro y descarga los datos,
      * almacenándolos en el atributo stream
      *
-     * @param in String Dirección web con los datos a descargar
+     * @param direccion String Dirección web con los datos a descargar
      * @return void
-     * @throws IOException
+     * @throws IOException exception if the method is wrong
      */
     public static BufferedInputStream cargaBufferDesdeURL(final String direccion) throws IOException {
         URL url = new URL(direccion);

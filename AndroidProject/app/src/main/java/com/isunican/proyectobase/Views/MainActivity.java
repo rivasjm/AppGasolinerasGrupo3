@@ -49,6 +49,10 @@ import android.widget.Toast;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
 
+    public static final String PRECIO_ASC = "Precio (asc)";
+    public static final String FLECHA_ARRIBA = "flecha_arriba";
+    public static final String DRAWABLE = "drawable";
+    
     PresenterGasolineras presenterGasolineras;
 
     // Vista de lista y adaptador para cargar datos en ella
@@ -72,20 +76,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     /*Variables para modificar filtros y ordenaciones*/
 
     //Posibles filtros para tipo de combustible
-    final String gasoleoA = "Gasóleo A";
-    final String gasolina95 = "Gasolina 95";
-    final String gasolina98 = "Gasolina 98";
-    final String biodiesel = "Biodiésel";
-    final String gasoleoPremium = "Gasóleo Premium";
+    static final String GASOLEO_A = "Gasóleo A";
+    static final String GASOLINA_95 = "Gasolina 95";
+    static final String GASOLINA_98 = "Gasolina 98";
+    static final String BIODIESEL = "Biodiésel";
+    static final String GASOLEO_PREMIUM = "Gasóleo Premium";
 
-    String tipoCombustible = gasoleoA; //Por defecto
+    String tipoCombustible = GASOLEO_A; //Por defecto
 
     //orden ascendente por defecto
-    final String[] buttonString = {"Precio (asc)"};
-    final String[] id_imgOrdernPrecio = {"flecha_arriba"};
+    final String[] buttonString = {PRECIO_ASC};
+    final String[] idImgOrdernPrecio = {FLECHA_ARRIBA};
     // Variable para saber que tipo de combustible esta seleccionado en Filtros
     final int[] itemSeleccionado = {0};
-
 
     boolean esAsc = true; //Por defecto ascendente
 
@@ -231,28 +234,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             final ImageView imgOrdenPrecio = mView.findViewById(R.id.iconoOrdenPrecio);
 
             mb.setText(buttonString[0]);
-            imgOrdenPrecio.setImageResource(getResources().getIdentifier(id_imgOrdernPrecio[0],
-                    "drawable", getPackageName()));
+            imgOrdenPrecio.setImageResource(getResources().getIdentifier(idImgOrdernPrecio[0],
+                    DRAWABLE, getPackageName()));
 
-            final String[]  valorActualOrdenPrecio={"Precio (asc)"};
-            final String[]  valorActualIconoPrecio={"flecha_arriba"};
+            final String[]  valorActualOrdenPrecio={PRECIO_ASC};
+            final String[]  valorActualIconoPrecio={FLECHA_ARRIBA};
             mb.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     valorActualOrdenPrecio[0] = buttonString[0];
-                    valorActualIconoPrecio[0] = id_imgOrdernPrecio[0];
+                    valorActualIconoPrecio[0] = idImgOrdernPrecio[0];
                     esAsc = !esAsc;
                     if (esAsc) {
-                        id_imgOrdernPrecio[0] = "flecha_arriba";
+                        idImgOrdernPrecio[0] = FLECHA_ARRIBA;
 
-                        buttonString[0] = "Precio (asc)";
+                        buttonString[0] = PRECIO_ASC;
                     } else {
-                        id_imgOrdernPrecio[0]="flecha_abajo";
+                        idImgOrdernPrecio[0]="flecha_abajo";
                         buttonString[0] = "Precio (des)";
 
                     }
-                    imgOrdenPrecio.setImageResource(getResources().getIdentifier(id_imgOrdernPrecio[0],
-                            "drawable", getPackageName()));
+                    imgOrdenPrecio.setImageResource(getResources().getIdentifier(idImgOrdernPrecio[0],
+                            DRAWABLE, getPackageName()));
                     mb.setText(buttonString[0]);
                 }
             });
@@ -268,7 +271,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int id) {
-                    id_imgOrdernPrecio[0]=valorActualIconoPrecio[0];
+                    idImgOrdernPrecio[0]=valorActualIconoPrecio[0];
                     buttonString[0]=valorActualOrdenPrecio[0];
                     esAsc = !esAsc;
                     dialog.dismiss();
@@ -277,6 +280,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             builder.setView(mView);
             builder.create();
             builder.show();
+
         }
     }
 
@@ -445,6 +449,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
              * Para poder pasar un objeto Gasolinera mediante una intent con putExtra / getExtra,
              * hemos tenido que hacer que el objeto Gasolinera implemente la interfaz Parcelable
              */
+
             try {
                 listViewGasolineras.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -452,8 +457,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                         /* Obtengo el elemento directamente de su posicion,
                          * ya que es la misma que ocupa en la lista
-                         * Alternativa 1: a partir de posicion obtener algun atributo int opcionSeleccionada = ((Gasolinera) a.getItemAtPosition(position)).getIdeess();
-                         * Alternativa 2: a partir de la vista obtener algun atributo String opcionSeleccionada = ((TextView)v.findViewById(R.id.textViewRotulo)).getText().toString();
                          */
                         Intent myIntent = new Intent(MainActivity.this, DetailActivity.class);
                         myIntent.putExtra(getResources().getString(R.string.pasoDatosGasolinera),
@@ -476,7 +479,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
          */
         private int eliminarGasolinerasConPrecioNegativo(int i){
             switch(tipoCombustible) {
-                case gasoleoA:
+                case GASOLEO_A:
                     if (adapter.getItem(i).getGasoleoA() < 0) {
                         Gasolinera g = adapter.getItem(i);
                         adapter.remove(g);
@@ -484,15 +487,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         i--;
                     }
                     break;
-                case gasolina95:
+
+                case GASOLINA_95:
                     if (adapter.getItem(i).getGasolina95() < 0) {
+
                         Gasolinera g = adapter.getItem(i);
                         adapter.remove(g);
                         adapter.notifyDataSetChanged();
                         i--;
                     }
                     break;
-                case gasolina98:
+                case GASOLINA_98:
                     if (adapter.getItem(i).getGasolina98() < 0) {
                         Gasolinera g = adapter.getItem(i);
                         adapter.remove(g);
@@ -500,7 +505,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         i--;
                     }
                     break;
-                case biodiesel:
+                case BIODIESEL:
                     if (adapter.getItem(i).getBiodiesel() < 0) {
                         Gasolinera g = adapter.getItem(i);
                         adapter.remove(g);
@@ -508,8 +513,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         i--;
                     }
                     break;
-                case gasoleoPremium:
+
+                case GASOLEO_PREMIUM:
                     if (adapter.getItem(i).getGasoleoPremium() < 0) {
+
                         Gasolinera g = adapter.getItem(i);
                         adapter.remove(g);
                         adapter.notifyDataSetChanged();
@@ -565,44 +572,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             // Y carga los datos del item
             rotulo.setText(gasolinera.getRotulo());
             direccion.setText(gasolinera.getDireccion());
-
             labelGasolina.setText(tipoCombustible);
             switch(tipoCombustible) {
-                case gasoleoA:
+                case GASOLEO_A:
                     precio.setText(gasolinera.getGasoleoA() + getResources().getString(R.string.moneda));
                     break;
-                case gasolina95:
+                case GASOLINA_95:
                     precio.setText(gasolinera.getGasolina95() + getResources().getString(R.string.moneda));
                     break;
-                case gasolina98:
+                case GASOLINA_98:
                     precio.setText(gasolinera.getGasolina98() + getResources().getString(R.string.moneda));
                     break;
-                case biodiesel:
+                case BIODIESEL:
                     precio.setText(gasolinera.getBiodiesel() + getResources().getString(R.string.moneda));
                     break;
-                case gasoleoPremium:
+                case GASOLEO_PREMIUM:
                     precio.setText(gasolinera.getGasoleoPremium() + getResources().getString(R.string.moneda));
                     break;
                 default:
                     break;
             }
 
-
-            // carga icono
-            {
-                String rotuleImageID = gasolinera.getRotulo().toLowerCase();
-
-                // Tengo que protegerme ante el caso en el que el rotulo solo tiene digitos.
-                // En ese caso getIdentifier devuelve esos digitos en vez de 0.
-                int imageID = context.getResources().getIdentifier(rotuleImageID,
-                        "drawable", context.getPackageName());
-
-                if (imageID == 0 || TextUtils.isDigitsOnly(rotuleImageID)) {
-                    imageID = context.getResources().getIdentifier(getResources().getString(R.string.pordefecto),
-                            "drawable", context.getPackageName());
-                }
-                logo.setImageResource(imageID);
-            }
+            // Se carga el icono
+            cargaIcono(gasolinera, logo);
 
 
             // Si las dimensiones de la pantalla son menores
@@ -623,6 +615,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
 
             return view;
+        }
+
+        private void cargaIcono(Gasolinera gasolinera, ImageView logo) {
+            // carga icono
+
+            String rotuleImageID = gasolinera.getRotulo().toLowerCase();
+
+            // Tengo que protegerme ante el caso en el que el rotulo solo tiene digitos.
+            // En ese caso getIdentifier devuelve esos digitos en vez de 0.
+            int imageID = context.getResources().getIdentifier(rotuleImageID,
+                    DRAWABLE, context.getPackageName());
+
+            if (imageID == 0 || TextUtils.isDigitsOnly(rotuleImageID)) {
+                imageID = context.getResources().getIdentifier(getResources().getString(R.string.pordefecto),
+                        DRAWABLE, context.getPackageName());
+            }
+            logo.setImageResource(imageID);
+
         }
     }
     private boolean isNetworkConnected() {

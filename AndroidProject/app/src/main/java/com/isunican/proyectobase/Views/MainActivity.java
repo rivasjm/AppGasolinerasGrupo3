@@ -192,8 +192,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     // If the user does not select nothing, don't do anything
                     if (!mSpinner.getSelectedItem().toString().equalsIgnoreCase("Tipo de Combustible")) {
                         tipoCombustible = mSpinner.getSelectedItem().toString();
-                    }
 
+                    }
                     refresca();
                 }
             });
@@ -227,24 +227,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             final String[]  valorActualOrdenPrecio={PRECIO_ASC};
             final String[]  valorActualIconoPrecio={FLECHA_ARRIBA};
+            final boolean[] ordenActual = {esAsc};
             mb.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    valorActualOrdenPrecio[0] = buttonString[0];
-                    valorActualIconoPrecio[0] = idImgOrdernPrecio[0];
-                    esAsc = !esAsc;
-                    if (esAsc) {
-                        idImgOrdernPrecio[0] = FLECHA_ARRIBA;
-
-                        buttonString[0] = PRECIO_ASC;
+                    ordenActual [0] = !ordenActual[0];
+                    if (ordenActual[0]) {
+                        valorActualIconoPrecio[0] = "flecha_arriba";
+                        valorActualOrdenPrecio[0] = "Precio (asc)";
                     } else {
-                        idImgOrdernPrecio[0]="flecha_abajo";
-                        buttonString[0] = "Precio (des)";
+                        valorActualIconoPrecio[0]= "flecha_abajo";
+                        valorActualOrdenPrecio[0] = "Precio (des)";
 
                     }
-                    imgOrdenPrecio.setImageResource(getResources().getIdentifier(idImgOrdernPrecio[0],
+                    imgOrdenPrecio.setImageResource(getResources().getIdentifier(valorActualIconoPrecio[0],
                             DRAWABLE, getPackageName()));
-                    mb.setText(buttonString[0]);
+                    mb.setText( valorActualOrdenPrecio[0]);
                 }
             });
 
@@ -252,6 +250,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             builder.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int id) {
+                    buttonString[0] = valorActualOrdenPrecio[0];
+                    idImgOrdernPrecio[0] = valorActualIconoPrecio[0];
+                    esAsc= ordenActual[0];
                     refresca();
                 }
             });
@@ -259,9 +260,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int id) {
-                    idImgOrdernPrecio[0]=valorActualIconoPrecio[0];
-                    buttonString[0]=valorActualOrdenPrecio[0];
-                    esAsc = !esAsc;
                     dialog.dismiss();
                 }
             });
@@ -358,44 +356,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (res) {
                 //Recorrer el array adapter para que no muestre las gasolineras con precios negativos
                 presenterGasolineras.eliminaGasolinerasConPrecioNegativo(tipoCombustible);
-
+                //ordenacion
+                presenterGasolineras.ordernarGasolineras(esAsc, tipoCombustible);
                 // Definimos el array adapter
                 adapter = new GasolineraArrayAdapter(activity, 0, (ArrayList<Gasolinera>) presenterGasolineras.getGasolineras());
-
-                //ordenacion
-                ArrayList<Gasolinera> adapter2 = new ArrayList<Gasolinera>();
-                for (int i = 0; i < adapter.getCount(); i++) {
-                    adapter2.add(i, adapter.getItem(i));
-                }
-                //Recorrer el array adapter para que no muestre las gasolineras con precios negativos
-                for (int i = 0; i < adapter2.size(); i++) {
-                    for (int j = 0; j < adapter2.size() - 1; j++) {
-                        if (esAsc) {
-                            if (adapter2.get(j).getGasoleoA() > adapter2.get(j + 1).getGasoleoA()) {
-                                Gasolinera tmp = adapter2.get(j + 1);
-                                adapter2.remove(tmp);
-                                adapter2.add(j, tmp);
-                            }
-
-                        } else {
-
-                            if (adapter2.get(j).getGasoleoA() < adapter2.get(j + 1).getGasoleoA()) {
-                                Gasolinera tmp = adapter2.get(j + 1);
-                                adapter2.remove(tmp);
-                                adapter2.add(j, tmp);
-                            }
-
-                        }
-                    }
-                }
-                adapter.clear();
-                adapter.notifyDataSetChanged();
-                for (int i = 0; i < adapter2.size(); i++) {
-
-                    adapter.add(adapter2.get(i));
-                    adapter.notifyDataSetChanged();
-                }
-                adapter.notifyDataSetChanged();
 
                 // Obtenemos la vista de la lista
                 listViewGasolineras = findViewById(R.id.listViewGasolineras);
@@ -458,7 +422,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
             ////////////////////////////////////////////////////////////////////////////////////////////////////
         }
-
     }
 
 
@@ -503,7 +466,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             // Y carga los datos del item
             rotulo.setText(gasolinera.getRotulo());
             direccion.setText(gasolinera.getDireccion());
-
             labelGasolina.setText(tipoCombustible);
             double precioCombustible = presenterGasolineras.getPrecioCombustible(tipoCombustible, gasolinera);
             precio.setText(precioCombustible + getResources().getString(R.string.moneda));

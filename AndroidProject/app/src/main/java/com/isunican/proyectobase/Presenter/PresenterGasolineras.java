@@ -122,20 +122,46 @@ public class PresenterGasolineras {
         }
     }
 
-
     /**
      * Elimina las gasolinera si el precio el combustible indicado es negativo
      * @param combustible combustible por el cual se esta filtrando
      */
-    public void eliminaGasolinerasConPrecioNegativo(String combustible){
-        for(int i=0;i<gasolineras.size();i++) {
+    public void eliminaGasolinerasConPrecioNegativo(String combustible) {
+        for (int i = 0; i < gasolineras.size(); i++) {
             Gasolinera g = gasolineras.get(i);
             //se calcula el precio del combustible en cuetion
             double precio = getPrecioCombustible(combustible, g);
             //si el precio del combustible es negativo la gasolinera se borra de la lista
-            if(precio < 0) {
+            if (precio < 0) {
                 gasolineras.remove(g);
                 i--;
+            }
+        }
+    }
+
+    /**
+     * Ordena las gasolineras en funcion del precio del combustible indicado de manera ascendente si
+     * asc es verdadero o de manera descendete si no lo es.
+     * @param asc manera de odernar la lista, si asc es verdadero se orderna de forma ascendente, en
+     *            caso contrario de forma descendente.
+     * @param combustible combustible por el que se desea filtar, se utiliza el precio de este combutible
+     *                    para ordenar.
+     */
+    public void ordernarGasolineras(boolean asc, String combustible){
+        for (int i = 0; i < gasolineras.size(); i++) {
+            for (int j = 0; j < gasolineras.size()-1; j++) {
+                Gasolinera tmp = gasolineras.get(j + 1);
+                if (asc) {
+                    if (getPrecioCombustible(combustible, gasolineras.get(j)) > getPrecioCombustible(combustible, tmp)) {
+                        gasolineras.remove(tmp);
+                        gasolineras.add(j, tmp);
+                    }
+                } else {
+                    if (getPrecioCombustible(combustible, gasolineras.get(j)) < getPrecioCombustible(combustible, tmp)) {
+                        gasolineras.remove(tmp);
+                        gasolineras.add(j, tmp);
+                    }
+                }
             }
         }
     }
@@ -169,6 +195,4 @@ public class PresenterGasolineras {
         }
         return precio;
     }
-
-
 }

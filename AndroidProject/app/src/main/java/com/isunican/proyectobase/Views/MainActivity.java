@@ -193,8 +193,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             builder.create();
             builder.show();
 
-        } else if(v.getId()==R.id.buttonOrden) {
-
         }
     }
 
@@ -321,8 +319,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                     /* Obtengo el elemento directamente de su posicion,
                      * ya que es la misma que ocupa en la lista
-                     * Alternativa 1: a partir de posicion obtener algun atributo int opcionSeleccionada = ((Gasolinera) a.getItemAtPosition(position)).getIdeess();
-                     * Alternativa 2: a partir de la vista obtener algun atributo String opcionSeleccionada = ((TextView)v.findViewById(R.id.textViewRotulo)).getText().toString();
                      */
                     Intent myIntent = new Intent(MainActivity.this, DetailActivity.class);
                     myIntent.putExtra(getResources().getString(R.string.pasoDatosGasolinera),
@@ -376,6 +372,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             // Y carga los datos del item
             rotulo.setText(gasolinera.getRotulo());
             direccion.setText(gasolinera.getDireccion());
+
             labelGasolina.setText(tipoCombustible);
             double precioCombustible = presenterGasolineras.getPrecioCombustible(tipoCombustible, gasolinera);
             precio.setText(precioCombustible + getResources().getString(R.string.moneda));

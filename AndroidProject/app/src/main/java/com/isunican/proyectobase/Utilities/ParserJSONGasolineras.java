@@ -6,6 +6,7 @@ import android.util.JsonReader;
 import android.util.JsonToken;
 import android.util.Log;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.io.IOException;
@@ -35,12 +36,12 @@ public class ParserJSONGasolineras {
      *
      * @param in Inputsream Stream de datos JSON
      * @return List<Gasolinera> Lista de objetos Gasolinera con los datos obtenidas tras parsear el JSON
-     * @throws IOException
+     * @throws IOException exception if the method fail
      */
     public static List<Gasolinera> parseaArrayGasolineras(InputStream in) throws IOException {
 
         try (
-                JsonReader reader = new JsonReader(new InputStreamReader(in, "UTF-8"));
+                JsonReader reader = new JsonReader(new InputStreamReader(in, StandardCharsets.UTF_8))
         ) {
             return readArrayGasolineras(reader);
         }
@@ -58,11 +59,11 @@ public class ParserJSONGasolineras {
      * y devuelve un objeto Gasolinera que añadimos a la lista de gasolineras.
      * Finalmente se devuelve la lista de gasolineras.
      *
-     * @param in JsonReader Stream de datos JSON apuntando al comienzo del stream
+     * @param reader JsonReader Stream de datos JSON apuntando al comienzo del stream
      * @return List Lista de objetos Gasolinera con los datos obtenidas tras parsear el JSON
-     * @throws IOException
+     * @throws IOException exception if the method fail
      */
-    public static List readArrayGasolineras(JsonReader reader) throws IOException {
+    public static List<Gasolinera> readArrayGasolineras(JsonReader reader) throws IOException {
         List<Gasolinera> listGasolineras = new ArrayList<>();
 
         reader.beginObject();
@@ -95,9 +96,9 @@ public class ParserJSONGasolineras {
      * Una vez extraidos todos los atributos, crea un objeto Gasolinera con ellos
      * y lo devuelve.
      *
-     * @param in JsonReader stream de datos JSON
+     * @param reader JsonReader stream de datos JSON
      * @return Gasolinera Objetos Gasolinera con los datos obtenidas tras parsear el JSON
-     * @throws IOException
+     * @throws IOException exception if the method fail
      */
     public static Gasolinera readGasolinera(JsonReader reader) throws IOException {
         reader.beginObject();

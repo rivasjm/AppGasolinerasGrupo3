@@ -1,8 +1,10 @@
 package com.isunican.proyectobase.Presenter;
 
 import android.util.Log;
+import android.widget.ArrayAdapter;
 
 import com.isunican.proyectobase.Model.*;
+import com.isunican.proyectobase.R;
 import com.isunican.proyectobase.Utilities.ParserJSONGasolineras;
 import com.isunican.proyectobase.Utilities.RemoteFetch;
 
@@ -119,4 +121,54 @@ public class PresenterGasolineras {
             return false;
         }
     }
+
+
+    /**
+     * Elimina las gasolinera si el precio el combustible indicado es negativo
+     * @param combustible combustible por el cual se esta filtrando
+     */
+    public void eliminaGasolinerasConPrecioNegativo(String combustible){
+        for(int i=0;i<gasolineras.size();i++) {
+            Gasolinera g = gasolineras.get(i);
+            //se calcula el precio del combustible en cuetion
+            double precio = getPrecioCombustible(combustible, g);
+            //si el precio del combustible es negativo la gasolinera se borra de la lista
+            if(precio < 0) {
+                gasolineras.remove(g);
+                i--;
+            }
+        }
+    }
+
+    /**
+     * Develve el precio del combustible de la gasolinera indicada segun el combustible indicado
+     * @param combustible combustible del que se desao conocer el precio
+     * @param g gasolinera de la que se desea conocer el precio
+     * @return el precio del combustible de la gasolinera indicada segun el combustible indicado
+     */
+    public double getPrecioCombustible(String combustible, Gasolinera g){
+        double precio = 0.0;
+        switch(combustible) {
+            case "Gasóleo A":
+                precio = g.getGasoleoA();
+                break;
+            case "Gasolina 95":
+                precio = g.getGasolina95();
+                break;
+            case "Gasolina 98":
+                precio = g.getGasolina98();
+                break;
+            case "Biodiésel":
+                precio = g.getBiodiesel();
+                break;
+            case "Gasóleo Premium":
+                precio = g.getGasoleoPremium();
+                break;
+            default:
+                break;
+        }
+        return precio;
+    }
+
+
 }

@@ -119,4 +119,62 @@ public class PresenterGasolineras {
             return false;
         }
     }
+
+    /**
+     * Ordena las gasolineras en funcion del precio del combustible indicado de manera ascendente si
+     * asc es verdadero o de manera descendete si no lo es.
+     * @param asc manera de odernar la lista, si asc es verdadero se orderna de forma ascendente, en
+     *            caso contrario de forma descendente.
+     * @param combustible combustible por el que se desea filtar, se utiliza el precio de este combutible
+     *                    para ordenar.
+     */
+    public void ordernarGasolineras(boolean asc, String combustible){
+        for (int i = 0; i < gasolineras.size(); i++) {
+            for (int j = 0; j < gasolineras.size()-1; j++) {
+                Gasolinera tmp = gasolineras.get(j + 1);
+                if (asc) {
+                    if (getPrecioCombustible(combustible, gasolineras.get(j)) > getPrecioCombustible(combustible, tmp)) {
+                        gasolineras.remove(tmp);
+                        gasolineras.add(j, tmp);
+                    }
+                } else {
+                    if (getPrecioCombustible(combustible, gasolineras.get(j)) < getPrecioCombustible(combustible, tmp)) {
+                        gasolineras.remove(tmp);
+                        gasolineras.add(j, tmp);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Develve el precio del combustible de la gasolinera indicada segun el combustible indicado
+     * @param combustible combustible del que se desao conocer el precio
+     * @param g gasolinera de la que se desea conocer el precio
+     * @return el precio del combustible de la gasolinera indicada segun el combustible indicado
+     */
+    public double getPrecioCombustible(String combustible, Gasolinera g){
+        double precio = 0.0;
+        switch(combustible) {
+            case "Gasóleo A":
+                precio = g.getGasoleoA();
+                break;
+            case "Gasolina 95":
+                precio = g.getGasolina95();
+                break;
+            case "Gasolina 98":
+                precio = g.getGasolina98();
+                break;
+            case "Biodiésel":
+                precio = g.getBiodiesel();
+                break;
+            case "Gasóleo Premium":
+                precio = g.getGasoleoPremium();
+                break;
+            default:
+                break;
+        }
+        return precio;
+    }
+
 }

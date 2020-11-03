@@ -1,13 +1,9 @@
 package com.isunican.proyectobase.Presenter;
 
 import android.util.Log;
-import android.widget.ArrayAdapter;
-
 import com.isunican.proyectobase.Model.*;
-import com.isunican.proyectobase.R;
 import com.isunican.proyectobase.Utilities.ParserJSONGasolineras;
 import com.isunican.proyectobase.Utilities.RemoteFetch;
-
 import java.io.BufferedInputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -126,8 +122,9 @@ public class PresenterGasolineras {
      * Elimina las gasolinera si el precio el combustible indicado es negativo
      * @param combustible combustible por el cual se esta filtrando
      */
-    public void eliminaGasolinerasConPrecioNegativo(String combustible) {
-        for (int i = 0; i < gasolineras.size(); i++) {
+    public void eliminaGasolinerasConPrecioNegativo(String combustible){
+        int i=0;
+        while(i < gasolineras.size()){
             Gasolinera g = gasolineras.get(i);
             //se calcula el precio del combustible en cuetion
             double precio = getPrecioCombustible(combustible, g);
@@ -136,6 +133,7 @@ public class PresenterGasolineras {
                 gasolineras.remove(g);
                 i--;
             }
+            i++;
         }
     }
 

@@ -3,7 +3,6 @@ package com.isunican.proyectobase.Views;
 import com.isunican.proyectobase.Presenter.*;
 import com.isunican.proyectobase.Model.*;
 import com.isunican.proyectobase.R;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -12,14 +11,10 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
-
-import java.util.ArrayList;
 import java.util.List;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -63,9 +58,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     // Swipe and refresh (para recargar la lista con un swipe)
     SwipeRefreshLayout mSwipeRefreshLayout;
-
-    // Almacenará la opción que se ha seleccionado en el spinner
-    String opcionFiltro="";
 
     //Botones de filtro y ordenacion
     Button buttonFiltros;
@@ -176,7 +168,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             final Spinner mSpinner = (Spinner) mView.findViewById(R.id.spinner);    // New spinner object
             // El spinner creado contiene todos los items del array de Strings "operacionesArray"
-            ArrayAdapter<String> adapterSpinner = new ArrayAdapter<String>(MainActivity.this,
+            ArrayAdapter<String> adapterSpinner = new ArrayAdapter<>(MainActivity.this,
                     android.R.layout.simple_spinner_item,
                     getResources().getStringArray(R.array.operacionesArray));
             // Al abrir el spinner la lista se abre hacia abajo
@@ -352,13 +344,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             mSwipeRefreshLayout.setRefreshing(false);
 
             // Si se ha obtenido resultado en la tarea en segundo plano
-            if (res) {
+            if (Boolean.TRUE.equals(res)) {
                 //Recorrer el array adapter para que no muestre las gasolineras con precios negativos
                 presenterGasolineras.eliminaGasolinerasConPrecioNegativo(tipoCombustible);
                 //ordenacion
                 presenterGasolineras.ordernarGasolineras(esAsc, tipoCombustible);
                 // Definimos el array adapter
-                adapter = new GasolineraArrayAdapter(activity, 0, (ArrayList<Gasolinera>) presenterGasolineras.getGasolineras());
+                adapter = new GasolineraArrayAdapter(activity, 0, presenterGasolineras.getGasolineras());
 
                 // Obtenemos la vista de la lista
                 listViewGasolineras = findViewById(R.id.listViewGasolineras);

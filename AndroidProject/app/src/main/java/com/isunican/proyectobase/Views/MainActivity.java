@@ -50,6 +50,10 @@ import android.widget.Toast;
 */
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
+    public static final String PRECIO_ASC = "Precio (asc)";
+    public static final String FLECHA_ARRIBA = "flecha_arriba";
+    public static final String DRAWABLE = "drawable";
+
     PresenterGasolineras presenterGasolineras;
 
     // Vista de lista y adaptador para cargar datos en ella
@@ -76,8 +80,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     final String biodiesel = "Biodiésel";
     final String gasoleoPremium = "Gasóleo Premium";
     //orden ascendente por defecto
-    final String[] buttonString = {"Precio (asc)"};
-    final String[] id_imgOrdernPrecio = {"flecha_arriba"};
+    final String[] buttonString = {PRECIO_ASC};
+    final String[] id_imgOrdernPrecio = {FLECHA_ARRIBA};
     // Variable para saber que tipo de combustible esta seleccionado en Filtros
     final int[] itemSeleccionado = {0};
 
@@ -242,23 +246,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             imgOrdenPrecio.setImageResource(getResources().getIdentifier(id_imgOrdernPrecio[0],
                     "drawable", getPackageName()));
 
-            final String[]  valorActualOrdenPrecio={"Precio (asc)"};
-            final String[]  valorActualIconoPrecio={"flecha_arriba"};
+            final String[]  valorActualOrdenPrecio={PRECIO_ASC};
+            final String[]  valorActualIconoPrecio={FLECHA_ARRIBA};
             final boolean[] ordenActual = {esAsc};
             mb.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     ordenActual [0] = !ordenActual[0];
                     if (ordenActual[0]) {
-                        valorActualIconoPrecio[0] = "flecha_arriba";
-                        valorActualOrdenPrecio[0] = "Precio (asc)";
+                        valorActualIconoPrecio[0] = FLECHA_ARRIBA;
+                        valorActualOrdenPrecio[0] = PRECIO_ASC;
                     } else {
                         valorActualIconoPrecio[0]= "flecha_abajo";
                         valorActualOrdenPrecio[0] = "Precio (des)";
 
                     }
                     imgOrdenPrecio.setImageResource(getResources().getIdentifier(valorActualIconoPrecio[0],
-                            "drawable", getPackageName()));
+                            DRAWABLE, getPackageName()));
                     mb.setText( valorActualOrdenPrecio[0]);
                 }
             });
@@ -494,6 +498,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
             return i;
         }
+        private boolean isNetworkConnected() {
+            ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+            return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
+        }
     }
 
 
@@ -594,10 +603,4 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             return view;
         }
     }
-    private boolean isNetworkConnected() {
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
-    }
-
 }

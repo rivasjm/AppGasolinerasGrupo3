@@ -41,20 +41,13 @@ public class BuscarGasolinerasPorUnTipoDeCombustibleUITest {
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
 
-
-    @Before
-    public void preparacionTest() {
-
+    @Test
+    public void tiposCombustible_Test() {
         // Se pulsa el boton para acceder a los Filtros.
         onView(withId(R.id.buttonFiltros)).perform(click());
 
         // Antes de cada test se pulsa el spinner para ver su contenido
         onView((withId(R.id.spinner))).perform(click());
-
-    }
-
-    @Test
-    public void tiposCombustible_Test() {
 
         // Se comprueba seleccionando cada elemento existente dentro del spinner
         // y se comprueba su correspondiente nombre si es el correcto
@@ -88,13 +81,18 @@ public class BuscarGasolinerasPorUnTipoDeCombustibleUITest {
                 is("Gasóleo Premium"))).inRoot(isPlatformPopup()).perform(click());
         onView(withId(R.id.spinner)).check(matches(withSpinnerText(containsString("Gasóleo Premium"))));
 
-    }
+        // Se pulsa el botón Cancelar dentro del menú desplegable
+        onView(withText("Cancelar")).perform(click());
 
+    /** gasoleoA_Test() **/
 
-    @Test
-    public void gasoleoA_Test() {
+        // Se pulsa el boton para acceder a los Filtros.
+        onView(withId(R.id.buttonFiltros)).perform(click());
 
-        // Se selecciona el segundo tipo de combustible que se corresponde con Gasolina 95
+        // Antes de cada test se pulsa el spinner para ver su contenido
+        onView((withId(R.id.spinner))).perform(click());
+
+        // Se selecciona el segundo tipo de combustible que se corresponde con Gasoleo A
         onData(allOf(is(instanceOf(String.class)),
                 is("Gasóleo A"))).inRoot(isPlatformPopup()).perform(click());
 
@@ -109,10 +107,13 @@ public class BuscarGasolinerasPorUnTipoDeCombustibleUITest {
                 .onChildView(withId(R.id.textViewTipoGasolina))
                 .check(matches(withText("Gasóleo A")));
 
-    }
+    /** gasolina95_Test() **/
 
-    @Test
-    public void gasolina95_Test() {
+        // Se pulsa el boton para acceder a los Filtros.
+        onView(withId(R.id.buttonFiltros)).perform(click());
+
+        // Antes de cada test se pulsa el spinner para ver su contenido
+        onView((withId(R.id.spinner))).perform(click());
 
         // Se selecciona el segundo tipo de combustible que se corresponde con Gasolina 95
         onData(allOf(is(instanceOf(String.class)),
@@ -126,10 +127,13 @@ public class BuscarGasolinerasPorUnTipoDeCombustibleUITest {
                 .onChildView(withId(R.id.textViewTipoGasolina))
                 .check(matches(withText("Gasolina 95")));
 
-    }
+    /** gasolina98_Test() **/
 
-    @Test
-    public void gasolina98_Test() {
+        // Se pulsa el boton para acceder a los Filtros.
+        onView(withId(R.id.buttonFiltros)).perform(click());
+
+        // Antes de cada test se pulsa el spinner para ver su contenido
+        onView((withId(R.id.spinner))).perform(click());
 
         // Se selecciona el segundo tipo de combustible que se corresponde con Gasolina 98
         onData(allOf(is(instanceOf(String.class)),
@@ -143,10 +147,13 @@ public class BuscarGasolinerasPorUnTipoDeCombustibleUITest {
                 .onChildView(withId(R.id.textViewTipoGasolina))
                 .check(matches(withText("Gasolina 98")));
 
-    }
+    /** biodiésel_Test() **/
 
-    @Test
-    public void biodiésel_Test() {
+        // Se pulsa el boton para acceder a los Filtros.
+        onView(withId(R.id.buttonFiltros)).perform(click());
+
+        // Antes de cada test se pulsa el spinner para ver su contenido
+        onView((withId(R.id.spinner))).perform(click());
 
         // Se selecciona el segundo tipo de combustible que se corresponde con Biodiésel
         onData(allOf(is(instanceOf(String.class)),
@@ -160,10 +167,13 @@ public class BuscarGasolinerasPorUnTipoDeCombustibleUITest {
                 .onChildView(withId(R.id.textViewTipoGasolina))
                 .check(matches(withText("Biodiésel")));
 
-    }
+    /**gasóleoPremium_Test() **/
 
-    @Test
-    public void gasóleoPremium_Test() {
+        // Se pulsa el boton para acceder a los Filtros.
+        onView(withId(R.id.buttonFiltros)).perform(click());
+
+        // Antes de cada test se pulsa el spinner para ver su contenido
+        onView((withId(R.id.spinner))).perform(click());
 
         // Se selecciona el segundo tipo de combustible que se corresponde con Gasóleo Premium
         onData(allOf(is(instanceOf(String.class)),

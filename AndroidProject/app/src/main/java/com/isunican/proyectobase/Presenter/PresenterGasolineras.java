@@ -1,10 +1,8 @@
 package com.isunican.proyectobase.Presenter;
 
 import android.util.Log;
-import android.widget.ArrayAdapter;
 
 import com.isunican.proyectobase.Model.*;
-import com.isunican.proyectobase.R;
 import com.isunican.proyectobase.Utilities.ParserJSONGasolineras;
 import com.isunican.proyectobase.Utilities.RemoteFetch;
 

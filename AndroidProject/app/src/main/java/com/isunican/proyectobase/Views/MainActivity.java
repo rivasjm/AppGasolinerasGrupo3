@@ -163,7 +163,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             final Spinner mSpinner = (Spinner) mView.findViewById(R.id.spinner);    // New spinner object
             // El spinner creado contiene todos los items del array de Strings "operacionesArray"
-            ArrayAdapter<String> adapterSpinner = new ArrayAdapter<String>(MainActivity.this,
+            ArrayAdapter<String> adapterSpinner = new ArrayAdapter<>(MainActivity.this,
                     android.R.layout.simple_spinner_item,
                     getResources().getStringArray(R.array.operacionesArray));
             // Al abrir el spinner la lista se abre hacia abajo
@@ -276,12 +276,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             mSwipeRefreshLayout.setRefreshing(false);
 
             // Si se ha obtenido resultado en la tarea en segundo plano
-            if (res) {
+            if (Boolean.TRUE.equals(res)) {
                 //Recorrer el array adapter para que no muestre las gasolineras con precios negativos
                 presenterGasolineras.eliminaGasolinerasConPrecioNegativo(tipoCombustible);
 
                 // Definimos el array adapter
-                adapter = new GasolineraArrayAdapter(activity, 0, (ArrayList<Gasolinera>) presenterGasolineras.getGasolineras());
+                adapter = new GasolineraArrayAdapter(activity, 0, presenterGasolineras.getGasolineras());
 
                 // Obtenemos la vista de la lista
                 listViewGasolineras = findViewById(R.id.listViewGasolineras);

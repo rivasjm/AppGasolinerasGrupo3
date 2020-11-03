@@ -48,11 +48,10 @@ import android.widget.Toast;
 */
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-
     public static final String PRECIO_ASC = "Precio (asc)";
     public static final String FLECHA_ARRIBA = "flecha_arriba";
     public static final String DRAWABLE = "drawable";
-    
+
     PresenterGasolineras presenterGasolineras;
 
     // Vista de lista y adaptador para cargar datos en ella
@@ -233,8 +232,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 public void onClick(View v) {
                     ordenActual [0] = !ordenActual[0];
                     if (ordenActual[0]) {
-                        valorActualIconoPrecio[0] = "flecha_arriba";
-                        valorActualOrdenPrecio[0] = "Precio (asc)";
+                        valorActualIconoPrecio[0] = FLECHA_ARRIBA;
+                        valorActualOrdenPrecio[0] = PRECIO_ASC;
                     } else {
                         valorActualIconoPrecio[0]= "flecha_abajo";
                         valorActualOrdenPrecio[0] = "Precio (des)";
@@ -422,6 +421,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
             ////////////////////////////////////////////////////////////////////////////////////////////////////
         }
+
+        private boolean isNetworkConnected() {
+            ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+            return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
+        }
     }
 
 
@@ -512,10 +517,4 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         }
     }
-    private boolean isNetworkConnected() {
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
-    }
-
 }

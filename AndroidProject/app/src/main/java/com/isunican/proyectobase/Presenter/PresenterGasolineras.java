@@ -126,7 +126,8 @@ public class PresenterGasolineras {
      * @param combustible combustible por el cual se esta filtrando
      */
     public void eliminaGasolinerasConPrecioNegativo(String combustible){
-        for(int i=0;i<gasolineras.size();i++) {
+        int i=0;
+        while(i < gasolineras.size()){
             Gasolinera g = gasolineras.get(i);
             //se calcula el precio del combustible en cuetion
             double precio = getPrecioCombustible(combustible, g);
@@ -135,6 +136,7 @@ public class PresenterGasolineras {
                 gasolineras.remove(g);
                 i--;
             }
+            i++;
         }
     }
 

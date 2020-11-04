@@ -154,7 +154,9 @@ public class PresenterGasolineras {
      * @return el precio del combustible de la gasolinera indicada segun el combustible indicado
      */
     public double getPrecioCombustible(String combustible, Gasolinera g){
+
         double precio = 0.0;
+
         switch(combustible) {
             case "Gasóleo A":
                 precio = g.getGasoleoA();

@@ -8,7 +8,7 @@ import static org.junit.Assert.*;
 
 public class GasolineraTest {
 
-    Gasolinera g;
+    private Gasolinera g;
 
     /**
      * Preparo los datos necesarios para la posterior ejecucion de las pruebas

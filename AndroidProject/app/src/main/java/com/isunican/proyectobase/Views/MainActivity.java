@@ -3,7 +3,6 @@ package com.isunican.proyectobase.Views;
 import com.isunican.proyectobase.Presenter.*;
 import com.isunican.proyectobase.Model.*;
 import com.isunican.proyectobase.R;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -15,10 +14,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
-import java.util.ArrayList;
 import java.util.List;
-
-
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;

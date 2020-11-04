@@ -157,6 +157,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             // Vista escondida del nuevo layout para los diferentes spinners a implementar para los filtros
             View mView = getLayoutInflater().inflate(R.layout.dialog_spinner, null);
 
+            final TextView txtComb = mView.findViewById(R.id.combustibleSeleccionado);
+            txtComb.setText(this.tipoCombustible);
             final Spinner mSpinner = (Spinner) mView.findViewById(R.id.spinner);    // New spinner object
             // El spinner creado contiene todos los items del array de Strings "operacionesArray"
             ArrayAdapter<String> adapterSpinner = new ArrayAdapter<>(MainActivity.this,

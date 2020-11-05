@@ -6,6 +6,8 @@ import com.isunican.proyectobase.Presenter.PresenterGasolineras;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
+
 import static org.junit.Assert.*;
 
 /*
@@ -18,13 +20,7 @@ import static org.junit.Assert.*;
 public class PresenterGasolinerasTest {
 
     // Gasolineras para utilizarlas posteriormente
-    Gasolinera gasolinera;
-    Gasolinera gasolinera1;
-    Gasolinera gasolinera2;
-    Gasolinera gasolinera3;
-    Gasolinera gasolinera4;
-    Gasolinera gasolinera5;
-    Gasolinera gasolinera6;
+    ArrayList<Gasolinera> gasolineras;
 
     // Objeto de la clase Presentergasolineras para implementar los siguientes metodos Test
     PresenterGasolineras presenter = new PresenterGasolineras();
@@ -34,36 +30,24 @@ public class PresenterGasolinerasTest {
      */
     @Before
     public  void setUp(){
-
-        gasolinera = new Gasolinera(1, "Santander", "Cantabria", "",
-                3.0, 2.0, 1.0, 4.0, 5.0, "TEXACO");
-
-        gasolinera1 = new Gasolinera(1, "Santander", "Cantabria", "",
-                1.0, 6.0, 5.0, 3.0, 5.0, "TEXACO");
-
-        gasolinera2 = new Gasolinera(1, "Santander", "Cantabria", "",
-                2.0, 5.0, 1.0, 2.0, 4.0, "TEXACO");
-
-        gasolinera3 = new Gasolinera(1, "Santander", "Cantabria", "",
-                3.0, 4.0, 2.0, 6.0, 1.0, "TEXACO");
-
-        gasolinera4 = new Gasolinera(1, "Santander", "Cantabria", "",
-                4.0, 3.0, 3.0, 1.0, 6.0, "TEXACO");
-
-        gasolinera5 = new Gasolinera(1, "Santander", "Cantabria", "",
-                5.0, 2.0, 6.0, 4.0, 2.0, "TEXACO");
-
-        gasolinera6 = new Gasolinera(1, "Santander", "Cantabria", "",
-                6.0, 1.0, 4.0, 5.0, 3.0, "TEXACO");
-
-        presenter.getGasolineras().add(gasolinera);
-        presenter.getGasolineras().add(gasolinera1);
-        presenter.getGasolineras().add(gasolinera2);
-        presenter.getGasolineras().add(gasolinera3);
-        presenter.getGasolineras().add(gasolinera4);
-        presenter.getGasolineras().add(gasolinera5);
-        presenter.getGasolineras().add(gasolinera6);
-
+        presenter = new PresenterGasolineras();//se inicializa el presenter
+        gasolineras = new ArrayList<>();//se crea lista de de tipo Gasolina para probar
+        /*Se anhaden varias gasolineras a la lista para pasarselas al presenter y utilizarlas en la pruebas*/
+        gasolineras.add(new Gasolinera(0, "Castro", "Cantabria", "Calle 1",
+                0.91, 1.06, 1.11, 1.31, 1.01, "CEPSA"));
+        gasolineras.add(new Gasolinera(0, "Viesgo", "Cantabria", "Calle 2",
+                1.01, 1.09, 1.11, 1.26, 1.16, "Respol"));
+        gasolineras.add(new Gasolinera(0, "Puente San Miguel", "Cantabria", "Calle 1",
+                0.92, 1.12, 1.09, 1.26, 0.97, "Shell"));
+        gasolineras.add(new Gasolinera(0, "Tanos", "Cantabria", "Calle 3",
+                1.02, 1.21, 1.08, 1.35, 0.93, "Repsol"));
+        gasolineras.add(new Gasolinera(0, "Ganzo", "Cantabria", "Calle 4",
+                0.96, 0.99, 1.07, 1.15, 0.94, "CEPSA"));
+        gasolineras.add(new Gasolinera(0, "Torrelavega", "Cantabria", "Calle 5",
+                0.97, 1.11, 1.07, 1.10, 0.92, "Shell"));
+        gasolineras.add(new Gasolinera(0, "Santander", "Cantabria", "Calle 6",
+                0.90, 1.03, 1.07, 1.14, 0.97, "CEPSA"));
+        presenter.setGasolineras(gasolineras);
     }
 
 
@@ -131,7 +115,7 @@ public class PresenterGasolinerasTest {
 
         }
 
-        assertEquals(0.91 , presenter.getPrecioCombustible("Gasóleo A", pr.getGasolineras().get(0)), 0.000001);
+        assertEquals(0.91 , presenter.getPrecioCombustible("Gasóleo A", presenter.getGasolineras().get(0)), 0.000001);
 
         assertEquals(1.06 , presenter.getPrecioCombustible("Gasolina 95", presenter.getGasolineras().get(0)), 0.000001);
 

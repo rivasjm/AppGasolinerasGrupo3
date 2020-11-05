@@ -67,6 +67,7 @@ public class PresenterGasolinerasTest {
     }
 
 
+
     /*
      * Test para el metodo ordenarGasolineras
      * Se comprobara si funciona correctamente ascender y descender dependiendo
@@ -82,37 +83,38 @@ public class PresenterGasolinerasTest {
         } catch (NullPointerException e) {
 
         }
-        
+
         presenter.ordernarGasolineras(true, "Gasóleo A");
-        assertEquals(1.0, presenter.getGasolineras().get(0).getGasoleoA(), 0.00001);
+        assertEquals(0.90, presenter.getGasolineras().get(0).getGasoleoA(), 0.00001);
 
         presenter.ordernarGasolineras(false, "Gasóleo A");
-        assertEquals(6.0, presenter.getGasolineras().get(0).getGasoleoA(), 0.00001);
+        assertEquals(1.02, presenter.getGasolineras().get(0).getGasoleoA(), 0.00001);
 
         presenter.ordernarGasolineras(true, "Gasolina 95");
-        assertEquals(1.0, presenter.getGasolineras().get(0).getGasolina95(), 0.00001);
+        assertEquals(0.99, presenter.getGasolineras().get(0).getGasolina95(), 0.00001);
 
         presenter.ordernarGasolineras(false, "Gasolina 95");
-        assertEquals(6.0, presenter.getGasolineras().get(0).getGasolina95(), 0.00001);
+        assertEquals(1.21, presenter.getGasolineras().get(0).getGasolina95(), 0.00001);
 
         presenter.ordernarGasolineras(true, "Gasolina 98");
-        assertEquals(1.0, presenter.getGasolineras().get(0).getGasolina98(), 0.00001);
+        assertEquals(1.07, presenter.getGasolineras().get(0).getGasolina98(), 0.00001);
 
         presenter.ordernarGasolineras(false, "Gasolina 98");
-        assertEquals(6.0, presenter.getGasolineras().get(0).getGasolina98(), 0.00001);
+        assertEquals(1.11, presenter.getGasolineras().get(0).getGasolina98(), 0.00001);
 
         presenter.ordernarGasolineras(true, "Biodiésel");
-        assertEquals(1.0, presenter.getGasolineras().get(0).getBiodiesel(), 0.00001);
+        assertEquals(1.10, presenter.getGasolineras().get(0).getBiodiesel(), 0.00001);
 
         presenter.ordernarGasolineras(false, "Biodiésel");
-        assertEquals(6.0, presenter.getGasolineras().get(0).getBiodiesel(), 0.00001);
+        assertEquals(1.35, presenter.getGasolineras().get(0).getBiodiesel(), 0.00001);
 
         presenter.ordernarGasolineras(true, "Gasóleo Premium");
-        assertEquals(1.0, presenter.getGasolineras().get(0).getGasoleoPremium(), 0.00001);
+        assertEquals(0.92, presenter.getGasolineras().get(0).getGasoleoPremium(), 0.00001);
 
         presenter.ordernarGasolineras(false, "Gasóleo Premium");
-        assertEquals(6.0, presenter.getGasolineras().get(0).getGasoleoPremium(), 0.00001);
+        assertEquals(1.16, presenter.getGasolineras().get(0).getGasoleoPremium(), 0.00001);
     }
+
 
     /*
      * Test para el metodo getPrecioGasolinera
@@ -129,15 +131,16 @@ public class PresenterGasolinerasTest {
 
         }
 
-        assertEquals(3.0 , presenter.getPrecioCombustible("Gasóleo A", presenter.getGasolineras().get(0)), 0.000001);
+        assertEquals(0.91 , presenter.getPrecioCombustible("Gasóleo A", pr.getGasolineras().get(0)), 0.000001);
 
-        assertEquals(2.0 , presenter.getPrecioCombustible("Gasolina 95", presenter.getGasolineras().get(0)), 0.000001);
+        assertEquals(1.06 , presenter.getPrecioCombustible("Gasolina 95", presenter.getGasolineras().get(0)), 0.000001);
 
-        assertEquals(1.0 , presenter.getPrecioCombustible("Gasolina 98", presenter.getGasolineras().get(0)), 0.000001);
+        assertEquals(1.11 , presenter.getPrecioCombustible("Gasolina 98", presenter.getGasolineras().get(0)), 0.000001);
 
-        assertEquals(4.0 , presenter.getPrecioCombustible("Biodiésel", presenter.getGasolineras().get(0)), 0.000001);
+        assertEquals(1.31 , presenter.getPrecioCombustible("Biodiésel", presenter.getGasolineras().get(0)), 0.000001);
 
-        assertEquals(5.0 , presenter.getPrecioCombustible("Gasóleo Premium", presenter.getGasolineras().get(0)), 0.000001);
+        assertEquals(1.01 , presenter.getPrecioCombustible("Gasóleo Premium", presenter.getGasolineras().get(0)), 0.000001);
 
     }
+
 }

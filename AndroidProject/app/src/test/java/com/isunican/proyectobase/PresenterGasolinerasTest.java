@@ -42,7 +42,7 @@ public class PresenterGasolinerasTest {
     }//setUp
 
     @Test
-    public void eliminarGasolinerasConPrecionNegativoTest(){
+    public void eliminarGasolinerasConPrecioNegativoTest(){
         //caso donde la cadena pasada esta vacia
         pr.eliminaGasolinerasConPrecioNegativo("");
         boolean noCambiaLista = gasolineras.size() == 7;

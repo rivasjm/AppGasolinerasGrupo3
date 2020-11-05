@@ -52,8 +52,8 @@ public class BuscarGasolinerasPorUnTipoDeCombustibleUITest {
         // Se comprueba seleccionando cada elemento existente dentro del spinner
         // y se comprueba su correspondiente nombre si es el correcto
         onData(allOf(is(instanceOf(String.class)),
-                is("Tipo de Combustible"))).inRoot(isPlatformPopup()).perform(click());
-        onView(withId(R.id.spinner)).check(matches(withSpinnerText(containsString("Tipo de Combustible"))));
+                is("Combustible"))).inRoot(isPlatformPopup()).perform(click());
+        onView(withId(R.id.spinner)).check(matches(withSpinnerText(containsString("Combustible"))));
 
 
         onView((withId(R.id.spinner))).perform(click());

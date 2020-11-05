@@ -26,6 +26,7 @@ public class ParserJSONGasolinerasTest {
 
 
     private JsonReader reader;
+    private JsonReader reader2;
     private JsonReader readerGasolineras;
 
     @Before
@@ -39,6 +40,16 @@ public class ParserJSONGasolinerasTest {
                 "}";
 
         reader = new JsonReader(new StringReader(jsonString));
+
+        //String JSON con campos erroneso
+        String jsonStringCamposErroneos = "{" +
+                "\"Rótulo\":\"Repsol\",\"Localidad\":\"Santander\",\"Provincia\":\"Cantabria\"," +
+                "\"IDEESS\":\"0\",\"Precio Gasoleo A\":\"0,95\",\"Precio Gasolina 95 E5\":\"1,01\"," +
+                "\"Precio Gasolina 98 E5\":\"1,03\",\"Precio Biodiesel\":\"1,11\",\"Precio Gasoleo Premium\":\"0,99\"," +
+                "\"Dirección\":\"Calle 001\",\"Preci\":\"1,11\",\"algo\":\"\"" +
+                "}";
+
+        reader2 = new JsonReader(new StringReader(jsonStringCamposErroneos));
 
         //String con varias gasolineras en formato array Json
         String jsonGasolineras = "{ \"ListaEESSPrecio\" : [{" +
@@ -58,9 +69,27 @@ public class ParserJSONGasolinerasTest {
 
     @Test
     public void readGasolineraTest() {
+        //caso con datos correctos
         Gasolinera g = null;
         try {
             g = ParserJSONGasolineras.readGasolinera(reader);
+        } catch (IOException e) {
+            fail();
+        }
+
+        assertEquals("Santander", g.getLocalidad());
+        assertEquals("Cantabria", g.getProvincia());
+        assertEquals("Calle 001", g.getDireccion());
+
+        assertEquals(0.95, g.getGasoleoA(), 0.001);
+        assertEquals(1.01, g.getGasolina95(), 0.001);
+        assertEquals(1.03, g.getGasolina98(), 0.001);
+        assertEquals(0.99, g.getGasoleoPremium(), 0.001);
+        assertEquals(1.11, g.getBiodiesel(), 0.001);
+
+        //caso donde el json tiene campos erroneos
+        try {
+            g = ParserJSONGasolineras.readGasolinera(reader2);
         } catch (IOException e) {
             fail();
         }

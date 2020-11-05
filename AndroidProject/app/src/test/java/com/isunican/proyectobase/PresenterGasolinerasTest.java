@@ -16,9 +16,11 @@ import static org.junit.Assert.*;
 public class PresenterGasolinerasTest {
     // Objeto de la clase Presentergasolineras para implementar los siguientes metodos Test
     private PresenterGasolineras pr;
+    // Gasolineras para utilizarlas posteriormente
     private ArrayList<Gasolinera> gasolineras;
 
     @Before
+
     public void setUp(){
         pr = new PresenterGasolineras();//se inicializa el presenter
         gasolineras = new ArrayList<>();//se crea lista de de tipo Gasolina para probar
@@ -65,7 +67,6 @@ public class PresenterGasolinerasTest {
         assertEquals(1.31 , pr.getPrecioCombustible("Biodiésel", pr.getGasolineras().get(0)), 0.000001);
 
         assertEquals(1.01 , pr.getPrecioCombustible("Gasóleo Premium", pr.getGasolineras().get(0)), 0.000001);
-
     }
 
     @Test
@@ -123,6 +124,7 @@ public class PresenterGasolinerasTest {
 
     }//eliminarGasolinerasConPrecionNegativoTest
 
+
     /*
      * Test para el metodo ordenarGasolineras
      * Se comprobara si funciona correctamente ascender y descender dependiendo
@@ -169,5 +171,5 @@ public class PresenterGasolinerasTest {
         pr.ordernarGasolineras(false, "Gasóleo Premium");
         assertEquals(1.16, pr.getGasolineras().get(0).getGasoleoPremium(), 0.00001);
     }
-
 }//class
+

@@ -373,6 +373,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     toast = Toast.makeText(getApplicationContext(), getResources().getString(R.string.datos_no_obtenidos), Toast.LENGTH_LONG);
                 }
                 else{
+                    adapter.clear();
                     toast=Toast.makeText(getApplicationContext(),"No hay conexión a internet",Toast.LENGTH_LONG);
                 }
 

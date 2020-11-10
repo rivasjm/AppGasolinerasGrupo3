@@ -1,8 +1,11 @@
 package com.isunican.proyectobase.Views;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.isunican.proyectobase.R;
@@ -65,7 +68,6 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
         mapDir.onCreate(savedInstanceState);
         mapDir.getMapAsync(this);
 
-
         // captura el TextView
         // obtiene el objeto Gasolinera a mostrar
         // y lo introduce en el TextView convertido a cadena de texto
@@ -94,6 +96,7 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
         }
         imgG.setImageResource(imageID);
 
+        System.out.println("DEBUGGGGGGGGGGGG " +g.getLatitud() + " " + g.getLongitud());
     }
 
     @Override
@@ -126,10 +129,26 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
             //                                          int[] grantResults)
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
+            System.out.println("DEBUG No hay permisos para mostrar ubicacion actual");
             return;
         }
+        UiSettings uiSettings = map.getUiSettings();
+        uiSettings.setZoomControlsEnabled(true);
+
         map.setMyLocationEnabled(true);
-        map.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
+        if(g.getLatitud() == -1 || g.getLongitud() == -1) {
+            // Create a LatLngBounds that includes the city of Adelaide in Australia.
+            LatLng cantabria = new LatLng(43.2, -4.03333);
+            // Move the camera instantly to Sydney with a zoom of 15.
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(cantabria, 8.55f));
+        }else {
+            LatLng latLng =new LatLng(g.getLatitud(), g.getLongitud());
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 12));
+            map.addMarker(new MarkerOptions().position(latLng).title(g.getRotulo())
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
+        }
+
+
     }
 
 

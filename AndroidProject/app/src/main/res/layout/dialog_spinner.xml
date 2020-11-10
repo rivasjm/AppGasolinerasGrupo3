@@ -5,24 +5,19 @@
     android:orientation="vertical"
     android:padding="20dp">
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/combustibleSeleccionado"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginBottom="10dp"
+        android:text="Combustible"
+        android:textSize="16sp"
+        android:textStyle="bold" />
 
-        <Spinner
-            android:id="@+id/spinner"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1.5" />
-
-        <TextView
-            android:id="@+id/combustibleSeleccionado"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Combustible"
-            android:textStyle="bold" />
-    </LinearLayout>
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

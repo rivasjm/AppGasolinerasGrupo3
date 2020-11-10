@@ -38,7 +38,7 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
 
     ImageView imgG;
     TextView txtNomG;
-    TextView txtPrecioGasoil;
+    TextView txtTipoGasolina;
     TextView txtPrecioGasolina;
     TextView txtDir;
     MapView mapDir;
@@ -73,14 +73,14 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
         // y lo introduce en el TextView convertido a cadena de texto
         imgG = findViewById(R.id.imgGasolinera);
         txtNomG = findViewById(R.id.txtNomGasolinera);
-        txtPrecioGasoil = findViewById(R.id.txtPrecioGasoil);
+        txtTipoGasolina = findViewById(R.id.txtTipoGasolina);
         txtPrecioGasolina = findViewById(R.id.txtPrecioGasolina);
         txtDir = findViewById(R.id.txtDireccion);
         g = getIntent().getExtras().getParcelable(getResources().getString(R.string.pasoDatosGasolinera));
 
         txtNomG.setText(g.getRotulo());
-        txtPrecioGasoil.setText("Diesel " + g.getGasoleoA() + "€");
-        txtPrecioGasolina.setText("Gasolina " + g.getGasolina95() + "€");
+        txtTipoGasolina.setText("Tipo de gasolina");
+        txtPrecioGasolina.setText(g.getGasolina95() + "€");
         txtDir.setText(g.getDireccion());
 
         String rotuleImageID = g.getRotulo().toLowerCase();

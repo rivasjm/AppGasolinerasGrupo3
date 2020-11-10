@@ -1,5 +1,7 @@
 package com.isunican.proyectobase.Presenter;
 
+import android.app.Activity;
+import android.content.Context;
 import android.util.Log;
 import com.isunican.proyectobase.Model.*;
 import com.isunican.proyectobase.Utilities.ParserJSONGasolineras;
@@ -195,5 +197,13 @@ public class PresenterGasolineras {
                 break;
         }
         return precio;
+    }
+
+    public String lecturaCombustiblePorDefecto(Activity a) {
+        return ParserJSONGasolineras.leerCombustiblePorDefecto(a);
+    }
+
+    public void escrituraCombustiblePorDefecto(String combustible, Activity a) {
+        ParserJSONGasolineras.escribirCombustiblePorDefecto(combustible, a);
     }
 }

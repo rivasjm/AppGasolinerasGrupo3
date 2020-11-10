@@ -88,6 +88,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         this.presenterGasolineras = new PresenterGasolineras();
 
+        //Lectura inicial del tipo de combustible por defecto
+        tipoCombustible = presenterGasolineras.lecturaCombustiblePorDefecto(this);
+
         // Barra de progreso
         // https://materialdoc.com/components/progress/
         progressBar = new ProgressBar(MainActivity.this, null, android.R.attr.progressBarStyleLarge);

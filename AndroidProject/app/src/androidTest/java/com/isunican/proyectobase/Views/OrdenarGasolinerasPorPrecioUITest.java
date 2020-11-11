@@ -1,9 +1,10 @@
-package com.isunican.proyectobase;
+package com.isunican.proyectobase.Views;
 
 import android.content.Context;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.runner.AndroidJUnit4;
@@ -16,6 +17,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.anything;
 
 import com.isunican.proyectobase.Model.Gasolinera;
+import com.isunican.proyectobase.R;
 import com.isunican.proyectobase.Views.MainActivity;
 
 import org.junit.Before;
@@ -40,7 +42,7 @@ public class OrdenarGasolinerasPorPrecioUITest {
     @Before
     public void setUp() {
         //clickamos en la opcion de ordenar gasolineras
-        onView(withId(R.id.buttonOrden)).perform(click());
+        onView(ViewMatchers.withId(R.id.buttonOrden)).perform(click());
         // Context of the app under test.
         ltmp = mActivityTestRule.getActivity().findViewById(R.id.listViewGasolineras);
         gBarata = ((ArrayAdapter<Gasolinera>) ltmp.getAdapter()).getItem(0);

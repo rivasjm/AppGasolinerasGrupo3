@@ -33,4 +33,13 @@ public class GasolineraTest {
 
         assertEquals("CEPSA", g.getRotulo());
     }
+
+    @Test
+    public void getLatitudLongitudTest() {
+        //Se comprueba que se ha almacenado correctamente el valor de latitud
+        assertEquals(40,g.getLatitud(),0.001);
+
+        //Se comprueba que se ha almacenado correctamente el valor de longitud
+        assertEquals(-3,g.getLongitud(),0.001);
+    }
 }

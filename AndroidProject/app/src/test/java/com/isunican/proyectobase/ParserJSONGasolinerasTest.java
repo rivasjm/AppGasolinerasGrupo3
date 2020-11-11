@@ -28,6 +28,9 @@ public class ParserJSONGasolinerasTest {
     private JsonReader reader;
     private JsonReader reader2;
     private JsonReader readerGasolineras;
+    private JsonReader readerConLatiLong;
+    private JsonReader readerSoloConLatitud;
+    private JsonReader readerSoloConLongitud;
 
     @Before
     public void setUp() {
@@ -65,6 +68,77 @@ public class ParserJSONGasolinerasTest {
                 "}]}";
 
         readerGasolineras = new JsonReader(new StringReader(jsonGasolineras));
+
+        //Gasolinera en formato Json con latitud y longitud
+        String jsonLatiLong = "{" +
+                "\"Rótulo\":\"Repsol\",\"Localidad\":\"Santander\",\"Provincia\":\"Cantabria\"," +
+                "\"IDEESS\":\"0\",\"Precio Gasoleo A\":\"0,95\",\"Precio Gasolina 95 E5\":\"1,01\"," +
+                "\"Precio Gasolina 98 E5\":\"1,03\",\"Precio Biodiesel\":\"1,11\",\"Precio Gasoleo Premium\":\"0,99\"," +
+                "\"Dirección\":\"Calle 001\"" + ",\"Latitud\":\"40\",\"Longitud (WGS84)\":\"-3\""+
+                "}";
+
+        readerConLatiLong = new JsonReader(new StringReader(jsonLatiLong));
+
+        //Gasolinera en formato Json solo con latitud
+        String jsonLati = "{" +
+                "\"Rótulo\":\"Repsol\",\"Localidad\":\"Santander\",\"Provincia\":\"Cantabria\"," +
+                "\"IDEESS\":\"0\",\"Precio Gasoleo A\":\"0,95\",\"Precio Gasolina 95 E5\":\"1,01\"," +
+                "\"Precio Gasolina 98 E5\":\"1,03\",\"Precio Biodiesel\":\"1,11\",\"Precio Gasoleo Premium\":\"0,99\"," +
+                "\"Dirección\":\"Calle 001\"" + ",\"Latitud\":\"40\""+
+                "}";
+
+        readerSoloConLatitud = new JsonReader(new StringReader(jsonLati));
+
+        //Gasolinera en formato Json solo con longitud
+        String jsonLong = "{" +
+                "\"Rótulo\":\"Repsol\",\"Localidad\":\"Santander\",\"Provincia\":\"Cantabria\"," +
+                "\"IDEESS\":\"0\",\"Precio Gasoleo A\":\"0,95\",\"Precio Gasolina 95 E5\":\"1,01\"," +
+                "\"Precio Gasolina 98 E5\":\"1,03\",\"Precio Biodiesel\":\"1,11\",\"Precio Gasoleo Premium\":\"0,99\"," +
+                "\"Dirección\":\"Calle 001\"" + ",\"Longitud (WGS84)\":\"-3\""+
+                "}";
+
+        readerSoloConLongitud = new JsonReader(new StringReader(jsonLong));
+
+    }
+
+    @Test
+    public void readGasolineraConLatitudLongitudTest() {
+        //Caso con datos correctos
+        Gasolinera g = null;
+        try {
+            g = ParserJSONGasolineras.readGasolinera(readerConLatiLong);
+        } catch (IOException e) {
+            fail();
+        }
+        assertEquals(40,g.getLatitud(),0.001);
+        assertEquals(-3,g.getLongitud(),0.001);
+
+        //Caso con gasolinera sin latitud y longitud
+        try {
+            g = ParserJSONGasolineras.readGasolinera(reader);
+        } catch (IOException e) {
+            fail();
+        }
+        assertEquals(0.0,g.getLatitud(),0.001);
+        assertEquals(0.0,g.getLongitud(),0.001);
+
+        //Caso con gasolinera solo con latitud
+        try {
+            g = ParserJSONGasolineras.readGasolinera(readerSoloConLatitud);
+        } catch (IOException e) {
+            fail();
+        }
+        assertEquals(40,g.getLatitud(),0.001);
+        assertEquals(0.0,g.getLongitud(),0.001);
+
+        //Caso con gasolinera solo con longitud
+        try {
+            g = ParserJSONGasolineras.readGasolinera(readerSoloConLongitud);
+        } catch (IOException e) {
+            fail();
+        }
+        assertEquals(0.0,g.getLatitud(),0.001);
+        assertEquals(-3,g.getLongitud(),0.001);
     }
 
     @Test

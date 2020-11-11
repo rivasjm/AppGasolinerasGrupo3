@@ -1,4 +1,4 @@
-package com.isunican.proyectobase;
+package com.isunican.proyectobase.Model;
 
 import com.isunican.proyectobase.Model.Gasolinera;
 

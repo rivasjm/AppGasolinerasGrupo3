@@ -1,11 +1,13 @@
-package com.isunican.proyectobase;
+package com.isunican.proyectobase.Views;
 
 import android.content.Context;
 
+import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.runner.AndroidJUnit4;
 
+import com.isunican.proyectobase.R;
 import com.isunican.proyectobase.Views.MainActivity;
 
 import org.junit.Before;
@@ -44,7 +46,7 @@ public class BuscarGasolinerasPorUnTipoDeCombustibleUITest {
     @Test
     public void tiposCombustible_Test() {
         // Se pulsa el boton para acceder a los Filtros.
-        onView(withId(R.id.buttonFiltros)).perform(click());
+        onView(ViewMatchers.withId(R.id.buttonFiltros)).perform(click());
 
         // Antes de cada test se pulsa el spinner para ver su contenido
         onView((withId(R.id.spinner))).perform(click());

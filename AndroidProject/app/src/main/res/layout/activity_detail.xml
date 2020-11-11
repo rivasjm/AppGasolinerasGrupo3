@@ -14,24 +14,26 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="77dp"
+        android:layout_height="85dp"
         android:orientation="horizontal">
 
         <ImageView
             android:id="@+id/imgGasolinera"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_width="78dp"
+            android:layout_height="67dp"
+            android:layout_marginTop="10dp"
+            android:clickable="false"
             tools:srcCompat="@tools:sample/avatars" />
 
         <TextView
             android:id="@+id/txtNomGasolinera"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:layout_weight="1.4"
             android:gravity="center"
-            android:text="TextView" />
+            android:text="TextView"
+            android:textSize="30dp"
+            android:textStyle="bold|italic" />
     </LinearLayout>
 
     <LinearLayout
@@ -40,18 +42,21 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/txtPrecioGasoil"
+            android:id="@+id/txtTipoGasolina"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="Gasoil:" />
+            android:layout_marginTop="30dp"
+            android:gravity="center"
+            android:text="TipoGasolina"
+            android:textSize="25dp" />
 
         <TextView
             android:id="@+id/txtPrecioGasolina"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="Gasolina:" />
+            android:gravity="center"
+            android:text="PrecioGasolina"
+            android:textSize="25dp" />
     </LinearLayout>
 
     <LinearLayout
@@ -59,18 +64,21 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <TextView
+            android:id="@+id/txtDireccion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_weight="0.1"
+            android:text="Direccion: "
+            android:textSize="15dp" />
+
         <com.google.android.gms.maps.MapView
             android:id="@+id/mapGasolinera"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="15" />
 
-        <TextView
-            android:id="@+id/txtDireccion"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Direccion: " />
     </LinearLayout>
 
 </LinearLayout>

@@ -1,4 +1,4 @@
-package com.isunican.proyectobase;
+package com.isunican.proyectobase.Model;
 
 import com.isunican.proyectobase.Model.Gasolinera;
 
@@ -16,7 +16,7 @@ public class GasolineraTest {
     @Before
     public  void setUp(){
         g=new Gasolinera(0, "Torrelavega", "Cantabria", "Calle 1",
-                0.94, 1.06, 1.07, 1.26, 0.97, "CEPSA");
+                0.94, 1.06, 1.07, 1.26, 0.97, "CEPSA", 40, -3);
     }
 
     @Test
@@ -32,5 +32,14 @@ public class GasolineraTest {
         assertEquals(1.26, g.getBiodiesel(), 0.001);
 
         assertEquals("CEPSA", g.getRotulo());
+    }
+
+    @Test
+    public void getLatitudLongitudTest() {
+        //Se comprueba que se ha almacenado correctamente el valor de latitud
+        assertEquals(40,g.getLatitud(),0.001);
+
+        //Se comprueba que se ha almacenado correctamente el valor de longitud
+        assertEquals(-3,g.getLongitud(),0.001);
     }
 }

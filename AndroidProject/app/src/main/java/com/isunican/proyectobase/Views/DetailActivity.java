@@ -1,10 +1,14 @@
 package com.isunican.proyectobase.Views;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.isunican.proyectobase.Presenter.PresenterGasolineras;
 import com.isunican.proyectobase.R;
 import com.isunican.proyectobase.Model.*;
 
@@ -35,11 +39,13 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
 
     ImageView imgG;
     TextView txtNomG;
-    TextView txtPrecioGasoil;
+    TextView txtTipoGasolina;
     TextView txtPrecioGasolina;
     TextView txtDir;
     MapView mapDir;
     Gasolinera g;
+
+    PresenterGasolineras presenter;
 
     /**
      * onCreate
@@ -52,7 +58,7 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
-
+        this.presenter = new PresenterGasolineras();
         // muestra el logo en el actionBar
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setIcon(R.drawable.por_defecto_mod);
@@ -65,20 +71,25 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
         mapDir.onCreate(savedInstanceState);
         mapDir.getMapAsync(this);
 
-
         // captura el TextView
         // obtiene el objeto Gasolinera a mostrar
         // y lo introduce en el TextView convertido a cadena de texto
         imgG = findViewById(R.id.imgGasolinera);
         txtNomG = findViewById(R.id.txtNomGasolinera);
-        txtPrecioGasoil = findViewById(R.id.txtPrecioGasoil);
+        txtTipoGasolina = findViewById(R.id.txtTipoGasolina);
         txtPrecioGasolina = findViewById(R.id.txtPrecioGasolina);
         txtDir = findViewById(R.id.txtDireccion);
         g = getIntent().getExtras().getParcelable(getResources().getString(R.string.pasoDatosGasolinera));
+        //tipo de combustible seleccionado
+        String tipoCombustible = getIntent().getExtras().getString(getResources().getString(R.string.pasoTipoCombustible));
+        System.out.println("DEBUG RECIBO TIPO COMB " + tipoCombustible);
 
         txtNomG.setText(g.getRotulo());
-        txtPrecioGasoil.setText("Diesel " + g.getGasoleoA() + "€");
-        txtPrecioGasolina.setText("Gasolina " + g.getGasolina95() + "€");
+        txtTipoGasolina.setText(tipoCombustible);
+
+        //precio  del combustible seleccionado
+        Double precioCombustible = presenter.getPrecioCombustible(tipoCombustible, g);
+        txtPrecioGasolina.setText(precioCombustible + "€");
         txtDir.setText(g.getDireccion());
 
         String rotuleImageID = g.getRotulo().toLowerCase();
@@ -94,6 +105,7 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
         }
         imgG.setImageResource(imageID);
 
+        System.out.println("DEBUGGGGGGGGGGGG " +g.getLatitud() + " " + g.getLongitud());
     }
 
     @Override
@@ -126,10 +138,26 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
             //                                          int[] grantResults)
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
+            System.out.println("DEBUG No hay permisos para mostrar ubicacion actual");
             return;
         }
+        UiSettings uiSettings = map.getUiSettings();
+        uiSettings.setZoomControlsEnabled(true);
+
         map.setMyLocationEnabled(true);
-        map.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
+        if(g.getLatitud() == -1 || g.getLongitud() == -1) {
+            // Create a LatLngBounds that includes the city of Adelaide in Australia.
+            LatLng cantabria = new LatLng(43.2, -4.03333);
+            // Move the camera instantly to Sydney with a zoom of 15.
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(cantabria, 8.55f));
+        }else {
+            LatLng latLng =new LatLng(g.getLatitud(), g.getLongitud());
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 12));
+            map.addMarker(new MarkerOptions().position(latLng).title(g.getRotulo())
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
+        }
+
+
     }
 
 

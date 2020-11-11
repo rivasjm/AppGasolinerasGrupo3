@@ -8,6 +8,7 @@ import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.isunican.proyectobase.Presenter.PresenterGasolineras;
 import com.isunican.proyectobase.R;
 import com.isunican.proyectobase.Model.*;
 
@@ -44,6 +45,8 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
     MapView mapDir;
     Gasolinera g;
 
+    PresenterGasolineras presenter;
+
     /**
      * onCreate
      * <p>
@@ -55,7 +58,7 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
-
+        this.presenter = new PresenterGasolineras();
         // muestra el logo en el actionBar
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setIcon(R.drawable.por_defecto_mod);
@@ -77,10 +80,16 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
         txtPrecioGasolina = findViewById(R.id.txtPrecioGasolina);
         txtDir = findViewById(R.id.txtDireccion);
         g = getIntent().getExtras().getParcelable(getResources().getString(R.string.pasoDatosGasolinera));
+        //tipo de combustible seleccionado
+        String tipoCombustible = getIntent().getExtras().getString(getResources().getString(R.string.pasoTipoCombustible));
+        System.out.println("DEBUG RECIBO TIPO COMB " + tipoCombustible);
 
         txtNomG.setText(g.getRotulo());
-        txtTipoGasolina.setText("Tipo de gasolina");
-        txtPrecioGasolina.setText(g.getGasolina95() + "€");
+        txtTipoGasolina.setText(tipoCombustible);
+
+        //precio  del combustible seleccionado
+        Double precioCombustible = presenter.getPrecioCombustible(tipoCombustible, g);
+        txtPrecioGasolina.setText(precioCombustible + "€");
         txtDir.setText(g.getDireccion());
 
         String rotuleImageID = g.getRotulo().toLowerCase();

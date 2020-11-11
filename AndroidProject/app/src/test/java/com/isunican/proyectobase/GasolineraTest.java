@@ -16,7 +16,7 @@ public class GasolineraTest {
     @Before
     public  void setUp(){
         g=new Gasolinera(0, "Torrelavega", "Cantabria", "Calle 1",
-                0.94, 1.06, 1.07, 1.26, 0.97, "CEPSA");
+                0.94, 1.06, 1.07, 1.26, 0.97, "CEPSA", 40, -3);
     }
 
     @Test

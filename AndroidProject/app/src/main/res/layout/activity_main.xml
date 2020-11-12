@@ -20,11 +20,12 @@
     <RelativeLayout
         android:layout_width="300dp"
         android:layout_height="match_parent"
-        >
+        android:layout_gravity="start"
+        android:background="@android:color/white"
+        tools:ignore="MissingConstraints">
 
         <include
-            layout="@layout/main_nav_drawer"
-        />
+            layout="@layout/main_nav_drawer"/>
     </RelativeLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -116,8 +116,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         getSupportActionBar().setIcon(R.drawable.por_defecto_mod);
         getSupportActionBar().hide();
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-
         // Swipe and refresh
         // Al hacer swipe en la lista, lanza la tarea asíncrona de carga de datos
         mSwipeRefreshLayout = findViewById(R.id.swiperefresh);

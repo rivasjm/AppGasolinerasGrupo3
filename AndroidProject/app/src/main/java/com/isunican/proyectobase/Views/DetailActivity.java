@@ -82,7 +82,6 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
         g = getIntent().getExtras().getParcelable(getResources().getString(R.string.pasoDatosGasolinera));
         //tipo de combustible seleccionado
         String tipoCombustible = getIntent().getExtras().getString(getResources().getString(R.string.pasoTipoCombustible));
-        System.out.println("DEBUG RECIBO TIPO COMB " + tipoCombustible);
 
         txtNomG.setText(g.getRotulo());
         txtTipoGasolina.setText(tipoCombustible);
@@ -105,7 +104,6 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
         }
         imgG.setImageResource(imageID);
 
-        System.out.println("DEBUGGGGGGGGGGGG " +g.getLatitud() + " " + g.getLongitud());
     }
 
     @Override
@@ -138,7 +136,6 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
             //                                          int[] grantResults)
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
-            System.out.println("DEBUG No hay permisos para mostrar ubicacion actual");
             return;
         }
         UiSettings uiSettings = map.getUiSettings();

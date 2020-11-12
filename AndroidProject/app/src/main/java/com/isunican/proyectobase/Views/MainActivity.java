@@ -52,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public static final String PRECIO_ASC = "Precio (asc)";
     public static final String FLECHA_ARRIBA = "flecha_arriba";
     public static final String DRAWABLE = "drawable";
+    public static final String CANCELAR = "Cancelar";
 
     PresenterGasolineras presenterGasolineras;
 
@@ -114,8 +115,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setIcon(R.drawable.por_defecto_mod);
         getSupportActionBar().hide();
-
-        Toolbar toolbar = findViewById(R.id.toolbar);
 
         // Swipe and refresh
         // Al hacer swipe en la lista, lanza la tarea asíncrona de carga de datos
@@ -210,7 +209,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     refresca();
                 }
             });
-            builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+            builder.setNegativeButton(CANCELAR, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int id) {
                     dialog.dismiss();
@@ -270,7 +269,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             });
 
-            builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+            builder.setNegativeButton(CANCELAR, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int id) {
                     dialog.dismiss();
@@ -367,7 +366,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     refresca();
                 }
             });
-            builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+            builder.setNegativeButton(CANCELAR, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int id) {
                     dialog.dismiss();

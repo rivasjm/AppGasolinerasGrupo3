@@ -31,6 +31,7 @@ public class ParserJSONGasolinerasTest {
     private JsonReader readerConLatiLong;
     private JsonReader readerSoloConLatitud;
     private JsonReader readerSoloConLongitud;
+    private JsonReader readerArrayUnaGasolinera;
 
     @Before
     public void setUp() {
@@ -59,15 +60,25 @@ public class ParserJSONGasolinerasTest {
                 "\"Rótulo\":\"REPSOL\",\"Localidad\":\"Torrelavega\",\"Provincia\":\"Cantabria\"," +
                 "\"IDEESS\":\"0\",\"Precio Gasoleo A\":\"0,95\",\"Precio Gasolina 95 E5\":\"1,01\"," +
                 "\"Precio Gasolina 98 E5\":\"1,03\",\"Precio Biodiesel\":\"1,11\",\"Precio Gasoleo Premium\":\"0,99\"," +
-                "\"Dirección\":\"Calle 002\"" +
+                "\"Dirección\":\"Calle 002\"" + ",\"Latitud\":\"40\",\"Longitud (WGS84)\":\"-3\""+
                 "}, {" +
                 "\"Rótulo\":\"SHELL\",\"Localidad\":\"Castro Urdiales\",\"Provincia\":\"Cantabria\"," +
                 "\"IDEESS\":\"0\",\"Precio Gasoleo A\":\"0,92\",\"Precio Gasolina 95 E5\":\"1,10\"," +
                 "\"Precio Gasolina 98 E5\":\"1,13\",\"Precio Biodiesel\":\"1,19\",\"Precio Gasoleo Premium\":\"0,97\"," +
-                "\"Dirección\":\"Calle 003\"" +
+                "\"Dirección\":\"Calle 003\"" + ",\"Latitud\":\"40\",\"Longitud (WGS84)\":\"-3\""+
                 "}]}";
 
         readerGasolineras = new JsonReader(new StringReader(jsonGasolineras));
+
+        //String con una lista con una sola gasolinera en formato JSON
+        String jsonArrayUnaGasolinera = "{ \"ListaEESSPrecio\" : [{" +
+                "\"Rótulo\":\"REPSOL\",\"Localidad\":\"Castro Urdiales\",\"Provincia\":\"Cantabria\"," +
+                "\"IDEESS\":\"0\",\"Precio Gasoleo A\":\"0,92\",\"Precio Gasolina 95 E5\":\"1,10\"," +
+                "\"Precio Gasolina 98 E5\":\"1,13\",\"Precio Biodiesel\":\"1,19\",\"Precio Gasoleo Premium\":\"0,97\"," +
+                "\"Dirección\":\"Calle 003\"" + ",\"Latitud\":\"40\",\"Longitud (WGS84)\":\"-3\""+
+                "}]}";
+
+        readerArrayUnaGasolinera = new JsonReader(new StringReader(jsonArrayUnaGasolinera));
 
         //Gasolinera en formato Json con latitud y longitud
         String jsonLatiLong = "{" +
@@ -206,6 +217,8 @@ public class ParserJSONGasolinerasTest {
         assertEquals(1.03, gasolineras.get(0).getGasolina98(), 0.001);
         assertEquals(0.99, gasolineras.get(0).getGasoleoPremium(), 0.001);
         assertEquals(1.11, gasolineras.get(0).getBiodiesel(), 0.001);
+        assertEquals(40, gasolineras.get(0).getLatitud(), 0.001);
+        assertEquals(-3, gasolineras.get(0).getLongitud(), 0.001);
 
         assertEquals("Castro Urdiales", gasolineras.get(1).getLocalidad());
         assertEquals("Cantabria", gasolineras.get(1).getProvincia());
@@ -216,6 +229,26 @@ public class ParserJSONGasolinerasTest {
         assertEquals(1.13, gasolineras.get(1).getGasolina98(), 0.001);
         assertEquals(0.97, gasolineras.get(1).getGasoleoPremium(), 0.001);
         assertEquals(1.19, gasolineras.get(1).getBiodiesel(), 0.001);
+        assertEquals(40, gasolineras.get(1).getLatitud(), 0.001);
+        assertEquals(-3, gasolineras.get(1).getLongitud(), 0.001);
+
+        //Caso donde hay una lista de 1 gasolinera
+        try {
+            gasolineras = ParserJSONGasolineras.readArrayGasolineras(readerArrayUnaGasolinera);
+        } catch (IOException e) {
+            fail();
+        }
+        assertEquals("Castro Urdiales", gasolineras.get(0).getLocalidad());
+        assertEquals("Cantabria", gasolineras.get(0).getProvincia());
+        assertEquals("Calle 003", gasolineras.get(0).getDireccion());
+
+        assertEquals(0.92, gasolineras.get(0).getGasoleoA(), 0.001);
+        assertEquals(1.10, gasolineras.get(0).getGasolina95(), 0.001);
+        assertEquals(1.13, gasolineras.get(0).getGasolina98(), 0.001);
+        assertEquals(0.97, gasolineras.get(0).getGasoleoPremium(), 0.001);
+        assertEquals(1.19, gasolineras.get(0).getBiodiesel(), 0.001);
+        assertEquals(40, gasolineras.get(0).getLatitud(), 0.001);
+        assertEquals(-3, gasolineras.get(0).getLongitud(), 0.001);
 
 
         //caso donde el Json pasado no tiene formato correcto

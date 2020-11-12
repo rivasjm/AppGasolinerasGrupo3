@@ -165,11 +165,15 @@ public class ParserJSONGasolineras {
 
     public static String leerCombustiblePorDefecto(Activity a) {
         FileInputStream fis = null;
-        String resultado = "", combustible = "";
         try {
             fis = a.openFileInput("datos.txt");
-            InputStreamReader isr = new InputStreamReader(fis);
-            BufferedReader br = new BufferedReader(isr);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        String resultado = "";
+        String combustible = "";
+        try (InputStreamReader isr = new InputStreamReader(fis);
+             BufferedReader br = new BufferedReader(isr)){
             StringBuilder sb = new StringBuilder();
             String text;
             while ((text = br.readLine()) != null) {
@@ -187,15 +191,14 @@ public class ParserJSONGasolineras {
             } else if(resultado.contains("Gasóleo Premium")) {
                 combustible = "Gasóleo Premium";
             }
-        } catch (FileNotFoundException e) {
-
         } catch (IOException e) {
-
+            e.getStackTrace();
         } finally {
             if (fis != null) {
                 try {
                     fis.close();
                 } catch (IOException e) {
+                    e.getStackTrace();
                 }
             }
         }
@@ -205,15 +208,18 @@ public class ParserJSONGasolineras {
     public static void escribirCombustiblePorDefecto(String combustible, Activity a) {
         FileOutputStream fos = null;
         try {
-            fos = a.openFileOutput("datos.txt",a.MODE_PRIVATE);
+            fos = a.openFileOutput("datos.txt",Activity.MODE_PRIVATE);
             fos.write(combustible.getBytes());
         } catch (FileNotFoundException e) {
+            e.getStackTrace();
         } catch (IOException e) {
+            e.getStackTrace();
         } finally {
             if (fos != null) {
                 try {
                     fos.close();
                 } catch (IOException e) {
+                    e.getStackTrace();
                 }
             }
         }

@@ -409,7 +409,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                         myIntent.putExtra(getResources().getString(R.string.pasoTipoCombustible),
                                 tipoCombustible);
-                        System.out.println("DEBUG PASO TIPO COMB " + "HOLA " +tipoCombustible);
                         MainActivity.this.startActivity(myIntent);
 
                     }

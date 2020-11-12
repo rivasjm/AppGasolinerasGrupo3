@@ -196,4 +196,16 @@ public class PresenterGasolineras {
         }
         return precio;
     }
+
+    /**
+     * Metodo para conocer la latitud o longitud de la gasolinera
+     * que se pasa como parametro.
+     * @param g gasolinera de la que se desea conocer la latitud o longitud
+     * @param latitudLongitud String en el cual se indicara si se quiere que se
+     * retorne la latitud o longitud.
+     * @return el valor del parametro solicitado, es decir, la latitud o la longitud
+     */
+    public double getLatitudLongitud(Gasolinera g, String latitudLongitud) {
+        return -1;
+    }
 }

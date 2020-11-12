@@ -3,18 +3,14 @@ package com.isunican.proyectobase.Utilities;
 import com.isunican.proyectobase.Model.*;
 
 import android.app.Activity;
-import android.content.Context;
 import android.util.JsonReader;
 import android.util.JsonToken;
 import android.util.Log;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -208,7 +204,7 @@ public class ParserJSONGasolineras {
     public static void escribirCombustiblePorDefecto(String combustible, Activity a) {
         FileOutputStream fos = null;
         try {
-            fos = a.openFileOutput("datos.txt",Activity.MODE_PRIVATE);
+            fos = a.openFileOutput("datos.txt",android.content.Context.MODE_PRIVATE);
             fos.write(combustible.getBytes());
         } catch (FileNotFoundException e) {
             e.getStackTrace();

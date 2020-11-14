@@ -1,27 +1,25 @@
 package com.isunican.proyectobase;
 
-import android.content.Context;
 import android.view.Gravity;
 
-import androidx.test.platform.app.InstrumentationRegistry;
+import androidx.test.espresso.contrib.DrawerActions;
+import androidx.test.espresso.contrib.NavigationViewActions;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.runner.AndroidJUnit4;
 
 import com.isunican.proyectobase.Views.MainActivity;
 
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
-import static androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.contrib.DrawerMatchers.isClosed;
+import static androidx.test.espresso.contrib.DrawerMatchers.isOpen;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.RootMatchers.isPlatformPopup;
-import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withSpinnerText;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
@@ -46,65 +44,218 @@ public class EstablecerTipoDeCombustibleUITest {
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
 
     @Test
-    public void establecerTipoCombustibleTest() {
+    public void establecerTipoCombustibleTest() throws InterruptedException {
 
-        onView(withId(R.id.navigationDrawerButton)).perform(click());
-
-        onView(withId(R.id.buttonConfigurar)).check(matches(withText("Configuración")));
-
-        onView(withId(R.layout.nav_drawer_layout)).check(matches(isDisplayed()));
-
-        onView(withId(R.id.buttonConfigurar)).perform(click());
-
-        /*
-        Thread.sleep(2000);
-
-        onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
-        onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_slideshow));
-        Thread.sleep(1000);
-
-        onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
-        onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_send));
-        Thread.sleep(1000);
-
-        onView(withId(R.id.drawer_layout)).perform(DrawerActions.open());
-        onView(withId(R.id.nav_view)).perform(NavigationViewActions.navigateTo(R.id.nav_gallery));
-        Thread.sleep(1000);
-
-
-
-        openActionBarOverflowOrOptionsMenu(InstrumentationRegistry.getInstrumentation().getContext());
-        onView(withText("Filtrar por Semana Actual")).perform(click());
-
-
-        // Check drawer
-        is closed
-        onView(withId(R.layout.nav_drawer_layout)).check(matches(isClosed(Gravity.START)));
-
-        // Click drawer icon
-        onView(
-                withContentDescription(
-                        scenario.getToolbarNavigationContentDescriptor()
-                )
-        ).perform(click());
-
-        // Check if drawer is open
-        onView(withId(R.id.drawer_layout)).check(matches(isOpen(Gravity.START)));
-
-        // Open Drawer to click on navigation.
+        // Caso UIT.1A
+        // Se pulsa sobre el icono de las tres barras de arriba a la izquierda para abrir el Drawer Layout
         onView(withId(R.id.drawer_layout))
-                .check(matches(isClosed(Gravity.LEFT))) // Left Drawer should be closed.
+                .check(matches(isClosed(Gravity.START))) // Start Drawer should be closed.
                 .perform(DrawerActions.open()); // Open Drawer
 
+        // Se pulsa sobre el icono de las tres barras de arriba a la izquierda para abrir el Drawer Layout
+        onView(withId(R.id.drawer_layout))
+                .check(matches(isOpen(Gravity.START))); // Start Drawer should be open.
+
+        //onView(withId(R.id.imagenDrawer)).perform(click());
+
         // Start the screen of your activity.
-        onView(withId(R.id.nav_view))
-                .perform(NavigationViewActions.navigateTo(R.id.your_navigation_menu_item));
+        onView(withId(R.layout.nav_drawer_layout))
+                .perform(NavigationViewActions.navigateTo(R.id.combustible_por_defecto));
 
         // Check that you Activity was opened.
-        String expectedNoStatisticsText = InstrumentationRegistry.getTargetContext()
-                .getString(R.string.no_item_available);
-        onView(withId(R.id.no_statistics)).check(matches(withText(expectedNoStatisticsText)));
-        */
+        onView(withId(R.id.btnConfiguracion)).check(matches(withText("Configuración")));
+
+        // Caso UIT.1B
+        onView(withId(R.id.btnConfiguracion)).perform(click());
+
+        onView(withId(R.id.defecto)).check(matches(withText("Selecciona un tipo de combustible por defecto")));
+
+        //onView(withId(R.id.porDefecto)).check(matches(withText("Combustible actual: ")));
+
+        // Antes de cada test se pulsa el spinner para ver su contenido
+        onView((withId(R.id.combustible_por_defecto))).perform(click());
+
+        // Se comprueba seleccionando cada elemento existente dentro del spinner
+        // y se comprueba su correspondiente nombre si es el correcto
+        onData(allOf(is(instanceOf(String.class)),
+                is("Combustible"))).inRoot(isPlatformPopup()).perform(click());
+        onView(withId(R.id.combustible_por_defecto)).check(matches(withSpinnerText(containsString("Combustible"))));
+
+        onView((withId(R.id.combustible_por_defecto))).perform(click());
+        onData(allOf(is(instanceOf(String.class)),
+                is("Gasóleo A"))).inRoot(isPlatformPopup()).perform(click());
+        onView(withId(R.id.combustible_por_defecto)).check(matches(withSpinnerText(containsString("Gasóleo A"))));
+
+        onView((withId(R.id.combustible_por_defecto))).perform(click());
+        onData(allOf(is(instanceOf(String.class)),
+                is("Gasolina 95"))).inRoot(isPlatformPopup()).perform(click());
+        onView(withId(R.id.combustible_por_defecto)).check(matches(withSpinnerText(containsString("Gasolina 95"))));
+
+        onView((withId(R.id.combustible_por_defecto))).perform(click());
+        onData(allOf(is(instanceOf(String.class)),
+                is("Gasolina 98"))).inRoot(isPlatformPopup()).perform(click());
+        onView(withId(R.id.combustible_por_defecto)).check(matches(withSpinnerText(containsString("Gasolina 98"))));
+
+        onView((withId(R.id.combustible_por_defecto))).perform(click());
+        onData(allOf(is(instanceOf(String.class)),
+                is("Biodiésel"))).inRoot(isPlatformPopup()).perform(click());
+        onView(withId(R.id.combustible_por_defecto)).check(matches(withSpinnerText(containsString("Biodiésel"))));
+
+        onView((withId(R.id.combustible_por_defecto))).perform(click());
+        onData(allOf(is(instanceOf(String.class)),
+                is("Gasóleo Premium"))).inRoot(isPlatformPopup()).perform(click());
+        onView(withId(R.id.combustible_por_defecto)).check(matches(withSpinnerText(containsString("Gasóleo Premium"))));
+
+        // Caso UIT.1C
+        // Se comprueban que los botones aplicar y cancelar son los correctos
+        onView(withText("Cancelar")).check(matches(withText("Cancelar")));
+
+        onView(withText("Aplicar")).check(matches(withText("Aplicar")));
+
+        // Caso UIT.1G
+        // Se comprueba que al pulsar el boton Cancelar no efectua ningun cambio.
+        // Se pulsa sobre la opción “Cancelar” de la ventana flotante luego de haber seleccionado un tipo de combustible del desplegable.
+        onView(withText("Cancelar")).perform(click());
+
+        // Comprobamos que el combustible establecido es el mismo que al principio, es decir, Gasoleo A
+        onData(anything())
+                .inAdapterView(withId(R.id.listViewGasolineras))
+                .atPosition(0)
+                .onChildView(withId(R.id.textViewTipoGasolina))
+                .check(matches(withText("Gasóleo A")));
+
+
+        // Caso UIT.1F
+        // Se comprueba que al pulsar el boton Cancelar no efectua ningun cambio.
+        // Se pulsa sobre la opción “Cancelar” de la ventana flotante sin haber seleccionado ningún combustible del desplegable.
+        onView(withId(R.id.btnConfiguracion)).perform(click());
+
+        onView((withId(R.id.combustible_por_defecto))).perform(click());
+
+        onView(withText("Cancelar")).perform(click());
+
+        onData(anything())
+                .inAdapterView(withId(R.id.listViewGasolineras))
+                .atPosition(10)
+                .onChildView(withId(R.id.textViewTipoGasolina))
+                .check(matches(withText("Gasóleo A")));
+
+
+        // Caso UIT.1E
+        // Se comprueba que al pulsar el boton Aplicar no efectua ningun cambio.
+        // Se pulsa sobre la opción “Aplicar” de la ventana flotante sin haber seleccionado ningún combustible del desplegable.
+        onView(withId(R.id.btnConfiguracion)).perform(click());
+
+        onView((withId(R.id.combustible_por_defecto))).perform(click());
+
+        onView(withText("Aplicar")).perform(click());
+
+        onData(anything())
+                .inAdapterView(withId(R.id.listViewGasolineras))
+                .atPosition(15)
+                .onChildView(withId(R.id.textViewTipoGasolina))
+                .check(matches(withText("Gasóleo A")));
+
+
+        /*
+         * Se comprueba establecer cada tipo de combustible y probar su correcto funcionamiento
+         * pulsando sobre una gasolineras de la lista despues de que se haya refrescado correctamente.
+         *
+         * Excepto para el tipo de combustible Gasolina 98 en el cual se va a comporbar que todas las gasolineras
+         * de la lista son del tipo de combustible establecido, es decir, gasolina 98.
+         * Casos UIT.1D
+         */
+        /** gasoleoA_Test() **/
+
+
+        // Antes de cada test se pulsa el spinner para ver su contenido
+        onView((withId(R.id.combustible_por_defecto))).perform(click());
+
+        // Se selecciona el segundo tipo de combustible que se corresponde con Gasoleo A
+        onData(allOf(is(instanceOf(String.class)),
+                is("Gasóleo A"))).inRoot(isPlatformPopup()).perform(click());
+
+        // Se pulsa el botón Aceptar dentro del menú desplegable
+        onView(withText("Aplicar")).perform(click());
+
+        // Se comprueba que el tipo de combustible se ha cambiado correctamente accediendo
+        // a la primera gasolinera y comprobando su textViewTipoGasolina
+        onData(anything())
+                .inAdapterView(withId(R.id.listViewGasolineras))
+                .atPosition(5)
+                .onChildView(withId(R.id.textViewTipoGasolina))
+                .check(matches(withText("Gasóleo A")));
+
+        /** gasolina95_Test() **/
+
+        // Antes de cada test se pulsa el spinner para ver su contenido
+        onView((withId(R.id.combustible_por_defecto))).perform(click());
+
+        // Se selecciona el segundo tipo de combustible que se corresponde con Gasolina 95
+        onData(allOf(is(instanceOf(String.class)),
+                is("Gasolina 95"))).inRoot(isPlatformPopup()).perform(click());
+
+        onView(withText("Aplicar")).perform(click());
+
+        onData(anything())
+                .inAdapterView(withId(R.id.listViewGasolineras))
+                .atPosition(0)
+                .onChildView(withId(R.id.textViewTipoGasolina))
+                .check(matches(withText("Gasolina 95")));
+
+        /** gasolina98_Test() **/
+
+        // Antes de cada test se pulsa el spinner para ver su contenido
+        onView((withId(R.id.combustible_por_defecto))).perform(click());
+
+        // Se selecciona el segundo tipo de combustible que se corresponde con Gasolina 98
+        onData(allOf(is(instanceOf(String.class)),
+                is("Gasolina 98"))).inRoot(isPlatformPopup()).perform(click());
+
+        onView(withText("Aplicar")).perform(click());
+
+        for (int i=0; i<50; i++) {
+            onData(anything())
+                    .inAdapterView(withId(R.id.listViewGasolineras))
+                    .atPosition(i)
+                    .onChildView(withId(R.id.textViewTipoGasolina))
+                    .check(matches(withText("Gasolina 98")));
+        }
+
+
+        /** biodiésel_Test() **/
+
+        // Antes de cada test se pulsa el spinner para ver su contenido
+        onView((withId(R.id.combustible_por_defecto))).perform(click());
+
+        // Se selecciona el segundo tipo de combustible que se corresponde con Biodiésel
+        onData(allOf(is(instanceOf(String.class)),
+                is("Biodiésel"))).inRoot(isPlatformPopup()).perform(click());
+
+        onView(withText("Aplicar")).perform(click());
+
+        onData(anything())
+                .inAdapterView(withId(R.id.listViewGasolineras))
+                .atPosition(1)
+                .onChildView(withId(R.id.textViewTipoGasolina))
+                .check(matches(withText("Biodiésel")));
+
+        /**gasóleoPremium_Test() **/
+
+        // Antes de cada test se pulsa el spinner para ver su contenido
+        onView((withId(R.id.combustible_por_defecto))).perform(click());
+
+        // Se selecciona el segundo tipo de combustible que se corresponde con Gasóleo Premium
+        onData(allOf(is(instanceOf(String.class)),
+                is("Gasóleo Premium"))).inRoot(isPlatformPopup()).perform(click());
+
+        onView(withText("Aplicar")).perform(click());
+
+        onData(anything())
+                .inAdapterView(withId(R.id.listViewGasolineras))
+                .atPosition(5)
+                .onChildView(withId(R.id.textViewTipoGasolina))
+                .check(matches(withText("Gasóleo Premium")));
 
     }
 }

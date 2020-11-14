@@ -5,7 +5,6 @@ import com.isunican.proyectobase.Model.*;
 import com.isunican.proyectobase.R;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -39,7 +38,6 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 
 /*
@@ -73,7 +71,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button buttonFiltros;
     Button buttonOrden;
     ImageView config;
-    ImageView navigationDrawerButton;
 
 
     //DRAWER LAYOUT

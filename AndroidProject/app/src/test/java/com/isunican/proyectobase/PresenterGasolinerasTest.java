@@ -171,5 +171,11 @@ public class PresenterGasolinerasTest {
         pr.ordernarGasolineras(false, "Gasóleo Premium");
         assertEquals(1.16, pr.getGasolineras().get(0).getGasoleoPremium(), 0.00001);
     }
+
+    @Test
+    public void leerCombustiblePorDefectoTest(){
+        String ruta="Datos_test.txt";
+
+    }
 }//class
 

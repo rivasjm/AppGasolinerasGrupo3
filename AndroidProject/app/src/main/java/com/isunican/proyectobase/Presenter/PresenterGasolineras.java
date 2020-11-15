@@ -7,6 +7,12 @@ import com.isunican.proyectobase.Model.*;
 import com.isunican.proyectobase.Utilities.ParserJSONGasolineras;
 import com.isunican.proyectobase.Utilities.RemoteFetch;
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -199,4 +205,65 @@ public class PresenterGasolineras {
         return precio;
     }
 
+    public String lecturaCombustiblePorDefecto(Activity a, String fichero) {
+        FileInputStream fis = null;
+        try {
+            fis = a.openFileInput(fichero);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        String resultado = "";
+        String combustible = "";
+        try (InputStreamReader isr = new InputStreamReader(fis);
+             BufferedReader br = new BufferedReader(isr)){
+            StringBuilder sb = new StringBuilder();
+            String text;
+            while ((text = br.readLine()) != null) {
+                sb.append(text).append("\n");
+            }
+            resultado = sb.toString();
+            if(resultado.contains("Gasóleo A")) {
+                combustible = "Gasóleo A";
+            } else if(resultado.contains("Gasolina 95")) {
+                combustible = "Gasolina 95";
+            } else if(resultado.contains("Gasolina 98")) {
+                combustible = "Gasolina 98";
+            } else if(resultado.contains("Biodiésel")) {
+                combustible = "Biodiésel";
+            } else if(resultado.contains("Gasóleo Premium")) {
+                combustible = "Gasóleo Premium";
+            }
+        } catch (IOException e) {
+            e.getStackTrace();
+        } finally {
+            if (fis != null) {
+                try {
+                    fis.close();
+                } catch (IOException e) {
+                    e.getStackTrace();
+                }
+            }
+        }
+        return combustible;
+    }
+
+    public void escrituraCombustiblePorDefecto(String combustible, Activity a, String fichero) {
+        FileOutputStream fos = null;
+        try {
+            fos = a.openFileOutput(fichero,android.content.Context.MODE_PRIVATE);
+            fos.write(combustible.getBytes());
+        } catch (FileNotFoundException e) {
+            e.getStackTrace();
+        } catch (IOException e) {
+            e.getStackTrace();
+        } finally {
+            if (fos != null) {
+                try {
+                    fos.close();
+                } catch (IOException e) {
+                    e.getStackTrace();
+                }
+            }
+        }
+    }
 }

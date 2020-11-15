@@ -5,13 +5,15 @@ import com.isunican.proyectobase.Model.*;
 import com.isunican.proyectobase.R;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -36,7 +38,6 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 
 /*
@@ -53,6 +54,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public static final String FLECHA_ARRIBA = "flecha_arriba";
     public static final String DRAWABLE = "drawable";
     public static final String CANCELAR = "Cancelar";
+    public static final String FICHERO = "datos.txt";
 
     PresenterGasolineras presenterGasolineras;
 
@@ -70,8 +72,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button buttonFiltros;
     Button buttonOrden;
     ImageView config;
-    ImageView navigationDrawerButton;
 
+
+    //DRAWER LAYOUT
+    DrawerLayout drawerLayout;
 
     /*Variables para modificar filtros y ordenaciones*/
     //orden ascendente por defecto
@@ -97,20 +101,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         this.presenterGasolineras = new PresenterGasolineras();
 
-        //Lectura inicial del tipo de combustible por defecto
-        if(presenterGasolineras.lecturaCombustiblePorDefecto(this).equals("")) {
-            presenterGasolineras.escrituraCombustiblePorDefecto("Gasóleo A", this);
+        try {
+            //Lectura inicial del tipo de combustible por defecto
+            tipoCombustible = presenterGasolineras.lecturaCombustiblePorDefecto(this, FICHERO);
+        } catch(Exception e) {
+            presenterGasolineras.escrituraCombustiblePorDefecto("Gasóleo A", this, FICHERO);
         }
-        tipoCombustible = presenterGasolineras.lecturaCombustiblePorDefecto(this);
+
+        tipoCombustible = presenterGasolineras.lecturaCombustiblePorDefecto(this, FICHERO);
 
         // Barra de progreso
         // https://materialdoc.com/components/progress/
         progressBar = new ProgressBar(MainActivity.this, null, android.R.attr.progressBarStyleLarge);
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(100, 100);
-        params.addRule(RelativeLayout.CENTER_IN_PARENT);
-        RelativeLayout layout = findViewById(R.id.activity_precio_gasolina);
-        layout.addView(progressBar, params);
-
+        drawerLayout = findViewById(R.id.drawer_layout);
         // Muestra el logo en el actionBar
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setIcon(R.drawable.por_defecto_mod);
@@ -135,13 +138,78 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         buttonFiltros = findViewById(R.id.buttonFiltros);
         buttonOrden = findViewById(R.id.buttonOrden);
         config = findViewById(R.id.info);
-        navigationDrawerButton = findViewById(R.id.navigationDrawerButton);
         buttonFiltros.setOnClickListener(this);
         buttonOrden.setOnClickListener(this);
         config.setOnClickListener(this);
-        navigationDrawerButton.setOnClickListener(this);
+
     }
 
+    public void clickMenu(View view){
+        openDrawer(drawerLayout);
+    }
+
+    public void clickConfiguracion(View view){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        // Set the dialog title
+        builder.setTitle("Configuración");
+        // Specify the list array, the items to be selected by default (null for none),
+
+        // Vista escondida del nuevo layout para los diferentes spinners a implementar para los filtros
+        View mView = getLayoutInflater().inflate(R.layout.combustible_por_defecto_layout, null);
+
+        final Spinner mSpinner = (Spinner) mView.findViewById(R.id.combustible_por_defecto);    // New spinner object
+        final TextView comb = mView.findViewById(R.id.porDefecto);
+        comb.setText("Combustible actual: "+presenterGasolineras.lecturaCombustiblePorDefecto(ac, FICHERO));
+        // El spinner creado contiene todos los items del array de Strings "operacionesArray"
+        ArrayAdapter<String> adapterSpinner = new ArrayAdapter<>(MainActivity.this,
+                android.R.layout.simple_spinner_item,
+                getResources().getStringArray(R.array.operacionesArray));
+        // Al abrir el spinner la lista se abre hacia abajo
+        adapterSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mSpinner.setAdapter(adapterSpinner);
+
+        // Set the action buttons
+        builder.setPositiveButton("Aplicar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked Aceptar, save the item selected in the spinner
+                // If the user does not select nothing, don't do anything
+                if (!mSpinner.getSelectedItem().toString().equalsIgnoreCase("Combustible")) {
+                    tipoCombustible = mSpinner.getSelectedItem().toString();
+                    presenterGasolineras.escrituraCombustiblePorDefecto(mSpinner.getSelectedItem().toString(), ac, FICHERO);
+                    tipoCombustible = presenterGasolineras.lecturaCombustiblePorDefecto(ac, FICHERO);
+                }
+                refresca();
+            }
+        });
+        builder.setNegativeButton(CANCELAR, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.dismiss();
+            }
+        });
+        builder.setView(mView);
+        builder.create();
+        builder.show();
+    }
+
+    public static void openDrawer(DrawerLayout drawerLayout){
+        drawerLayout.openDrawer(GravityCompat.START);
+    }
+
+    private static void closeDrawer(DrawerLayout drawerLayout){
+        //close drawer layout
+        if(drawerLayout.isDrawerOpen(GravityCompat.START)){
+            drawerLayout.closeDrawer(GravityCompat.START);
+        }
+    }
+
+    @Override
+    protected void onPause(){
+        super.onPause();
+        closeDrawer(drawerLayout);
+    }
 
     /**
      * Menú action bar
@@ -310,7 +378,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             VMLP.y = 163;
             dialog.show();
 
-        } else if(v.getId() == R.id.navigationDrawerButton) {
+        /*}else if(v.getId() == R.id.navigationDrawerButton) {
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             // Vista escondida del nuevo layout para los diferentes spinners a implementar para los filtros
@@ -328,53 +396,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             dialog.show();
             dialog.getWindow().setLayout(650,1000);
 
-            buttonConf.setOnClickListener((View.OnClickListener)ac);
+            buttonConf.setOnClickListener((View.OnClickListener)ac);*/
 
-        } else if(v.getId() == R.id.buttonConfigurar) {
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-            // Set the dialog title
-            builder.setTitle("Configuración");
-            // Specify the list array, the items to be selected by default (null for none),
-
-            // Vista escondida del nuevo layout para los diferentes spinners a implementar para los filtros
-            View mView = getLayoutInflater().inflate(R.layout.combustible_por_defecto_layout, null);
-
-            final Spinner mSpinner = (Spinner) mView.findViewById(R.id.combustible_por_defecto);    // New spinner object
-            final TextView comb = mView.findViewById(R.id.porDefecto);
-            comb.setText("Combustible actual: "+presenterGasolineras.lecturaCombustiblePorDefecto(ac));
-            // El spinner creado contiene todos los items del array de Strings "operacionesArray"
-            ArrayAdapter<String> adapterSpinner = new ArrayAdapter<>(MainActivity.this,
-                    android.R.layout.simple_spinner_item,
-                    getResources().getStringArray(R.array.operacionesArray));
-            // Al abrir el spinner la lista se abre hacia abajo
-            adapterSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            mSpinner.setAdapter(adapterSpinner);
-
-            // Set the action buttons
-            builder.setPositiveButton("Aplicar", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int id) {
-                    // User clicked Aceptar, save the item selected in the spinner
-                    // If the user does not select nothing, don't do anything
-                    if (!mSpinner.getSelectedItem().toString().equalsIgnoreCase("Combustible")) {
-                        tipoCombustible = mSpinner.getSelectedItem().toString();
-                        presenterGasolineras.escrituraCombustiblePorDefecto(mSpinner.getSelectedItem().toString(), ac);
-                        tipoCombustible = presenterGasolineras.lecturaCombustiblePorDefecto(ac);
-                    }
-                    refresca();
-                }
-            });
-            builder.setNegativeButton(CANCELAR, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int id) {
-                    dialog.dismiss();
-                }
-            });
-            builder.setView(mView);
-            builder.create();
-            builder.show();
         }
     }
 

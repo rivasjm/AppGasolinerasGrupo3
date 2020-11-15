@@ -5,18 +5,14 @@ import android.util.JsonReader;
 import android.util.JsonToken;
 import android.util.Log;
 import android.app.Activity;
-import android.content.Context;
 import android.util.JsonReader;
 import android.util.JsonToken;
 import android.util.Log;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -170,66 +166,4 @@ public class ParserJSONGasolineras {
         }
     }
 
-    public static String leerCombustiblePorDefecto(Activity a) {
-        FileInputStream fis = null;
-        try {
-            fis = a.openFileInput("datos.txt");
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        String resultado = "";
-        String combustible = "";
-        try (InputStreamReader isr = new InputStreamReader(fis);
-             BufferedReader br = new BufferedReader(isr)){
-            StringBuilder sb = new StringBuilder();
-            String text;
-            while ((text = br.readLine()) != null) {
-                sb.append(text).append("\n");
-            }
-            resultado = sb.toString();
-            if(resultado.contains("Gasóleo A")) {
-                combustible = "Gasóleo A";
-            } else if(resultado.contains("Gasolina 95")) {
-                combustible = "Gasolina 95";
-            } else if(resultado.contains("Gasolina 98")) {
-                combustible = "Gasolina 98";
-            } else if(resultado.contains("Biodiésel")) {
-                combustible = "Biodiésel";
-            } else if(resultado.contains("Gasóleo Premium")) {
-                combustible = "Gasóleo Premium";
-            }
-        } catch (IOException e) {
-            e.getStackTrace();
-        } finally {
-            if (fis != null) {
-                try {
-                    fis.close();
-                } catch (IOException e) {
-                    e.getStackTrace();
-                }
-            }
-        }
-        return combustible;
-    }
-
-    public static void escribirCombustiblePorDefecto(String combustible, Activity a) {
-        FileOutputStream fos = null;
-        try {
-            fos = a.openFileOutput("datos.txt",Activity.MODE_PRIVATE);
-            fos.write(combustible.getBytes());
-        } catch (FileNotFoundException e) {
-            e.getStackTrace();
-        } catch (IOException e) {
-            e.getStackTrace();
-        } finally {
-            if (fos != null) {
-                try {
-                    fos.close();
-                } catch (IOException e) {
-                    e.getStackTrace();
-                }
-            }
-        }
-
-    }
 }

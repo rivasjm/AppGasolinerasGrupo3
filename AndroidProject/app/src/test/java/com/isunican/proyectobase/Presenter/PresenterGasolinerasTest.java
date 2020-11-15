@@ -28,7 +28,7 @@ public class PresenterGasolinerasTest {
         gasolineras.add(new Gasolinera(0, "Castro", "Cantabria", "Calle 1",
                 0.91, 1.06, 1.11, 1.31, 1.01, "CEPSA", 40, -3));
         gasolineras.add(new Gasolinera(0, "Viesgo", "Cantabria", "Calle 2",
-                1.01, 1.09, 1.11, 1.26, 1.16, "Respol", 40, -3));
+                1.01, 1.09, 1.11, 1.26, 1.16, "Repsol", 40, -3));
         gasolineras.add(new Gasolinera(0, "Puente San Miguel", "Cantabria", "Calle 1",
                 0.92, 1.12, 1.09, 1.26, 0.97, "Shell", 40, -3));
         gasolineras.add(new Gasolinera(0, "Tanos", "Cantabria", "Calle 3",

@@ -199,11 +199,4 @@ public class PresenterGasolineras {
         return precio;
     }
 
-    public String lecturaCombustiblePorDefecto(Activity a) {
-        return ParserJSONGasolineras.leerCombustiblePorDefecto(a);
-    }
-
-    public void escrituraCombustiblePorDefecto(String combustible, Activity a) {
-        ParserJSONGasolineras.escribirCombustiblePorDefecto(combustible, a);
-    }
 }

@@ -1,56 +1,56 @@
-package com.isunican.proyectobase;
+package com.isunican.proyectobase.Views;
 
 import android.Manifest;
-import android.content.Context;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.test.platform.app.InstrumentationRegistry;
-
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import static androidx.test.espresso.Espresso.onIdle;
-import static androidx.test.espresso.Espresso.pressBack;
-import static androidx.test.espresso.action.ViewActions.pressBackUnconditionally;
-import static androidx.test.espresso.action.ViewActions.pressMenuKey;
-import static androidx.test.espresso.action.ViewActions.typeTextIntoFocusedView;
-import static androidx.test.espresso.matcher.RootMatchers.isPlatformPopup;
-import static org.hamcrest.Matchers.allOf;
-import static org.hamcrest.Matchers.anything;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.*;
+import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.rule.GrantPermissionRule;
 import androidx.test.runner.AndroidJUnit4;
 
 import com.isunican.proyectobase.Model.Gasolinera;
-import com.isunican.proyectobase.Views.DetailActivity;
-import com.isunican.proyectobase.Views.MainActivity;
+import com.isunican.proyectobase.R;
 
+import org.junit.Before;
 import org.junit.Rule;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.Espresso.pressBack;
 import static androidx.test.espresso.action.ViewActions.click;
-
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.RootMatchers.isPlatformPopup;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.anything;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
 
 @RunWith(AndroidJUnit4.class)
 
-public class US_mejorar_la_vista_detalleUITest {
+public class ConsultarInformacionGasolineraUITest {
 
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
     @Rule
-    public GrantPermissionRule permissionRule = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION);
+    public GrantPermissionRule permissionRule = GrantPermissionRule.grant(Manifest.permission.ACCESS_FINE_LOCATION);
+
+    @Before
+    public void setUp(){
+        // Se pulsa el boton para acceder a los Filtros.
+        onView(ViewMatchers.withId(R.id.buttonFiltros)).perform(click());
+        // Antes de cada test se pulsa el spinner para ver su contenido
+        onView((withId(R.id.spinner))).perform(click());
+        // Se selecciona el segundo tipo de combustible que se corresponde con Gasoleo A
+        onData(allOf(is(instanceOf(String.class)),
+                is("Gasóleo A"))).inRoot(isPlatformPopup()).perform(click());
+        // Se pulsa el botón Aceptar dentro del menú desplegable
+        onView(withText("Aceptar")).perform(click());
+    }
 
     @Test
     public void gasolineraTest(){

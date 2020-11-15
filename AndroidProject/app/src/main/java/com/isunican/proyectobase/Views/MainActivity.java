@@ -180,6 +180,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     presenterGasolineras.escrituraCombustiblePorDefecto(mSpinner.getSelectedItem().toString(), ac, FICHERO);
                     tipoCombustible = presenterGasolineras.lecturaCombustiblePorDefecto(ac, FICHERO);
                 }
+                closeDrawer(drawerLayout);
                 refresca();
             }
         });
@@ -187,7 +188,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onClick(DialogInterface dialog, int id) {
                 dialog.dismiss();
+                closeDrawer(drawerLayout);
             }
+
         });
         builder.setView(mView);
         builder.create();

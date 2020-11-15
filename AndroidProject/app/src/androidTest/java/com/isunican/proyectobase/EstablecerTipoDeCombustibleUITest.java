@@ -1,6 +1,7 @@
 package com.isunican.proyectobase;
 
 import android.view.Gravity;
+import android.widget.ListView;
 
 import androidx.test.espresso.contrib.DrawerActions;
 import androidx.test.espresso.contrib.NavigationViewActions;
@@ -9,6 +10,7 @@ import androidx.test.runner.AndroidJUnit4;
 
 import com.isunican.proyectobase.Views.MainActivity;
 
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -43,14 +45,28 @@ public class EstablecerTipoDeCombustibleUITest {
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
 
+    private ListView ltmp;
+    @Before
+    public void setUp(){
+        // Se va a estabblecer como tipo de combutiuble el gasoleo A
+        //para hacer esta prueba
+        onView(withId(R.id.buttonFiltros)).perform(click());
+        onView((withId(R.id.spinner))).perform(click());
+        onData(allOf(is(instanceOf(String.class)),
+                is("Gasóleo A"))).inRoot(isPlatformPopup()).perform(click());
+        onView(withId(R.id.spinner)).check(matches(withSpinnerText(containsString("Gasóleo A"))));
+        onView(withText("Aceptar")).perform(click());
+        ltmp = mActivityTestRule.getActivity().findViewById(R.id.listViewGasolineras);
+    }
+
     @Test
     public void establecerTipoCombustibleTest() throws InterruptedException {
 
         // Caso UIT.1A
         // Se pulsa sobre el icono de las tres barras de arriba a la izquierda para abrir el Drawer Layout
-        onView(withId(R.id.drawer_layout))
-                .check(matches(isClosed(Gravity.START))) // Start Drawer should be closed.
-                .perform(DrawerActions.open()); // Open Drawer
+        onView(withId(R.id.menuNav)).perform(click());
+               // .check(matches(isClosed(Gravity.START))) // Start Drawer should be closed.
+               // .perform(DrawerActions.open()); // Open Drawer
 
         // Se pulsa sobre el icono de las tres barras de arriba a la izquierda para abrir el Drawer Layout
         onView(withId(R.id.drawer_layout))
@@ -59,8 +75,8 @@ public class EstablecerTipoDeCombustibleUITest {
         //onView(withId(R.id.imagenDrawer)).perform(click());
 
         // Start the screen of your activity.
-        onView(withId(R.layout.nav_drawer_layout))
-                .perform(NavigationViewActions.navigateTo(R.id.combustible_por_defecto));
+        //onView(withId(R.layout.nav_drawer_layout))
+                //.perform(NavigationViewActions.navigateTo(R.id.combustible_por_defecto));
 
         // Check that you Activity was opened.
         onView(withId(R.id.btnConfiguracion)).check(matches(withText("Configuración")));
@@ -128,9 +144,8 @@ public class EstablecerTipoDeCombustibleUITest {
         // Caso UIT.1F
         // Se comprueba que al pulsar el boton Cancelar no efectua ningun cambio.
         // Se pulsa sobre la opción “Cancelar” de la ventana flotante sin haber seleccionado ningún combustible del desplegable.
+        onView(withId(R.id.menuNav)).perform(click());
         onView(withId(R.id.btnConfiguracion)).perform(click());
-
-        onView((withId(R.id.combustible_por_defecto))).perform(click());
 
         onView(withText("Cancelar")).perform(click());
 
@@ -144,9 +159,8 @@ public class EstablecerTipoDeCombustibleUITest {
         // Caso UIT.1E
         // Se comprueba que al pulsar el boton Aplicar no efectua ningun cambio.
         // Se pulsa sobre la opción “Aplicar” de la ventana flotante sin haber seleccionado ningún combustible del desplegable.
+        onView(withId(R.id.menuNav)).perform(click());
         onView(withId(R.id.btnConfiguracion)).perform(click());
-
-        onView((withId(R.id.combustible_por_defecto))).perform(click());
 
         onView(withText("Aplicar")).perform(click());
 
@@ -167,7 +181,8 @@ public class EstablecerTipoDeCombustibleUITest {
          */
         /** gasoleoA_Test() **/
 
-
+        onView(withId(R.id.menuNav)).perform(click());
+        onView(withId(R.id.btnConfiguracion)).perform(click());
         // Antes de cada test se pulsa el spinner para ver su contenido
         onView((withId(R.id.combustible_por_defecto))).perform(click());
 
@@ -187,7 +202,8 @@ public class EstablecerTipoDeCombustibleUITest {
                 .check(matches(withText("Gasóleo A")));
 
         /** gasolina95_Test() **/
-
+        onView(withId(R.id.menuNav)).perform(click());
+        onView(withId(R.id.btnConfiguracion)).perform(click());
         // Antes de cada test se pulsa el spinner para ver su contenido
         onView((withId(R.id.combustible_por_defecto))).perform(click());
 
@@ -204,7 +220,8 @@ public class EstablecerTipoDeCombustibleUITest {
                 .check(matches(withText("Gasolina 95")));
 
         /** gasolina98_Test() **/
-
+        onView(withId(R.id.menuNav)).perform(click());
+        onView(withId(R.id.btnConfiguracion)).perform(click());
         // Antes de cada test se pulsa el spinner para ver su contenido
         onView((withId(R.id.combustible_por_defecto))).perform(click());
 
@@ -224,7 +241,8 @@ public class EstablecerTipoDeCombustibleUITest {
 
 
         /** biodiésel_Test() **/
-
+        onView(withId(R.id.menuNav)).perform(click());
+        onView(withId(R.id.btnConfiguracion)).perform(click());
         // Antes de cada test se pulsa el spinner para ver su contenido
         onView((withId(R.id.combustible_por_defecto))).perform(click());
 
@@ -241,7 +259,8 @@ public class EstablecerTipoDeCombustibleUITest {
                 .check(matches(withText("Biodiésel")));
 
         /**gasóleoPremium_Test() **/
-
+        onView(withId(R.id.menuNav)).perform(click());
+        onView(withId(R.id.btnConfiguracion)).perform(click());
         // Antes de cada test se pulsa el spinner para ver su contenido
         onView((withId(R.id.combustible_por_defecto))).perform(click());
 

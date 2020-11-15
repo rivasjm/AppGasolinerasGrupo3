@@ -1,6 +1,7 @@
 package com.isunican.proyectobase;
 
 import android.content.Context;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -11,8 +12,11 @@ import androidx.test.runner.AndroidJUnit4;
 import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.RootMatchers.isPlatformPopup;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withSpinnerText;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.anything;
 
 import com.isunican.proyectobase.Model.Gasolinera;
@@ -24,6 +28,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static androidx.test.espresso.Espresso.onView;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.*;
 
 
@@ -39,8 +46,15 @@ public class OrdenarGasolinerasPorPrecioUITest {
 
     @Before
     public void setUp() {
-        //clickamos en la opcion de ordenar gasolineras
-        onView(withId(R.id.buttonOrden)).perform(click());
+        // Se va a estabblecer como tipo de combutiuble el gasoleo A
+        //para hacer esta prueba
+        onView(withId(R.id.buttonFiltros)).perform(click());
+        onView((withId(R.id.spinner))).perform(click());
+        onData(allOf(is(instanceOf(String.class)),
+                is("Gasóleo A"))).inRoot(isPlatformPopup()).perform(click());
+        onView(withId(R.id.spinner)).check(matches(withSpinnerText(containsString("Gasóleo A"))));
+        onView(withText("Aceptar")).perform(click());
+
         // Context of the app under test.
         ltmp = mActivityTestRule.getActivity().findViewById(R.id.listViewGasolineras);
         gBarata = ((ArrayAdapter<Gasolinera>) ltmp.getAdapter()).getItem(0);
@@ -50,6 +64,8 @@ public class OrdenarGasolinerasPorPrecioUITest {
 
     @Test
     public void ordenPorPrecio() {
+        //clickamos en la opcion de ordenar gasolineras
+        onView(withId(R.id.buttonOrden)).perform(click());
         onView(withText("Cancelar")).perform(click());
         onView(withId(R.id.buttonOrden)).perform(click());
         //Comprueba que por defecto el texto del boton indica que el orden es ascendente

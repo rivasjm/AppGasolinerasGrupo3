@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public static final String FLECHA_ARRIBA = "flecha_arriba";
     public static final String DRAWABLE = "drawable";
     public static final String CANCELAR = "Cancelar";
+    public static final String FICHERO = "datos.txt";
 
     PresenterGasolineras presenterGasolineras;
 
@@ -103,19 +104,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         this.presenterGasolineras = new PresenterGasolineras();
 
-        //Lectura inicial del tipo de combustible por defecto
-        if(presenterGasolineras.lecturaCombustiblePorDefecto(this).equals("")) {
-            presenterGasolineras.escrituraCombustiblePorDefecto("Gasóleo A", this);
+        try {
+            //Lectura inicial del tipo de combustible por defecto
+            tipoCombustible = presenterGasolineras.lecturaCombustiblePorDefecto(this, FICHERO);
+        } catch(Exception e) {
+            presenterGasolineras.escrituraCombustiblePorDefecto("Gasóleo A", this, FICHERO);
         }
-        tipoCombustible = presenterGasolineras.lecturaCombustiblePorDefecto(this);
+
+        tipoCombustible = presenterGasolineras.lecturaCombustiblePorDefecto(this, FICHERO);
 
         // Barra de progreso
         // https://materialdoc.com/components/progress/
         progressBar = new ProgressBar(MainActivity.this, null, android.R.attr.progressBarStyleLarge);
-
-
-        //DrawerLayout.LayoutParams params = new DrawerLayout.LayoutParams(100, 100);
-        //drawerLayout.addView(progressBar, params);
         drawerLayout = findViewById(R.id.drawer_layout);
         // Muestra el logo en el actionBar
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -163,7 +163,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         final Spinner mSpinner = (Spinner) mView.findViewById(R.id.combustible_por_defecto);    // New spinner object
         final TextView comb = mView.findViewById(R.id.porDefecto);
-        comb.setText("Combustible actual: "+presenterGasolineras.lecturaCombustiblePorDefecto(ac));
+        comb.setText("Combustible actual: "+presenterGasolineras.lecturaCombustiblePorDefecto(ac, FICHERO));
         // El spinner creado contiene todos los items del array de Strings "operacionesArray"
         ArrayAdapter<String> adapterSpinner = new ArrayAdapter<>(MainActivity.this,
                 android.R.layout.simple_spinner_item,
@@ -180,8 +180,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 // If the user does not select nothing, don't do anything
                 if (!mSpinner.getSelectedItem().toString().equalsIgnoreCase("Combustible")) {
                     tipoCombustible = mSpinner.getSelectedItem().toString();
-                    presenterGasolineras.escrituraCombustiblePorDefecto(mSpinner.getSelectedItem().toString(), ac);
-                    tipoCombustible = presenterGasolineras.lecturaCombustiblePorDefecto(ac);
+                    presenterGasolineras.escrituraCombustiblePorDefecto(mSpinner.getSelectedItem().toString(), ac, FICHERO);
+                    tipoCombustible = presenterGasolineras.lecturaCombustiblePorDefecto(ac, FICHERO);
                 }
                 refresca();
             }

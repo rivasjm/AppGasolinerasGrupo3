@@ -34,6 +34,12 @@ public class GasolineraTest {
         assertEquals("CEPSA", g.getRotulo());
     }
 
+    /**
+     * Comprueba los valores de la latitud y longitud de la gasolinera creada.
+     * US Consultar información de gasolinera
+     * Identificador: UT.1
+     * @author Jaime Eduardo Baires Escalante
+     * */
     @Test
     public void getLatitudLongitudTest() {
         //Se comprueba que se ha almacenado correctamente el valor de latitud

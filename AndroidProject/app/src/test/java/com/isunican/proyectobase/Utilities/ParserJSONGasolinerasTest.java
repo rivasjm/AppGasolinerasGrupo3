@@ -28,6 +28,11 @@ public class ParserJSONGasolinerasTest {
     private JsonReader reader;
     private JsonReader reader2;
     private JsonReader readerGasolineras;
+
+    /**
+     * Añadidos para los test unitarios de Consultar información de gasolinera
+     * US Consultar información de gasolinera
+     * */
     private JsonReader readerConLatiLong;
     private JsonReader readerSoloConLatitud;
     private JsonReader readerSoloConLongitud;
@@ -112,9 +117,14 @@ public class ParserJSONGasolinerasTest {
 
     }
 
+    /**
+     * Casos de prueba del método readGasolinera
+     * US Consultar información de gasolinera
+     * @author Jaime Eduardo Baires Escalante
+     * */
     @Test
     public void readGasolineraConLatitudLongitudTest() {
-        //Caso con datos correctos
+        //UT.2A Caso con datos correctos
         Gasolinera g = null;
         try {
             g = ParserJSONGasolineras.readGasolinera(readerConLatiLong);
@@ -124,7 +134,7 @@ public class ParserJSONGasolinerasTest {
         assertEquals(40,g.getLatitud(),0.001);
         assertEquals(-3,g.getLongitud(),0.001);
 
-        //Caso con gasolinera sin latitud y longitud
+        //UT.2B Caso con gasolinera sin latitud y longitud
         try {
             g = ParserJSONGasolineras.readGasolinera(reader);
         } catch (IOException e) {
@@ -133,7 +143,7 @@ public class ParserJSONGasolinerasTest {
         assertEquals(0.0,g.getLatitud(),0.001);
         assertEquals(0.0,g.getLongitud(),0.001);
 
-        //Caso con gasolinera solo con latitud
+        //UT.2C Caso con gasolinera solo con latitud
         try {
             g = ParserJSONGasolineras.readGasolinera(readerSoloConLatitud);
         } catch (IOException e) {
@@ -142,7 +152,7 @@ public class ParserJSONGasolinerasTest {
         assertEquals(40,g.getLatitud(),0.001);
         assertEquals(0.0,g.getLongitud(),0.001);
 
-        //Caso con gasolinera solo con longitud
+        //UT.2D Caso con gasolinera solo con longitud
         try {
             g = ParserJSONGasolineras.readGasolinera(readerSoloConLongitud);
         } catch (IOException e) {
@@ -217,6 +227,7 @@ public class ParserJSONGasolinerasTest {
         assertEquals(1.03, gasolineras.get(0).getGasolina98(), 0.001);
         assertEquals(0.99, gasolineras.get(0).getGasoleoPremium(), 0.001);
         assertEquals(1.11, gasolineras.get(0).getBiodiesel(), 0.001);
+        //UT.3A
         assertEquals(40, gasolineras.get(0).getLatitud(), 0.001);
         assertEquals(-3, gasolineras.get(0).getLongitud(), 0.001);
 
@@ -229,10 +240,11 @@ public class ParserJSONGasolinerasTest {
         assertEquals(1.13, gasolineras.get(1).getGasolina98(), 0.001);
         assertEquals(0.97, gasolineras.get(1).getGasoleoPremium(), 0.001);
         assertEquals(1.19, gasolineras.get(1).getBiodiesel(), 0.001);
+        //UT.3A
         assertEquals(40, gasolineras.get(1).getLatitud(), 0.001);
         assertEquals(-3, gasolineras.get(1).getLongitud(), 0.001);
 
-        //Caso donde hay una lista de 1 gasolinera
+        //UT.3B Caso donde hay una lista de 1 gasolinera
         try {
             gasolineras = ParserJSONGasolineras.readArrayGasolineras(readerArrayUnaGasolinera);
         } catch (IOException e) {
@@ -251,7 +263,7 @@ public class ParserJSONGasolinerasTest {
         assertEquals(-3, gasolineras.get(0).getLongitud(), 0.001);
 
 
-        //caso donde el Json pasado no tiene formato correcto
+        //UT.3C Caso donde el Json pasado no tiene formato correcto o está vacío
         readerGasolineras = new JsonReader(new StringReader(""));
         try{
           gasolineras = ParserJSONGasolineras.readArrayGasolineras(readerGasolineras);

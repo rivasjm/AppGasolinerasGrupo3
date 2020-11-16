@@ -1,7 +1,6 @@
 package com.isunican.proyectobase.Presenter;
 
 import android.app.Activity;
-import android.content.Context;
 import android.util.Log;
 import com.isunican.proyectobase.Model.*;
 import com.isunican.proyectobase.Utilities.ParserJSONGasolineras;
@@ -36,6 +35,11 @@ public class PresenterGasolineras {
     public static final String URL_GASOLINERAS_CANTABRIA="https://sedeaplicaciones.minetur.gob.es/ServiciosRESTCarburantes/PreciosCarburantes/EstacionesTerrestres/FiltroCCAA/06";
     public static final String URL_GASOLINERAS_SANTANDER="https://sedeaplicaciones.minetur.gob.es/ServiciosRESTCarburantes/PreciosCarburantes/EstacionesTerrestres/FiltroMunicipio/5819";
     public static final String SANTANDER="Santander";
+    public static final String GASOLEOA = "Gasóleo A";
+    public static final String GASOLINA95 = "Gasolina 95";
+    public static final String GASOLINA98 = "Gasolina 98";
+    public static final String BIODIESEL = "Biodiésel";
+    public static final String GASOLEOPREMIUM = "Gasóleo Premium";
 
     /**
      * Constructor, getters y setters
@@ -184,19 +188,19 @@ public class PresenterGasolineras {
         double precio = 0.0;
 
         switch(combustible) {
-            case "Gasóleo A":
+            case GASOLEOA:
                 precio = g.getGasoleoA();
                 break;
-            case "Gasolina 95":
+            case GASOLINA95:
                 precio = g.getGasolina95();
                 break;
-            case "Gasolina 98":
+            case GASOLINA98:
                 precio = g.getGasolina98();
                 break;
-            case "Biodiésel":
+            case BIODIESEL:
                 precio = g.getBiodiesel();
                 break;
-            case "Gasóleo Premium":
+            case GASOLEOPREMIUM:
                 precio = g.getGasoleoPremium();
                 break;
             default:
@@ -222,16 +226,16 @@ public class PresenterGasolineras {
                 sb.append(text).append("\n");
             }
             resultado = sb.toString();
-            if(resultado.contains("Gasóleo A")) {
-                combustible = "Gasóleo A";
-            } else if(resultado.contains("Gasolina 95")) {
-                combustible = "Gasolina 95";
-            } else if(resultado.contains("Gasolina 98")) {
-                combustible = "Gasolina 98";
-            } else if(resultado.contains("Biodiésel")) {
-                combustible = "Biodiésel";
-            } else if(resultado.contains("Gasóleo Premium")) {
-                combustible = "Gasóleo Premium";
+            if(resultado.contains(GASOLEOA)) {
+                combustible = GASOLEOA;
+            } else if(resultado.contains(GASOLINA95)) {
+                combustible = GASOLINA95;
+            } else if(resultado.contains(GASOLINA98)) {
+                combustible = GASOLINA98;
+            } else if(resultado.contains(BIODIESEL)) {
+                combustible = BIODIESEL;
+            } else if(resultado.contains(GASOLEOPREMIUM)) {
+                combustible = GASOLEOPREMIUM;
             }
         } catch (IOException e) {
             e.getStackTrace();
@@ -252,11 +256,9 @@ public class PresenterGasolineras {
         try {
             fos = a.openFileOutput(fichero,android.content.Context.MODE_PRIVATE);
             fos.write(combustible.getBytes());
-        } catch (FileNotFoundException e) {
+        } catch (Exception e) {
             e.getStackTrace();
-        } catch (IOException e) {
-            e.getStackTrace();
-        } finally {
+        }  finally {
             if (fos != null) {
                 try {
                     fos.close();

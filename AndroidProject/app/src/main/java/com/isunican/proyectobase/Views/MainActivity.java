@@ -18,6 +18,9 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
 
 import android.view.Gravity;
@@ -105,10 +108,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             //Lectura inicial del tipo de combustible por defecto
             tipoCombustible = presenterGasolineras.lecturaCombustiblePorDefecto(this, FICHERO);
         } catch(Exception e) {
-            presenterGasolineras.escrituraCombustiblePorDefecto("Gasóleo A", this, FICHERO);
+            try {
+                presenterGasolineras.escrituraCombustiblePorDefecto("Gasóleo A", this, FICHERO);
+            } catch (FileNotFoundException ex) {
+                ex.printStackTrace();
+            }catch (IOException ex){
+            }
         }
 
-        tipoCombustible = presenterGasolineras.lecturaCombustiblePorDefecto(this, FICHERO);
+        try {
+            tipoCombustible = presenterGasolineras.lecturaCombustiblePorDefecto(this, FICHERO);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         // Barra de progreso
         // https://materialdoc.com/components/progress/
@@ -160,7 +172,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         final Spinner mSpinner = (Spinner) mView.findViewById(R.id.combustible_por_defecto);    // New spinner object
         final TextView comb = mView.findViewById(R.id.porDefecto);
-        comb.setText("Combustible actual: "+presenterGasolineras.lecturaCombustiblePorDefecto(ac, FICHERO));
+        try {
+            comb.setText("Combustible actual: "+presenterGasolineras.lecturaCombustiblePorDefecto(ac, FICHERO));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         // El spinner creado contiene todos los items del array de Strings "operacionesArray"
         ArrayAdapter<String> adapterSpinner = new ArrayAdapter<>(MainActivity.this,
                 android.R.layout.simple_spinner_item,
@@ -177,8 +193,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 // If the user does not select nothing, don't do anything
                 if (!mSpinner.getSelectedItem().toString().equalsIgnoreCase("Combustible")) {
                     tipoCombustible = mSpinner.getSelectedItem().toString();
-                    presenterGasolineras.escrituraCombustiblePorDefecto(mSpinner.getSelectedItem().toString(), ac, FICHERO);
-                    tipoCombustible = presenterGasolineras.lecturaCombustiblePorDefecto(ac, FICHERO);
+                    try {
+                        presenterGasolineras.escrituraCombustiblePorDefecto(mSpinner.getSelectedItem().toString(), ac, FICHERO);
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }catch (IOException e){
+
+                    }
+                    try {
+                        tipoCombustible = presenterGasolineras.lecturaCombustiblePorDefecto(ac, FICHERO);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
                 closeDrawer(drawerLayout);
                 refresca();

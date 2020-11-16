@@ -2,10 +2,23 @@ package com.isunican.proyectobase.Presenter;
 
 import com.isunican.proyectobase.Model.Gasolinera;
 import com.isunican.proyectobase.Presenter.PresenterGasolineras;
+import com.isunican.proyectobase.Views.MainActivity;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import static org.junit.Assert.*;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.when;
 
 /**
  * Clase de prueba donde se realizan las pruebas unitarias correspondiente a la clase
@@ -14,14 +27,30 @@ import static org.junit.Assert.*;
  * @author Corocotta
  */
 public class PresenterGasolinerasTest {
+
+    @Rule
+    public MockitoRule rule = MockitoJUnit.rule();
+    @Mock
+    MainActivity ac;
+
+
     // Objeto de la clase Presentergasolineras para implementar los siguientes metodos Test
     private PresenterGasolineras pr;
     // Gasolineras para utilizarlas posteriormente
     private ArrayList<Gasolinera> gasolineras;
+    private String ruta = "datos_test.txt";
+    private FileInputStream fis;
+    private FileOutputStream fos;
+    private File archivo;
 
     @Before
+    public void setUp() {
+        archivo = new File(ruta);
+        try {
+            archivo.createNewFile();
+        } catch (IOException e) {
+        }
 
-    public void setUp(){
         pr = new PresenterGasolineras();//se inicializa el presenter
         gasolineras = new ArrayList<>();//se crea lista de de tipo Gasolina para probar
         /*Se anhaden varias gasolineras a la lista para pasarselas al presenter y utilizarlas en la pruebas*/
@@ -49,28 +78,27 @@ public class PresenterGasolinerasTest {
      * de las gasolineras creadas anteriormente.
      */
     @Test
-    public void getPrecioGasolinera()
-    {
+    public void getPrecioGasolinera() {
         try {
-            assertEquals(0.0 , pr.getPrecioCombustible(null,null), 0.000001);
+            assertEquals(0.0, pr.getPrecioCombustible(null, null), 0.000001);
             fail();
         } catch (NullPointerException e) {
 
         }
 
-        assertEquals(0.91 , pr.getPrecioCombustible("Gasóleo A", pr.getGasolineras().get(0)), 0.000001);
+        assertEquals(0.91, pr.getPrecioCombustible("Gasóleo A", pr.getGasolineras().get(0)), 0.000001);
 
-        assertEquals(1.06 , pr.getPrecioCombustible("Gasolina 95", pr.getGasolineras().get(0)), 0.000001);
+        assertEquals(1.06, pr.getPrecioCombustible("Gasolina 95", pr.getGasolineras().get(0)), 0.000001);
 
-        assertEquals(1.11 , pr.getPrecioCombustible("Gasolina 98", pr.getGasolineras().get(0)), 0.000001);
+        assertEquals(1.11, pr.getPrecioCombustible("Gasolina 98", pr.getGasolineras().get(0)), 0.000001);
 
-        assertEquals(1.31 , pr.getPrecioCombustible("Biodiésel", pr.getGasolineras().get(0)), 0.000001);
+        assertEquals(1.31, pr.getPrecioCombustible("Biodiésel", pr.getGasolineras().get(0)), 0.000001);
 
-        assertEquals(1.01 , pr.getPrecioCombustible("Gasóleo Premium", pr.getGasolineras().get(0)), 0.000001);
+        assertEquals(1.01, pr.getPrecioCombustible("Gasóleo Premium", pr.getGasolineras().get(0)), 0.000001);
     }
 
     @Test
-    public void eliminarGasolinerasConPrecioNegativoTest(){
+    public void eliminarGasolinerasConPrecioNegativoTest() {
         //caso donde la cadena pasada esta vacia
         pr.eliminaGasolinerasConPrecioNegativo("");
         boolean noCambiaLista = gasolineras.size() == 7;
@@ -118,7 +146,8 @@ public class PresenterGasolinerasTest {
         try {
             pr.eliminaGasolinerasConPrecioNegativo(parametro);
             fail();
-        }catch (NullPointerException e){}
+        } catch (NullPointerException e) {
+        }
         //se comprueba que el metodo no realiza ningun cambio en la lista
         assertTrue(noCambiaLista);
 
@@ -131,8 +160,8 @@ public class PresenterGasolinerasTest {
      * del precio de las gasolineras creadas anteriormente.
      */
     @Test
-    public void ordenarGasolineras()
-    {
+    public void ordenarGasolineras() {
+
 
         try {
             pr.ordernarGasolineras(true, null);
@@ -172,10 +201,123 @@ public class PresenterGasolinerasTest {
         assertEquals(1.16, pr.getGasolineras().get(0).getGasoleoPremium(), 0.00001);
     }
 
+    /**
+     * @author Hamza Hamda
+     */
     @Test
-    public void leerCombustiblePorDefectoTest(){
-        String ruta="Datos_test.txt";
+    public void leerCombustiblePorDefectoTest() {
 
+        FileInputStream fisVacio;
+
+        File archivo2 = new File("archivo2.txt");
+        FileWriter myWriter = null;
+        FileWriter myWriter2 = null;
+
+        try {
+
+            myWriter = new FileWriter(archivo);
+            myWriter.write("Gasolina 98");
+            myWriter.close();
+
+            archivo2.createNewFile();
+            myWriter2 = new FileWriter("archivo2.txt");
+
+        } catch (IOException e) {
+            fail("" + e.getStackTrace());
+        }
+
+
+        try {
+            fis = new FileInputStream(ruta);
+            fisVacio = new FileInputStream(ruta);
+            when(ac.openFileInput(ruta)).thenReturn(fis);
+            when(ac.openFileInput("err.txt")).thenThrow(new FileNotFoundException());
+            when(ac.openFileInput("archivo2.txt")).thenReturn(fisVacio);
+        } catch (FileNotFoundException e) {
+            fail("" + e.getStackTrace());
+        }
+
+        //UT.1a
+        String combusitble = null;
+        try {
+            combusitble = pr.lecturaCombustiblePorDefecto(ac, ruta);
+        } catch (IOException e) {
+            fail();
+        }
+        assertEquals("Gasolina 98", combusitble);
+
+        //UT.1b
+        try {
+            pr.lecturaCombustiblePorDefecto(ac, "err.txt");
+            fail();
+        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
+            fail();
+        }
+
+        //UT.1c
+
+        try {
+            pr.lecturaCombustiblePorDefecto(ac, "archivo2.txt");
+        } catch (FileNotFoundException e) {
+            fail();
+        } catch (IOException e) {
+            fail();
+        }
+
+
+        //UT.1d
+        try {
+            myWriter2.write("Gas");
+            myWriter2.close();
+            pr.lecturaCombustiblePorDefecto(ac, "archivo2.txt");
+
+        } catch (FileNotFoundException e) {
+            fail();
+        } catch (IOException e) {
+            fail();
+        }
+
+
+        archivo.delete();
+        archivo2.delete();
     }
+
+    @Test
+    public void escrituraCombustiblePorDefectoTest() {
+
+        try {
+            fis = new FileInputStream(ruta);
+            fos = new FileOutputStream(ruta);
+            when(ac.openFileOutput(ruta, android.content.Context.MODE_PRIVATE)).thenReturn(fos);
+            when(ac.openFileOutput("err.txt", android.content.Context.MODE_PRIVATE)).thenThrow(new FileNotFoundException());
+            when(ac.openFileInput(ruta)).thenReturn(fis);
+        } catch (FileNotFoundException e) {
+        }
+
+        //UT.2a
+        try {
+            pr.escrituraCombustiblePorDefecto("Gasóleo A",ac,ruta);
+        } catch (FileNotFoundException e) {
+        }catch (IOException e){
+        }
+        String combusitble = null;
+        try {
+            combusitble = pr.lecturaCombustiblePorDefecto(ac, ruta);
+        } catch (IOException e) {
+            fail();
+        }
+        assertEquals("Gasóleo A", combusitble);
+
+        //UT.2b
+        try {
+            pr.escrituraCombustiblePorDefecto("Gasóleo A", ac, "err.txt");
+            fail();
+        }catch (FileNotFoundException e){
+        }catch (IOException e){
+            fail();
+        }
+    }
+
 }//class
 

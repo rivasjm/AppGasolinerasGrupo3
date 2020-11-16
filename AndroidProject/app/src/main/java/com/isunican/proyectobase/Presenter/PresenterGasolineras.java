@@ -3,9 +3,11 @@ package com.isunican.proyectobase.Presenter;
 import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
+
 import com.isunican.proyectobase.Model.*;
 import com.isunican.proyectobase.Utilities.ParserJSONGasolineras;
 import com.isunican.proyectobase.Utilities.RemoteFetch;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -32,19 +34,19 @@ public class PresenterGasolineras {
 
     //URLs para obtener datos de las gasolineras
     //https://sedeaplicaciones.minetur.gob.es/ServiciosRESTCarburantes/PreciosCarburantes/help
-    public static final String URL_GASOLINERAS_SPAIN="https://sedeaplicaciones.minetur.gob.es/ServiciosRESTCarburantes/PreciosCarburantes/EstacionesTerrestres/";
-    public static final String URL_GASOLINERAS_CANTABRIA="https://sedeaplicaciones.minetur.gob.es/ServiciosRESTCarburantes/PreciosCarburantes/EstacionesTerrestres/FiltroCCAA/06";
-    public static final String URL_GASOLINERAS_SANTANDER="https://sedeaplicaciones.minetur.gob.es/ServiciosRESTCarburantes/PreciosCarburantes/EstacionesTerrestres/FiltroMunicipio/5819";
-    public static final String SANTANDER="Santander";
+    public static final String URL_GASOLINERAS_SPAIN = "https://sedeaplicaciones.minetur.gob.es/ServiciosRESTCarburantes/PreciosCarburantes/EstacionesTerrestres/";
+    public static final String URL_GASOLINERAS_CANTABRIA = "https://sedeaplicaciones.minetur.gob.es/ServiciosRESTCarburantes/PreciosCarburantes/EstacionesTerrestres/FiltroCCAA/06";
+    public static final String URL_GASOLINERAS_SANTANDER = "https://sedeaplicaciones.minetur.gob.es/ServiciosRESTCarburantes/PreciosCarburantes/EstacionesTerrestres/FiltroMunicipio/5819";
+    public static final String SANTANDER = "Santander";
 
     /**
      * Constructor, getters y setters
      */
-    public PresenterGasolineras(){
+    public PresenterGasolineras() {
         gasolineras = new ArrayList<>();
     }
 
-    public List<Gasolinera> getGasolineras(){
+    public List<Gasolinera> getGasolineras() {
         return gasolineras;
     }
 
@@ -55,11 +57,11 @@ public class PresenterGasolineras {
 
     /**
      * cargaDatosGasolineras
-     *
+     * <p>
      * Carga los datos de las gasolineras en la lista de gasolineras de la clase.
      * Para ello llama a métodos de carga de datos internos de la clase ListaGasolineras.
      * En este caso realiza una carga de datos remotos dada una URL
-     *
+     * <p>
      * Habría que mejorar el método para que permita pasar un parámetro
      * con los datos a cargar (id de la ciudad, comunidad autónoma, etc.)
      *
@@ -72,25 +74,25 @@ public class PresenterGasolineras {
 
     /**
      * cargaDatosDummy
-     *
+     * <p>
      * Carga en la lista de gasolineras varias gasolineras definidas a "mano"
      * para hacer pruebas de funcionamiento
      *
      * @param
      * @return boolean
      */
-    public boolean cargaDatosDummy(){
-        this.gasolineras.add(new Gasolinera(1000,SANTANDER,SANTANDER, "Av Valdecilla", 1.299,1.359, 1.3,1.2,2,"AVIA"));
-        this.gasolineras.add(new Gasolinera(1053,SANTANDER,SANTANDER, "Plaza Matias Montero", 1.270,1.349,1.22,1.11,1.21,"CAMPSA"));
-        this.gasolineras.add(new Gasolinera(420,SANTANDER,SANTANDER, "Area Arrabal Puerto de Raos", 1.249,1.279,1.3,1.2,1.5,"E.E.S.S. MAS, S.L."));
-        this.gasolineras.add(new Gasolinera(9564,SANTANDER,SANTANDER, "Av Parayas", 1.189,1.269,1.11,1.28,1.25,"EASYGAS"));
-        this.gasolineras.add(new Gasolinera(1025,SANTANDER,SANTANDER, "Calle el Empalme", 1.259,1.319,1.65,1.27,1.01,"CARREFOUR"));
+    public boolean cargaDatosDummy() {
+        this.gasolineras.add(new Gasolinera(1000, SANTANDER, SANTANDER, "Av Valdecilla", 1.299, 1.359, 1.3, 1.2, 2, "AVIA"));
+        this.gasolineras.add(new Gasolinera(1053, SANTANDER, SANTANDER, "Plaza Matias Montero", 1.270, 1.349, 1.22, 1.11, 1.21, "CAMPSA"));
+        this.gasolineras.add(new Gasolinera(420, SANTANDER, SANTANDER, "Area Arrabal Puerto de Raos", 1.249, 1.279, 1.3, 1.2, 1.5, "E.E.S.S. MAS, S.L."));
+        this.gasolineras.add(new Gasolinera(9564, SANTANDER, SANTANDER, "Av Parayas", 1.189, 1.269, 1.11, 1.28, 1.25, "EASYGAS"));
+        this.gasolineras.add(new Gasolinera(1025, SANTANDER, SANTANDER, "Calle el Empalme", 1.259, 1.319, 1.65, 1.27, 1.01, "CARREFOUR"));
         return true;
     }
 
     /**
      * cargaDatosLocales
-     *
+     * <p>
      * A partir de la dirección de un fichero JSON pasado como parámetro:
      * Parsea la información para obtener una lista de gasolineras.
      * Finalmente, dicha lista queda almacenada en la clase.
@@ -98,13 +100,13 @@ public class PresenterGasolineras {
      * @param fichero
      * @return boolean Devuelve true si se han podido cargar los datos
      */
-    public boolean cargaDatosLocales(String fichero){
-        return(fichero != null);
+    public boolean cargaDatosLocales(String fichero) {
+        return (fichero != null);
     }
 
     /**
      * cargaDatosRemotos
-     *
+     * <p>
      * A partir de la dirección pasada como parámetro:
      * Utiliza RemoteFetch para cargar el fichero JSON ubicado en dicha URL
      * en un stream de datos.
@@ -115,7 +117,7 @@ public class PresenterGasolineras {
      * @param direccion URL del JSON con los datos
      * @return boolean Devuelve true si se han podido cargar los datos
      */
-    public boolean cargaDatosRemotos(String direccion){
+    public boolean cargaDatosRemotos(String direccion) {
         try {
             BufferedInputStream buffer = RemoteFetch.cargaBufferDesdeURL(direccion);
             gasolineras = ParserJSONGasolineras.parseaArrayGasolineras(buffer);
@@ -129,11 +131,12 @@ public class PresenterGasolineras {
 
     /**
      * Elimina las gasolinera si el precio el combustible indicado es negativo
+     *
      * @param combustible combustible por el cual se esta filtrando
      */
-    public void eliminaGasolinerasConPrecioNegativo(String combustible){
-        int i=0;
-        while(i < gasolineras.size()){
+    public void eliminaGasolinerasConPrecioNegativo(String combustible) {
+        int i = 0;
+        while (i < gasolineras.size()) {
             Gasolinera g = gasolineras.get(i);
             //se calcula el precio del combustible en cuetion
             double precio = getPrecioCombustible(combustible, g);
@@ -149,14 +152,15 @@ public class PresenterGasolineras {
     /**
      * Ordena las gasolineras en funcion del precio del combustible indicado de manera ascendente si
      * asc es verdadero o de manera descendete si no lo es.
-     * @param asc manera de odernar la lista, si asc es verdadero se orderna de forma ascendente, en
-     *            caso contrario de forma descendente.
+     *
+     * @param asc         manera de odernar la lista, si asc es verdadero se orderna de forma ascendente, en
+     *                    caso contrario de forma descendente.
      * @param combustible combustible por el que se desea filtar, se utiliza el precio de este combutible
      *                    para ordenar.
      */
-    public void ordernarGasolineras(boolean asc, String combustible){
+    public void ordernarGasolineras(boolean asc, String combustible) {
         for (int i = 0; i < gasolineras.size(); i++) {
-            for (int j = 0; j < gasolineras.size()-1; j++) {
+            for (int j = 0; j < gasolineras.size() - 1; j++) {
                 Gasolinera tmp = gasolineras.get(j + 1);
                 if (asc) {
                     if (getPrecioCombustible(combustible, gasolineras.get(j)) > getPrecioCombustible(combustible, tmp)) {
@@ -175,15 +179,16 @@ public class PresenterGasolineras {
 
     /**
      * Develve el precio del combustible de la gasolinera indicada segun el combustible indicado
+     *
      * @param combustible combustible del que se desao conocer el precio
-     * @param g gasolinera de la que se desea conocer el precio
+     * @param g           gasolinera de la que se desea conocer el precio
      * @return el precio del combustible de la gasolinera indicada segun el combustible indicado
      */
-    public double getPrecioCombustible(String combustible, Gasolinera g){
+    public double getPrecioCombustible(String combustible, Gasolinera g) {
 
         double precio = 0.0;
 
-        switch(combustible) {
+        switch (combustible) {
             case "Gasóleo A":
                 precio = g.getGasoleoA();
                 break;
@@ -205,57 +210,52 @@ public class PresenterGasolineras {
         return precio;
     }
 
-    public String lecturaCombustiblePorDefecto(Activity a, String fichero) {
+    public String lecturaCombustiblePorDefecto(Activity a, String fichero)
+            throws IOException {
         FileInputStream fis = null;
-        try {
-            fis = a.openFileInput(fichero);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+
+        fis = a.openFileInput(fichero);
+
         String resultado = "";
         String combustible = "";
         try (InputStreamReader isr = new InputStreamReader(fis);
-             BufferedReader br = new BufferedReader(isr)){
+             BufferedReader br = new BufferedReader(isr)) {
             StringBuilder sb = new StringBuilder();
             String text;
             while ((text = br.readLine()) != null) {
                 sb.append(text).append("\n");
             }
             resultado = sb.toString();
-            if(resultado.contains("Gasóleo A")) {
+            if (resultado.contains("Gasóleo A")) {
                 combustible = "Gasóleo A";
-            } else if(resultado.contains("Gasolina 95")) {
+            } else if (resultado.contains("Gasolina 95")) {
                 combustible = "Gasolina 95";
-            } else if(resultado.contains("Gasolina 98")) {
+            } else if (resultado.contains("Gasolina 98")) {
                 combustible = "Gasolina 98";
-            } else if(resultado.contains("Biodiésel")) {
+            } else if (resultado.contains("Biodiésel")) {
                 combustible = "Biodiésel";
-            } else if(resultado.contains("Gasóleo Premium")) {
+            } else if (resultado.contains("Gasóleo Premium")) {
                 combustible = "Gasóleo Premium";
             }
         } catch (IOException e) {
-            e.getStackTrace();
         } finally {
             if (fis != null) {
                 try {
                     fis.close();
                 } catch (IOException e) {
-                    e.getStackTrace();
                 }
             }
         }
         return combustible;
     }
 
-    public void escrituraCombustiblePorDefecto(String combustible, Activity a, String fichero) {
+    public void escrituraCombustiblePorDefecto(String combustible, Activity a, String fichero)
+    throws FileNotFoundException, IOException{
         FileOutputStream fos = null;
         try {
-            fos = a.openFileOutput(fichero,android.content.Context.MODE_PRIVATE);
+            fos = a.openFileOutput(fichero, android.content.Context.MODE_PRIVATE);
             fos.write(combustible.getBytes());
-        } catch (FileNotFoundException e) {
-            e.getStackTrace();
-        } catch (IOException e) {
-            e.getStackTrace();
+
         } finally {
             if (fos != null) {
                 try {

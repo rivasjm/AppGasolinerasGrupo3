@@ -1,18 +1,10 @@
 package com.isunican.proyectobase.Utilities;
 
 import com.isunican.proyectobase.Model.*;
-import android.util.JsonReader;
-import android.util.JsonToken;
-import android.util.Log;
 import android.app.Activity;
 import android.util.JsonReader;
 import android.util.JsonToken;
 import android.util.Log;
-
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;

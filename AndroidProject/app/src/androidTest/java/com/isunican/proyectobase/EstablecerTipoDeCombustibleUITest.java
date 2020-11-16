@@ -3,8 +3,7 @@ package com.isunican.proyectobase;
 import android.view.Gravity;
 import android.widget.ListView;
 
-import androidx.test.espresso.contrib.DrawerActions;
-import androidx.test.espresso.contrib.NavigationViewActions;
+
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.runner.AndroidJUnit4;
 
@@ -48,14 +47,14 @@ public class EstablecerTipoDeCombustibleUITest {
     private ListView ltmp;
     @Before
     public void setUp(){
-        // Se va a estabblecer como tipo de combutiuble el gasoleo A
-        //para hacer esta prueba
+        // Se va a estabblecer como tipo de combustible el gasoleo A
         onView(withId(R.id.buttonFiltros)).perform(click());
         onView((withId(R.id.spinner))).perform(click());
         onData(allOf(is(instanceOf(String.class)),
                 is("Gasóleo A"))).inRoot(isPlatformPopup()).perform(click());
         onView(withId(R.id.spinner)).check(matches(withSpinnerText(containsString("Gasóleo A"))));
         onView(withText("Aceptar")).perform(click());
+        // Variable para tener la lista de gasolineras
         ltmp = mActivityTestRule.getActivity().findViewById(R.id.listViewGasolineras);
     }
 
@@ -65,18 +64,9 @@ public class EstablecerTipoDeCombustibleUITest {
         // Caso UIT.1A
         // Se pulsa sobre el icono de las tres barras de arriba a la izquierda para abrir el Drawer Layout
         onView(withId(R.id.menuNav)).perform(click());
-               // .check(matches(isClosed(Gravity.START))) // Start Drawer should be closed.
-               // .perform(DrawerActions.open()); // Open Drawer
 
-        // Se pulsa sobre el icono de las tres barras de arriba a la izquierda para abrir el Drawer Layout
         onView(withId(R.id.drawer_layout))
                 .check(matches(isOpen(Gravity.START))); // Start Drawer should be open.
-
-        //onView(withId(R.id.imagenDrawer)).perform(click());
-
-        // Start the screen of your activity.
-        //onView(withId(R.layout.nav_drawer_layout))
-                //.perform(NavigationViewActions.navigateTo(R.id.combustible_por_defecto));
 
         // Check that you Activity was opened.
         onView(withId(R.id.btnConfiguracion)).check(matches(withText("Configuración")));
@@ -85,8 +75,6 @@ public class EstablecerTipoDeCombustibleUITest {
         onView(withId(R.id.btnConfiguracion)).perform(click());
 
         onView(withId(R.id.defecto)).check(matches(withText("Selecciona un tipo de combustible por defecto")));
-
-        //onView(withId(R.id.porDefecto)).check(matches(withText("Combustible actual: ")));
 
         // Antes de cada test se pulsa el spinner para ver su contenido
         onView((withId(R.id.combustible_por_defecto))).perform(click());
@@ -194,12 +182,14 @@ public class EstablecerTipoDeCombustibleUITest {
         onView(withText("Aplicar")).perform(click());
 
         // Se comprueba que el tipo de combustible se ha cambiado correctamente accediendo
-        // a la primera gasolinera y comprobando su textViewTipoGasolina
-        onData(anything())
-                .inAdapterView(withId(R.id.listViewGasolineras))
-                .atPosition(5)
-                .onChildView(withId(R.id.textViewTipoGasolina))
-                .check(matches(withText("Gasóleo A")));
+        // a cada una de las gasolineras de la lista actual y comprobando su textViewTipoGasolina
+        for (int i=0; i<ltmp.getCount()-1; i++) {
+            onData(anything())
+                    .inAdapterView(withId(R.id.listViewGasolineras))
+                    .atPosition(i)
+                    .onChildView(withId(R.id.textViewTipoGasolina))
+                    .check(matches(withText("Gasóleo A")));
+        }
 
         /** gasolina95_Test() **/
         onView(withId(R.id.menuNav)).perform(click());
@@ -213,6 +203,7 @@ public class EstablecerTipoDeCombustibleUITest {
 
         onView(withText("Aplicar")).perform(click());
 
+        // Se accede a la primera gasolinera de la lista
         onData(anything())
                 .inAdapterView(withId(R.id.listViewGasolineras))
                 .atPosition(0)
@@ -231,7 +222,8 @@ public class EstablecerTipoDeCombustibleUITest {
 
         onView(withText("Aplicar")).perform(click());
 
-        for (int i=0; i<50; i++) {
+        // Se accede a cada una de las gasolineras de la lista refrescada
+        for (int i=0; i<ltmp.getCount()-1; i++) {
             onData(anything())
                     .inAdapterView(withId(R.id.listViewGasolineras))
                     .atPosition(i)
@@ -252,11 +244,14 @@ public class EstablecerTipoDeCombustibleUITest {
 
         onView(withText("Aplicar")).perform(click());
 
-        onData(anything())
-                .inAdapterView(withId(R.id.listViewGasolineras))
-                .atPosition(1)
-                .onChildView(withId(R.id.textViewTipoGasolina))
-                .check(matches(withText("Biodiésel")));
+        // Se accede a cada una de las gasolineras de la lista actualizada
+        for (int i=0; i<ltmp.getCount()-1; i++) {
+            onData(anything())
+                    .inAdapterView(withId(R.id.listViewGasolineras))
+                    .atPosition(i)
+                    .onChildView(withId(R.id.textViewTipoGasolina))
+                    .check(matches(withText("Biodiésel")));
+        }
 
         /**gasóleoPremium_Test() **/
         onView(withId(R.id.menuNav)).perform(click());

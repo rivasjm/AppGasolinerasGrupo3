@@ -215,57 +215,67 @@ public class PresenterGasolineras {
     public String lecturaCombustiblePorDefecto(Activity a, String fichero)
             throws IOException {
         FileInputStream fis = null;
-
-        fis = a.openFileInput(fichero);
-
         String resultado = "";
         String combustible = "";
-        try (InputStreamReader isr = new InputStreamReader(fis);
-             BufferedReader br = new BufferedReader(isr)) {
-            StringBuilder sb = new StringBuilder();
-            String text;
-            while ((text = br.readLine()) != null) {
-                sb.append(text).append("\n");
-            }
-            resultado = sb.toString();
-            if(resultado.contains(GASOLEOA)) {
-                combustible = GASOLEOA;
-            } else if(resultado.contains(GASOLINA95)) {
-                combustible = GASOLINA95;
-            } else if(resultado.contains(GASOLINA98)) {
-                combustible = GASOLINA98;
-            } else if(resultado.contains(BIODIESEL)) {
-                combustible = BIODIESEL;
-            } else if(resultado.contains(GASOLEOPREMIUM)) {
-                combustible = GASOLEOPREMIUM;
-            }
-        } catch (IOException e) {
-        } finally {
-            if (fis != null) {
-                try {
-                    fis.close();
-                } catch (IOException e) {
+
+        if(fichero.equals("")) {
+            combustible = GASOLEOA;
+        } else {
+            fis = a.openFileInput(fichero);
+            try (InputStreamReader isr = new InputStreamReader(fis);
+                 BufferedReader br = new BufferedReader(isr)) {
+                StringBuilder sb = new StringBuilder();
+                String text;
+                while ((text = br.readLine()) != null) {
+                    sb.append(text).append("\n");
+                }
+                resultado = sb.toString();
+                if(resultado.contains(GASOLEOA)) {
+                    combustible = GASOLEOA;
+                } else if(resultado.contains(GASOLINA95)) {
+                    combustible = GASOLINA95;
+                } else if(resultado.contains(GASOLINA98)) {
+                    combustible = GASOLINA98;
+                } else if(resultado.contains(BIODIESEL)) {
+                    combustible = BIODIESEL;
+                } else if(resultado.contains(GASOLEOPREMIUM)) {
+                    combustible = GASOLEOPREMIUM;
+                } else {
+                    combustible = GASOLEOA;
+                }
+            } catch (IOException e) {
+            } finally {
+                if (fis != null) {
+                    try {
+                        fis.close();
+                    } catch (IOException e) {
+                    }
                 }
             }
         }
+
         return combustible;
     }
 
     public void escrituraCombustiblePorDefecto(String combustible, Activity a, String fichero)
-    throws IOException{
-        FileOutputStream fos = null;
-        try {
-            fos = a.openFileOutput(fichero, android.content.Context.MODE_PRIVATE);
-            fos.write(combustible.getBytes());
+            throws IOException, CombustibleNoExistente {
+        if(combustible.equals(GASOLEOA) || combustible.equals(GASOLINA95) || combustible.equals(GASOLINA98) || combustible.equals(BIODIESEL) || combustible.equals(GASOLEOPREMIUM)) {
+            FileOutputStream fos = null;
+            try {
+                fos = a.openFileOutput(fichero, android.content.Context.MODE_PRIVATE);
+                fos.write(combustible.getBytes());
 
-        } finally {
-            if (fos != null) {
-                try {
+            } finally {
+                if (fos != null) {
                     fos.close();
-                } catch (IOException e) {
-                    e.getStackTrace();
                 }
             }
+        } else {
+            throw new CombustibleNoExistente();
         }
+
+    }
+
+    public class CombustibleNoExistente extends Throwable {
     }
 }

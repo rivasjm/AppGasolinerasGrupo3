@@ -252,7 +252,7 @@ public class PresenterGasolineras {
     }
 
     public void escrituraCombustiblePorDefecto(String combustible, Activity a, String fichero)
-    throws FileNotFoundException, IOException{
+    throws IOException{
         FileOutputStream fos = null;
         try {
             fos = a.openFileOutput(fichero, android.content.Context.MODE_PRIVATE);

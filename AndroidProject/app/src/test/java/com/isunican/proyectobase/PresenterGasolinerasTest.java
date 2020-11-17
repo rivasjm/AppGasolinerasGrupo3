@@ -233,7 +233,7 @@ public class PresenterGasolinerasTest {
             when(ac.openFileInput(ruta)).thenReturn(fis);
             when(ac.openFileInput("err.txt")).thenThrow(new FileNotFoundException());
             when(ac.openFileInput("archivo2.txt")).thenReturn(fisVacio);
-        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
             fail("" + e.getStackTrace());
         }
 
@@ -250,17 +250,13 @@ public class PresenterGasolinerasTest {
         try {
             pr.lecturaCombustiblePorDefecto(ac, "err.txt");
             fail();
-        } catch (FileNotFoundException e) {
         } catch (IOException e) {
-            fail();
         }
 
         //UT.1c
 
         try {
             pr.lecturaCombustiblePorDefecto(ac, "archivo2.txt");
-        } catch (FileNotFoundException e) {
-            fail();
         } catch (IOException e) {
             fail();
         }
@@ -271,9 +267,6 @@ public class PresenterGasolinerasTest {
             myWriter2.write("Gas");
             myWriter2.close();
             pr.lecturaCombustiblePorDefecto(ac, "archivo2.txt");
-
-        } catch (FileNotFoundException e) {
-            fail();
         } catch (IOException e) {
             fail();
         }
@@ -292,13 +285,12 @@ public class PresenterGasolinerasTest {
             when(ac.openFileOutput(ruta, android.content.Context.MODE_PRIVATE)).thenReturn(fos);
             when(ac.openFileOutput("err.txt", android.content.Context.MODE_PRIVATE)).thenThrow(new FileNotFoundException());
             when(ac.openFileInput(ruta)).thenReturn(fis);
-        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
         }
 
         //UT.2a
         try {
             pr.escrituraCombustiblePorDefecto("Gasóleo A",ac,ruta);
-        } catch (FileNotFoundException e) {
         }catch (IOException e){
         }
         String combusitble = null;
@@ -313,9 +305,7 @@ public class PresenterGasolinerasTest {
         try {
             pr.escrituraCombustiblePorDefecto("Gasóleo A", ac, "err.txt");
             fail();
-        }catch (FileNotFoundException e){
         }catch (IOException e){
-            fail();
         }
     }
 

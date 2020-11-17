@@ -113,6 +113,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             } catch (FileNotFoundException ex) {
                 ex.printStackTrace();
             }catch (IOException ex){
+            } catch (PresenterGasolineras.CombustibleNoExistente combustibleNoExistente) {
+                combustibleNoExistente.printStackTrace();
             }
         }
 
@@ -199,6 +201,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         e.printStackTrace();
                     }catch (IOException e){
 
+                    } catch (PresenterGasolineras.CombustibleNoExistente combustibleNoExistente) {
+                        combustibleNoExistente.printStackTrace();
                     }
                     try {
                         tipoCombustible = presenterGasolineras.lecturaCombustiblePorDefecto(ac, FICHERO);

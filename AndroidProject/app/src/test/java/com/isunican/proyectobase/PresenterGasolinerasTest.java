@@ -49,6 +49,13 @@ public class PresenterGasolinerasTest {
         try {
             archivo.createNewFile();
         } catch (IOException e) {
+            fail("" + e.getStackTrace());
+        }
+        try {
+            fis = new FileInputStream(ruta);
+            when(ac.openFileInput(ruta)).thenReturn(fis);
+        } catch (FileNotFoundException e) {
+            fail("" + e.getStackTrace());
         }
 
         pr = new PresenterGasolineras();//se inicializa el presenter
@@ -202,49 +209,51 @@ public class PresenterGasolinerasTest {
     }
 
     /**
+     * Prueba unitaria del metodo escrituraCombustiblePorDefecto de la clase PresenterGasolinera
      * @author Hamza Hamda
      */
     @Test
-    public void leerCombustiblePorDefectoTest() {
-
+    public void lecturaCombustiblePorDefectoTest() {
         FileInputStream fisVacio;
+        FileInputStream fisCombustibleErroneo;
+        File archivoVacio = new File("archivoVacio.txt");
+        FileWriter myWriter;
+        File archivoCombErr = new File("archivoCombErr.txt");;
+        FileWriter myWriterErr = null;
 
-        File archivo2 = new File("archivo2.txt");
-        FileWriter myWriter = null;
-        FileWriter myWriter2 = null;
 
         try {
-
+            //se establece por defecto el tipo de combustible como gasolina 98
             myWriter = new FileWriter(archivo);
             myWriter.write("Gasolina 98");
             myWriter.close();
 
-            archivo2.createNewFile();
-            myWriter2 = new FileWriter("archivo2.txt");
+            //creamos un segundo archivo de prueba que utilizaremos como archivo vacio
+            archivoVacio.createNewFile();
+            fisVacio = new FileInputStream(archivoVacio);
 
-        } catch (IOException e) {
-            fail("" + e.getStackTrace());
-        }
+            archivoCombErr.createNewFile();
+            fisCombustibleErroneo = new FileInputStream(archivoCombErr);
+            myWriterErr = new FileWriter(archivoCombErr);
 
 
-        try {
-            fis = new FileInputStream(ruta);
-            fisVacio = new FileInputStream(ruta);
-            when(ac.openFileInput(ruta)).thenReturn(fis);
+            //se mockea el comportamiento de la activity
             when(ac.openFileInput("err.txt")).thenThrow(new FileNotFoundException());
-            when(ac.openFileInput("archivo2.txt")).thenReturn(fisVacio);
+            when(ac.openFileInput("archivoVacio.txt")).thenReturn(fisVacio);
+            when(ac.openFileInput("archivoCombErr.txt")).thenReturn(fisCombustibleErroneo);
         } catch (IOException e) {
             fail("" + e.getStackTrace());
         }
+
 
         //UT.1a
-        String combusitble = null;
+        String combustible = null;
         try {
-            combusitble = pr.lecturaCombustiblePorDefecto(ac, ruta);
+            combustible = pr.lecturaCombustiblePorDefecto(ac, ruta);
         } catch (IOException e) {
-            fail();
+            fail("" + e.getStackTrace());
         }
-        assertEquals("Gasolina 98", combusitble);
+        assertEquals("Gasolina 98", combustible);
 
         //UT.1b
         try {
@@ -254,37 +263,42 @@ public class PresenterGasolinerasTest {
         }
 
         //UT.1c
-
         try {
-            pr.lecturaCombustiblePorDefecto(ac, "archivo2.txt");
+            combustible = pr.lecturaCombustiblePorDefecto(ac, "archivoVacio.txt");
         } catch (IOException e) {
-            fail();
+            fail("" + e.getStackTrace());
         }
-
+        assertEquals("Gasóleo A", combustible);
 
         //UT.1d
-        try {
-            myWriter2.write("Gas");
-            myWriter2.close();
-            pr.lecturaCombustiblePorDefecto(ac, "archivo2.txt");
-        } catch (IOException e) {
-            fail();
-        }
 
+        try {
+            myWriterErr.write("Gas");
+            myWriterErr.close();
+            combustible = pr.lecturaCombustiblePorDefecto(ac, "archivoCombErr.txt");
+        } catch (IOException e) {
+            e.getMessage();
+            fail("" + e.getStackTrace());
+
+        }
+        assertEquals("Gasóleo A", combustible);
 
         archivo.delete();
-        archivo2.delete();
+        archivoVacio.delete();
+        archivoCombErr.delete();
     }
 
+    /**
+     * Prueba unitaria del metodo escrituraCombustiblePorDefecto de la clase PresenterGasolinera
+     * @author Hamza Hamda
+     */
     @Test
     public void escrituraCombustiblePorDefectoTest() {
 
         try {
-            fis = new FileInputStream(ruta);
             fos = new FileOutputStream(ruta);
             when(ac.openFileOutput(ruta, android.content.Context.MODE_PRIVATE)).thenReturn(fos);
             when(ac.openFileOutput("err.txt", android.content.Context.MODE_PRIVATE)).thenThrow(new FileNotFoundException());
-            when(ac.openFileInput(ruta)).thenReturn(fis);
         } catch (IOException e) {
         }
 
@@ -292,7 +306,11 @@ public class PresenterGasolinerasTest {
         try {
             pr.escrituraCombustiblePorDefecto("Gasóleo A",ac,ruta);
         }catch (IOException e){
+            fail("" + e.getStackTrace());
+        }catch (PresenterGasolineras.CombustibleNoExistente e){
+            fail("" + e.getStackTrace());
         }
+
         String combusitble = null;
         try {
             combusitble = pr.lecturaCombustiblePorDefecto(ac, ruta);
@@ -306,6 +324,17 @@ public class PresenterGasolinerasTest {
             pr.escrituraCombustiblePorDefecto("Gasóleo A", ac, "err.txt");
             fail();
         }catch (IOException e){
+        } catch (PresenterGasolineras.CombustibleNoExistente e) {
+            fail("" + e.getStackTrace());
+        }
+
+        //UT.2c
+        try {
+            pr.escrituraCombustiblePorDefecto("Gas", ac, ruta);
+            fail();
+        }catch (PresenterGasolineras.CombustibleNoExistente e){
+        }catch (IOException e){
+            fail("" + e.getStackTrace());
         }
     }
 

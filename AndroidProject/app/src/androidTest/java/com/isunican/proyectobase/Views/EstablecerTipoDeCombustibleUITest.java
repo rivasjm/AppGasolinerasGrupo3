@@ -9,7 +9,6 @@ import androidx.test.rule.ActivityTestRule;
 import androidx.test.runner.AndroidJUnit4;
 
 import com.isunican.proyectobase.R;
-import com.isunican.proyectobase.Views.MainActivity;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -19,7 +18,6 @@ import org.junit.runner.RunWith;
 import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
-import static androidx.test.espresso.contrib.DrawerMatchers.isClosed;
 import static androidx.test.espresso.contrib.DrawerMatchers.isOpen;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.RootMatchers.isPlatformPopup;
@@ -70,7 +68,7 @@ public class EstablecerTipoDeCombustibleUITest {
         onView(withId(R.id.drawer_layout))
                 .check(matches(isOpen(Gravity.START))); // Start Drawer should be open.
 
-        // Check that you Activity was opened.
+        // Check that the Activity was opened.
         onView(withId(R.id.btnConfiguracion)).check(matches(withText("Configuración")));
 
         // Caso UIT.1B

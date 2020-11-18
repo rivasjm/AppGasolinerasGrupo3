@@ -15,7 +15,6 @@
     <string name="pasoDatosGasolinera">DatosGasolinera</string>
     <string name="configuracion">Configuración</string>
     <string-array name="operacionesArray">
-        <item>Combustible</item>
         <item>Gasóleo A</item>
         <item>Gasolina 95</item>
         <item>Gasolina 98</item>

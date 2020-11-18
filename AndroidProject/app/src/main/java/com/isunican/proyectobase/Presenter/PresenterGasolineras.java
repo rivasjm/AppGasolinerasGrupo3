@@ -10,7 +10,6 @@ import com.isunican.proyectobase.Utilities.RemoteFetch;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -224,11 +223,13 @@ public class PresenterGasolineras {
         } else {
             fis = a.openFileInput(fichero);
             InputStreamReader isr = new InputStreamReader(fis);
-            BufferedReader br = new BufferedReader(isr);
-            StringBuilder sb = new StringBuilder();
-            String text;
-            while ((text = br.readLine()) != null) {
-                sb.append(text).append("\n");
+            StringBuilder sb;
+            try (BufferedReader br = new BufferedReader(isr)) {
+                sb = new StringBuilder();
+                String text;
+                while ((text = br.readLine()) != null) {
+                    sb.append(text).append("\n");
+                }
             }
             resultado = sb.toString();
             if (resultado.contains(GASOLEOA)) {
@@ -245,9 +246,7 @@ public class PresenterGasolineras {
                 combustible = GASOLEOA;
             }
 
-            if (fis != null) {
-                fis.close();
-            }
+            fis.close();
         }
         return combustible;
     }

@@ -8,34 +8,31 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
-
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
-
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
@@ -74,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //Botones de filtro y ordenacion
     Button buttonFiltros;
     Button buttonOrden;
-    ImageView config;
+    ImageButton config;
 
 
     //DRAWER LAYOUT
@@ -84,6 +81,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //orden ascendente por defecto
     final String[] buttonString = {PRECIO_ASC};
     final String[] idImgOrdernPrecio = {FLECHA_ARRIBA};
+    final String[]  valorActualOrdenPrecio={PRECIO_ASC};
+    final String[]  valorActualIconoPrecio={FLECHA_ARRIBA};
+
     String tipoCombustible = "Gasóleo A"; //Por defecto
     boolean esAsc = true; //Por defecto ascendente
 
@@ -124,11 +124,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } catch (IOException e) {
             e.printStackTrace();
         }
+        drawerLayout = findViewById(R.id.drawer_layout);
 
+        /***NO BORRAR!!***/
         // Barra de progreso
         // https://materialdoc.com/components/progress/
         progressBar = new ProgressBar(MainActivity.this, null, android.R.attr.progressBarStyleLarge);
-        drawerLayout = findViewById(R.id.drawer_layout);
+        //DrawerLayout.LayoutParams params = new  DrawerLayout.LayoutParams(100, 100);
+        //params.addRule(DrawerLayout.CENTER_IN_PARENT);
+        //drawerLayout.addView(progressBar, params);
+
         // Muestra el logo en el actionBar
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setIcon(R.drawable.por_defecto_mod);
@@ -173,7 +178,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // Vista escondida del nuevo layout para los diferentes spinners a implementar para los filtros
         View mView = getLayoutInflater().inflate(R.layout.combustible_por_defecto_layout, null);
 
-        final Spinner mSpinner = (Spinner) mView.findViewById(R.id.combustible_por_defecto);    // New spinner object
+        final Spinner mSpinner = (Spinner) mView.findViewById(R.id.combustible_por_defecto);// New spinner object
         final TextView comb = mView.findViewById(R.id.porDefecto);
         try {
             comb.setText("Combustible actual: "+presenterGasolineras.lecturaCombustiblePorDefecto(ac, FICHERO));
@@ -181,9 +186,37 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             e.printStackTrace();
         }
         // El spinner creado contiene todos los items del array de Strings "operacionesArray"
-        ArrayAdapter<String> adapterSpinner = new ArrayAdapter<>(MainActivity.this,
-                android.R.layout.simple_spinner_item,
-                getResources().getStringArray(R.array.operacionesArray));
+        final ArrayAdapter<String> adapterSpinner = new ArrayAdapter<String>(
+                this, android.R.layout.simple_spinner_item,
+                getResources().getStringArray(R.array.operacionesArray)){
+            @Override
+            public boolean isEnabled(int position){
+                if(position == 0)
+                {
+                    // Disable the first item from Spinner
+                    // First item will be use for hint
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+            @Override
+            public View getDropDownView(int position, View convertView,
+                                        ViewGroup parent) {
+                View view = super.getDropDownView(position, convertView, parent);
+                TextView tv = (TextView) view;
+                if(position == 0){
+                    // Set the hint text color gray
+                    tv.setTextColor(Color.GRAY);
+                }
+                else {
+                    tv.setTextColor(Color.BLACK);
+                }
+                return view;
+            }
+        };
         // Al abrir el spinner la lista se abre hacia abajo
         adapterSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mSpinner.setAdapter(adapterSpinner);
@@ -245,35 +278,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         closeDrawer(drawerLayout);
     }
 
-    /**
-     * Menú action bar
-     * <p>
-     * Redefine métodos para el uso de un menú de tipo action bar.
-     * <p>
-     * onCreateOptionsMenu
-     * Carga las opciones del menú a partir del fichero de recursos menu/menu.xml
-     * <p>
-     * onOptionsItemSelected
-     * Define las respuestas a las distintas opciones del menú
-     */
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.itemActualizar) {
-            mSwipeRefreshLayout.setRefreshing(true);
-            new CargaDatosGasolinerasTask(this).execute();
-        } else if (item.getItemId() == R.id.itemInfo) {
-            Intent myIntent = new Intent(MainActivity.this, InfoActivity.class);
-            MainActivity.this.startActivity(myIntent);
-        }
-        return true;
-    }
-
     public void onClick(View v) {
 
         if (v.getId() == R.id.buttonFiltros) {
@@ -322,8 +326,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             builder.show();
 
         } else if (v.getId() == R.id.buttonOrden) {
-
-
             //comienzo de ordenar
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
@@ -339,8 +341,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             imgOrdenPrecio.setImageResource(getResources().getIdentifier(idImgOrdernPrecio[0],
                     DRAWABLE, getPackageName()));
 
-            final String[]  valorActualOrdenPrecio={PRECIO_ASC};
-            final String[]  valorActualIconoPrecio={FLECHA_ARRIBA};
+
             final boolean[] ordenActual = {esAsc};
             mb.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -382,35 +383,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             builder.show();
 
         } else if(v.getId() == R.id.info) {
+            //Creating the instance of PopupMenu
+            PopupMenu popup = new PopupMenu(MainActivity.this, config);
+            //Inflating the Popup using xml file
+            popup.getMenuInflater()
+                    .inflate(R.menu.menu, popup.getMenu());
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            // Vista escondida del nuevo layout para los diferentes spinners a implementar para los filtros
-            View mView = getLayoutInflater().inflate(R.layout.menu_layout, null);
-            builder.setTitle("Menú");
-            builder.setPositiveButton("Actualizar", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int id) {
-                    refresca();
-                    dialog.dismiss();
+            //registering popup with OnMenuItemClickListener
+            popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                public boolean onMenuItemClick(MenuItem item) {
+                    if (item.getItemId() == R.id.itemActualizar) {
+                        mSwipeRefreshLayout.setRefreshing(true);
+                        new CargaDatosGasolinerasTask(MainActivity.this).execute();
+                    } else if (item.getItemId() == R.id.itemInfo) {
+                        Intent myIntent = new Intent(MainActivity.this, InfoActivity.class);
+                        MainActivity.this.startActivity(myIntent);
+                    }
+                    return true;
                 }
             });
 
-            builder.setNegativeButton("Información", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int id) {
-                    Intent myIntent = new Intent(MainActivity.this, InfoActivity.class);
-                    MainActivity.this.startActivity(myIntent);
-                    dialog.dismiss();
-                }
-            });
-            builder.setView(mView);
-
-            AlertDialog dialog = builder.create();
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-            WindowManager.LayoutParams vMLP = dialog.getWindow().getAttributes();
-            vMLP.gravity = Gravity.TOP | Gravity.RIGHT;
-            vMLP.y = 163;
-            dialog.show();
+            popup.show(); //showing popup menu
         }
     }
 

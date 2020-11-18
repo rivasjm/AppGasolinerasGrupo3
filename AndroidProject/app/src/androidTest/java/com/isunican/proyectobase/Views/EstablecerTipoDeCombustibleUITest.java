@@ -1,12 +1,14 @@
-package com.isunican.proyectobase;
+package com.isunican.proyectobase.Views;
 
 import android.view.Gravity;
 import android.widget.ListView;
 
 
+import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.runner.AndroidJUnit4;
 
+import com.isunican.proyectobase.R;
 import com.isunican.proyectobase.Views.MainActivity;
 
 import org.junit.Before;
@@ -48,7 +50,7 @@ public class EstablecerTipoDeCombustibleUITest {
     @Before
     public void setUp(){
         // Se va a estabblecer como tipo de combustible el gasoleo A
-        onView(withId(R.id.buttonFiltros)).perform(click());
+        onView(ViewMatchers.withId(R.id.buttonFiltros)).perform(click());
         onView((withId(R.id.spinner))).perform(click());
         onData(allOf(is(instanceOf(String.class)),
                 is("Gasóleo A"))).inRoot(isPlatformPopup()).perform(click());

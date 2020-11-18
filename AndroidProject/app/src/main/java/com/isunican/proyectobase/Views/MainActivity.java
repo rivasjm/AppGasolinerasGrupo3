@@ -112,7 +112,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 presenterGasolineras.escrituraCombustiblePorDefecto("Gasóleo A", this, FICHERO);
             } catch (FileNotFoundException ex) {
                 ex.printStackTrace();
-            }catch (IOException ex){
+            }catch (IOException exc){
+                exc.printStackTrace();
             } catch (PresenterGasolineras.CombustibleNoExistente combustibleNoExistente) {
                 combustibleNoExistente.printStackTrace();
             }
@@ -199,8 +200,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         presenterGasolineras.escrituraCombustiblePorDefecto(mSpinner.getSelectedItem().toString(), ac, FICHERO);
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
-                    }catch (IOException e){
-
+                    }catch (IOException ex){
+                        ex.printStackTrace();
                     } catch (PresenterGasolineras.CombustibleNoExistente combustibleNoExistente) {
                         combustibleNoExistente.printStackTrace();
                     }
@@ -406,31 +407,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             AlertDialog dialog = builder.create();
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-            WindowManager.LayoutParams VMLP = dialog.getWindow().getAttributes();
-            VMLP.gravity = Gravity.TOP | Gravity.RIGHT;
-            VMLP.y = 163;
+            WindowManager.LayoutParams vMLP = dialog.getWindow().getAttributes();
+            vMLP.gravity = Gravity.TOP | Gravity.RIGHT;
+            vMLP.y = 163;
             dialog.show();
-
-        /*}else if(v.getId() == R.id.navigationDrawerButton) {
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            // Vista escondida del nuevo layout para los diferentes spinners a implementar para los filtros
-            View mView = getLayoutInflater().inflate(R.layout.nav_drawer_layout, null);
-            builder.setTitle("");
-
-            final Button buttonConf = mView.findViewById(R.id.buttonConfigurar);
-            builder.setView(mView);
-
-            AlertDialog dialog = builder.create();
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-            WindowManager.LayoutParams VMLP = dialog.getWindow().getAttributes();
-            VMLP.gravity = Gravity.TOP | Gravity.LEFT;
-            VMLP.y = 163;
-            dialog.show();
-            dialog.getWindow().setLayout(650,1000);
-
-            buttonConf.setOnClickListener((View.OnClickListener)ac);*/
-
         }
     }
 

@@ -1,4 +1,4 @@
-package com.isunican.proyectobase;
+package com.isunican.proyectobase.Utilities;
 
 import android.os.Build;
 import android.util.JsonReader;

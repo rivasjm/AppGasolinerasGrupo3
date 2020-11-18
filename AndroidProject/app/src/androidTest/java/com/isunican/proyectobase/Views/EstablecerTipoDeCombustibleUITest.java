@@ -74,10 +74,7 @@ public class EstablecerTipoDeCombustibleUITest {
         // Caso UIT.1B
         onView(withId(R.id.btnConfiguracion)).perform(click());
 
-        onView(withId(R.id.defecto)).check(matches(withText("Selecciona un tipo de combustible por defecto")));
-
-        // Antes de cada test se pulsa el spinner para ver su contenido
-        onView((withId(R.id.combustible_por_defecto))).perform(click());
+        onView(withId(R.id.defecto)).check(matches(withText("Escoja su combustible de preferencia")));
 
         // Se comprueba seleccionando cada elemento existente dentro del spinner
         // y se comprueba su correspondiente nombre si es el correcto

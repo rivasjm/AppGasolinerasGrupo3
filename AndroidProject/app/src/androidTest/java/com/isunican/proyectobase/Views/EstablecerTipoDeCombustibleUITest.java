@@ -81,10 +81,6 @@ public class EstablecerTipoDeCombustibleUITest {
 
         // Se comprueba seleccionando cada elemento existente dentro del spinner
         // y se comprueba su correspondiente nombre si es el correcto
-        onData(allOf(is(instanceOf(String.class)),
-                is("Combustible"))).inRoot(isPlatformPopup()).perform(click());
-        onView(withId(R.id.combustible_por_defecto)).check(matches(withSpinnerText(containsString("Combustible"))));
-
         onView((withId(R.id.combustible_por_defecto))).perform(click());
         onData(allOf(is(instanceOf(String.class)),
                 is("Gasóleo A"))).inRoot(isPlatformPopup()).perform(click());

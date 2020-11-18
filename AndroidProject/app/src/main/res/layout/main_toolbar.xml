@@ -13,7 +13,6 @@
         android:id="@+id/menuNav"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="clickMenu"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:src="@drawable/ic_menu" />
 

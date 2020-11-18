@@ -6,7 +6,6 @@ import com.isunican.proyectobase.R;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
@@ -22,11 +21,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -72,6 +69,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button buttonFiltros;
     Button buttonOrden;
     ImageButton config;
+    ImageView menu;
+    Button buttonConfig;
+
 
 
     //DRAWER LAYOUT
@@ -81,8 +81,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //orden ascendente por defecto
     final String[] buttonString = {PRECIO_ASC};
     final String[] idImgOrdernPrecio = {FLECHA_ARRIBA};
-    final String[]  valorActualOrdenPrecio={PRECIO_ASC};
-    final String[]  valorActualIconoPrecio={FLECHA_ARRIBA};
 
     String tipoCombustible = "Gasóleo A"; //Por defecto
     boolean esAsc = true; //Por defecto ascendente
@@ -142,12 +140,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // Swipe and refresh
         // Al hacer swipe en la lista, lanza la tarea asíncrona de carga de datos
         mSwipeRefreshLayout = findViewById(R.id.swiperefresh);
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                new CargaDatosGasolinerasTask(MainActivity.this).execute();
-            }
-        });
+        mSwipeRefreshLayout.setOnRefreshListener(() -> new CargaDatosGasolinerasTask(MainActivity.this).execute());
 
         // Al terminar de inicializar todas las variables
         // se lanza una tarea para cargar los datos de las gasolineras
@@ -155,20 +148,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         new CargaDatosGasolinerasTask(this).execute();
 
         //Añadir los listener a los botones
+
         buttonFiltros = findViewById(R.id.buttonFiltros);
         buttonOrden = findViewById(R.id.buttonOrden);
         config = findViewById(R.id.info);
+        menu = findViewById(R.id.menuNav);
+        buttonConfig = findViewById(R.id.btnConfiguracion);
         buttonFiltros.setOnClickListener(this);
         buttonOrden.setOnClickListener(this);
         config.setOnClickListener(this);
+        menu.setOnClickListener(this);
+        buttonConfig.setOnClickListener(this);
 
     }
 
-    public void clickMenu(View view){
+    public void clickMenu() {
         openDrawer(drawerLayout);
     }
 
-    public void clickConfiguracion(View view){
+    public void clickConfiguracion() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         // Set the dialog title
@@ -222,39 +220,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mSpinner.setAdapter(adapterSpinner);
 
         // Set the action buttons
-        builder.setPositiveButton("Aplicar", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int id) {
-                // User clicked Aceptar, save the item selected in the spinner
-                // If the user does not select nothing, don't do anything
-                if (!mSpinner.getSelectedItem().toString().equalsIgnoreCase("Combustible")) {
-                    tipoCombustible = mSpinner.getSelectedItem().toString();
-                    try {
-                        presenterGasolineras.escrituraCombustiblePorDefecto(mSpinner.getSelectedItem().toString(), ac, FICHERO);
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    }catch (IOException ex){
-                        ex.printStackTrace();
-                    } catch (PresenterGasolineras.CombustibleNoExistente combustibleNoExistente) {
-                        combustibleNoExistente.printStackTrace();
-                    }
-                    try {
-                        tipoCombustible = presenterGasolineras.lecturaCombustiblePorDefecto(ac, FICHERO);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+        builder.setPositiveButton("Aplicar", (dialog, id) -> {
+            // User clicked Aceptar, save the item selected in the spinner
+            // If the user does not select nothing, don't do anything
+            if (!mSpinner.getSelectedItem().toString().equalsIgnoreCase("Combustible")) {
+                tipoCombustible = mSpinner.getSelectedItem().toString();
+                try {
+                    presenterGasolineras.escrituraCombustiblePorDefecto(mSpinner.getSelectedItem().toString(), ac, FICHERO);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }catch (IOException ex){
+                    ex.printStackTrace();
+                } catch (PresenterGasolineras.CombustibleNoExistente combustibleNoExistente) {
+                    combustibleNoExistente.printStackTrace();
                 }
-                closeDrawer(drawerLayout);
-                refresca();
+                try {
+                    tipoCombustible = presenterGasolineras.lecturaCombustiblePorDefecto(ac, FICHERO);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
+            closeDrawer(drawerLayout);
+            refresca();
         });
-        builder.setNegativeButton(CANCELAR, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int id) {
-                dialog.dismiss();
-                closeDrawer(drawerLayout);
-            }
-
+        builder.setNegativeButton(CANCELAR, (dialog, id) -> {
+            dialog.dismiss();
+            closeDrawer(drawerLayout);
         });
         builder.setView(mView);
         builder.create();
@@ -303,24 +294,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             mSpinner.setAdapter(adapterSpinner);
 
             // Set the action buttons
-            builder.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int id) {
-                    // User clicked Aceptar, save the item selected in the spinner
-                    // If the user does not select nothing, don't do anything
-                    if (!mSpinner.getSelectedItem().toString().equalsIgnoreCase("Tipo de Combustible")) {
-                        tipoCombustible = mSpinner.getSelectedItem().toString();
+            builder.setPositiveButton("Aceptar", (dialog, id) -> {
+                // User clicked Aceptar, save the item selected in the spinner
+                // If the user does not select nothing, don't do anything
+                if (!mSpinner.getSelectedItem().toString().equalsIgnoreCase("Tipo de Combustible")) {
+                    tipoCombustible = mSpinner.getSelectedItem().toString();
 
-                    }
-                    refresca();
                 }
+                refresca();
             });
-            builder.setNegativeButton(CANCELAR, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int id) {
-                    dialog.dismiss();
-                }
-            });
+            builder.setNegativeButton(CANCELAR, (dialog, id) -> dialog.dismiss());
             builder.setView(mView);
             builder.create();
             builder.show();
@@ -341,43 +324,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             imgOrdenPrecio.setImageResource(getResources().getIdentifier(idImgOrdernPrecio[0],
                     DRAWABLE, getPackageName()));
 
-
+            final String[]  valorActualOrdenPrecio={ buttonString[0]};
+            final String[]  valorActualIconoPrecio={idImgOrdernPrecio[0]};
             final boolean[] ordenActual = {esAsc};
-            mb.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    ordenActual [0] = !ordenActual[0];
-                    if (ordenActual[0]) {
-                        valorActualIconoPrecio[0] = FLECHA_ARRIBA;
-                        valorActualOrdenPrecio[0] = PRECIO_ASC;
-                    } else {
-                        valorActualIconoPrecio[0]= "flecha_abajo";
-                        valorActualOrdenPrecio[0] = "Precio (des)";
+            mb.setOnClickListener(v1 -> {
+                ordenActual [0] = !ordenActual[0];
+                if (ordenActual[0]) {
+                    valorActualIconoPrecio[0] = FLECHA_ARRIBA;
+                    valorActualOrdenPrecio[0] = PRECIO_ASC;
+                } else {
+                    valorActualIconoPrecio[0]= "flecha_abajo";
+                    valorActualOrdenPrecio[0] = "Precio (des)";
 
-                    }
-                    imgOrdenPrecio.setImageResource(getResources().getIdentifier(valorActualIconoPrecio[0],
-                            DRAWABLE, getPackageName()));
-                    mb.setText( valorActualOrdenPrecio[0]);
                 }
+                imgOrdenPrecio.setImageResource(getResources().getIdentifier(valorActualIconoPrecio[0],
+                        DRAWABLE, getPackageName()));
+                mb.setText( valorActualOrdenPrecio[0]);
             });
 
 
-            builder.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int id) {
-                    buttonString[0] = valorActualOrdenPrecio[0];
-                    idImgOrdernPrecio[0] = valorActualIconoPrecio[0];
-                    esAsc= ordenActual[0];
-                    refresca();
-                }
+            builder.setPositiveButton("Aceptar", (dialog, id) -> {
+                buttonString[0] = valorActualOrdenPrecio[0];
+                idImgOrdernPrecio[0] = valorActualIconoPrecio[0];
+                esAsc= ordenActual[0];
+                refresca();
             });
 
-            builder.setNegativeButton(CANCELAR, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int id) {
-                    dialog.dismiss();
-                }
-            });
+            builder.setNegativeButton(CANCELAR, (dialog, id) -> dialog.dismiss());
             builder.setView(mView);
             builder.create();
             builder.show();
@@ -402,8 +375,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     return true;
                 }
             });
-
             popup.show(); //showing popup menu
+
+        } else if (v.getId() == R.id.menuNav) {
+            this.clickMenu();
+
+        } else if (v.getId() == R.id.btnConfiguracion) {
+            this.clickConfiguracion();
         }
     }
 
@@ -540,19 +518,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
              */
 
             try {
-                listViewGasolineras.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                listViewGasolineras.setOnItemClickListener((a, v, position, id) -> {
 
-                    public void onItemClick(AdapterView<?> a, View v, int position, long id) {
+                    /* Obtengo el elemento directamente de su posicion,
+                     * ya que es la misma que ocupa en la lista
+                     */
+                    Intent myIntent = new Intent(MainActivity.this, DetailActivity.class);
+                    myIntent.putExtra(getResources().getString(R.string.pasoDatosGasolinera),
+                            presenterGasolineras.getGasolineras().get(position));
+                    MainActivity.this.startActivity(myIntent);
 
-                        /* Obtengo el elemento directamente de su posicion,
-                         * ya que es la misma que ocupa en la lista
-                         */
-                        Intent myIntent = new Intent(MainActivity.this, DetailActivity.class);
-                        myIntent.putExtra(getResources().getString(R.string.pasoDatosGasolinera),
-                                presenterGasolineras.getGasolineras().get(position));
-                        MainActivity.this.startActivity(myIntent);
-
-                    }
                 });
             }
             catch(Exception e1){

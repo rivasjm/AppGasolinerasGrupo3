@@ -336,6 +336,7 @@ public class PresenterGasolinerasTest {
         }catch (IOException e){
             fail("" + e.getStackTrace());
         }
+        archivo.delete();
     }
 
 }//class

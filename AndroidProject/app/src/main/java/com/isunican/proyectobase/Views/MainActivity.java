@@ -29,7 +29,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.PopupMenu;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -58,8 +57,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     ListView listViewGasolineras;
     ArrayAdapter<Gasolinera> adapter;
 
-    // Barra de progreso circular para mostar progeso de carga
-    ProgressBar progressBar;
 
     // Swipe and refresh (para recargar la lista con un swipe)
     SwipeRefreshLayout mSwipeRefreshLayout;
@@ -121,13 +118,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } catch (IOException e) {
             e.printStackTrace();
         }
-        drawerLayout = findViewById(R.id.drawer_layout);
 
-        /***NO BORRAR!!***/
-        // Barra de progreso
-        // https://materialdoc.com/components/progress/
-        progressBar = new ProgressBar(MainActivity.this, null, android.R.attr.progressBarStyleLarge);
-
+       
 
         // Muestra el logo en el actionBar
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -417,16 +409,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             this.activity = activity;
         }
 
-        /**
-         * onPreExecute
-         * <p>
-         * Metodo ejecutado de forma previa a la ejecucion de la tarea definida en el metodo doInBackground()
-         * Muestra un diálogo de progreso
-         */
-        @Override
-        protected void onPreExecute() {
-            progressBar.setVisibility(View.VISIBLE);  //To show ProgressBar
-        }
+
+
 
         /**
          * doInBackground
@@ -459,8 +443,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         protected void onPostExecute(Boolean res) {
             Toast toast;
 
-            // Si el progressDialog estaba activado, lo oculta
-            progressBar.setVisibility(View.GONE);     // To Hide ProgressBar
+
 
             mSwipeRefreshLayout.setRefreshing(false);
 

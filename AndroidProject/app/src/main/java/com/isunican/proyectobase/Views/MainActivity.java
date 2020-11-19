@@ -30,12 +30,10 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.PopupMenu;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
 
 /*
 ------------------------------------------------------------------
@@ -58,9 +56,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     // Vista de lista y adaptador para cargar datos en ella
     ListView listViewGasolineras;
     ArrayAdapter<Gasolinera> adapter;
-
-    // Barra de progreso circular para mostar progeso de carga
-    ProgressBar progressBar;
 
     // Swipe and refresh (para recargar la lista con un swipe)
     SwipeRefreshLayout mSwipeRefreshLayout;
@@ -123,12 +118,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             e.printStackTrace();
         }
         drawerLayout = findViewById(R.id.drawer_layout);
-
-        // Barra de progreso
-        // https://materialdoc.com/components/progress/
-        progressBar = new ProgressBar(MainActivity.this, null, android.R.attr.progressBarStyleLarge);
-        DrawerLayout.LayoutParams params = new  DrawerLayout.LayoutParams(100, 100);
-        drawerLayout.addView(progressBar, params);
 
         // Muestra el logo en el actionBar
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -418,16 +407,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             this.activity = activity;
         }
 
-        /**
-         * onPreExecute
-         * <p>
-         * Metodo ejecutado de forma previa a la ejecucion de la tarea definida en el metodo doInBackground()
-         * Muestra un diálogo de progreso
-         */
-        @Override
-        protected void onPreExecute() {
-            progressBar.setVisibility(View.VISIBLE);  //To show ProgressBar
-        }
 
         /**
          * doInBackground
@@ -459,9 +438,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         protected void onPostExecute(Boolean res) {
             Toast toast;
-
-            // Si el progressDialog estaba activado, lo oculta
-            progressBar.setVisibility(View.GONE);     // To Hide ProgressBar
 
             mSwipeRefreshLayout.setRefreshing(false);
 

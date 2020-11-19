@@ -1,16 +1,10 @@
 package com.isunican.proyectobase.Views;
 
-import android.content.Context;
-
 import androidx.test.espresso.matcher.ViewMatchers;
-import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.runner.AndroidJUnit4;
 
 import com.isunican.proyectobase.R;
-import com.isunican.proyectobase.Views.MainActivity;
-
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;

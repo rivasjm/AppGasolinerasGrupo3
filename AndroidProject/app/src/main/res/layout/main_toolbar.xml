@@ -9,10 +9,11 @@
     android:gravity="center_vertical"
     android:background="?attr/colorPrimary">
 
-    <ImageView
+    <ImageButton
         android:id="@+id/menuNav"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackgroundBorderless"
         android:src="@drawable/ic_menu" />
 
     <ImageView
@@ -32,9 +33,13 @@
         android:textSize="20sp"
         android:textStyle="bold" />
 
-    <ImageView
+    <ImageButton
         android:id="@+id/info"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:focusable="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:srcCompat="@drawable/ic_more" />
+
+
 </LinearLayout>

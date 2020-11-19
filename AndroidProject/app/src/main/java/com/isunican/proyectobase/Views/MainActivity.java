@@ -21,7 +21,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -128,9 +127,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // Barra de progreso
         // https://materialdoc.com/components/progress/
         progressBar = new ProgressBar(MainActivity.this, null, android.R.attr.progressBarStyleLarge);
-        //DrawerLayout.LayoutParams params = new  DrawerLayout.LayoutParams(100, 100);
-        //params.addRule(DrawerLayout.CENTER_IN_PARENT);
-        //drawerLayout.addView(progressBar, params);
+
 
         // Muestra el logo en el actionBar
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -189,16 +186,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 getResources().getStringArray(R.array.operacionesArray)){
             @Override
             public boolean isEnabled(int position){
+                boolean habilitado;
                 if(position == 0)
                 {
                     // Disable the first item from Spinner
                     // First item will be use for hint
-                    return false;
+                    habilitado = false;
                 }
                 else
                 {
-                    return true;
+                    habilitado = true;
                 }
+                return habilitado;
             }
             @Override
             public View getDropDownView(int position, View convertView,
@@ -363,17 +362,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     .inflate(R.menu.menu, popup.getMenu());
 
             //registering popup with OnMenuItemClickListener
-            popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                public boolean onMenuItemClick(MenuItem item) {
-                    if (item.getItemId() == R.id.itemActualizar) {
-                        mSwipeRefreshLayout.setRefreshing(true);
-                        new CargaDatosGasolinerasTask(MainActivity.this).execute();
-                    } else if (item.getItemId() == R.id.itemInfo) {
-                        Intent myIntent = new Intent(MainActivity.this, InfoActivity.class);
-                        MainActivity.this.startActivity(myIntent);
-                    }
-                    return true;
+            popup.setOnMenuItemClickListener(item -> {
+                if (item.getItemId() == R.id.itemActualizar) {
+                    mSwipeRefreshLayout.setRefreshing(true);
+                    new CargaDatosGasolinerasTask(MainActivity.this).execute();
+                } else if (item.getItemId() == R.id.itemInfo) {
+                    Intent myIntent = new Intent(MainActivity.this, InfoActivity.class);
+                    MainActivity.this.startActivity(myIntent);
                 }
+                return true;
             });
             popup.show(); //showing popup menu
 

@@ -1,7 +1,6 @@
 package com.isunican.proyectobase.Utilities;
 
 import com.isunican.proyectobase.Model.*;
-import android.app.Activity;
 import android.util.JsonReader;
 import android.util.JsonToken;
 import android.util.Log;

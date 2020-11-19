@@ -124,13 +124,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         drawerLayout = findViewById(R.id.drawer_layout);
 
-        /***NO BORRAR!!***/
         // Barra de progreso
         // https://materialdoc.com/components/progress/
         progressBar = new ProgressBar(MainActivity.this, null, android.R.attr.progressBarStyleLarge);
-        //DrawerLayout.LayoutParams params = new  DrawerLayout.LayoutParams(100, 100);
-        //params.addRule(DrawerLayout.CENTER_IN_PARENT);
-        //drawerLayout.addView(progressBar, params);
+        DrawerLayout.LayoutParams params = new  DrawerLayout.LayoutParams(100, 100);
+        drawerLayout.addView(progressBar, params);
 
         // Muestra el logo en el actionBar
         getSupportActionBar().setDisplayShowHomeEnabled(true);

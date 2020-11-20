@@ -34,7 +34,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 /*
 ------------------------------------------------------------------
     Vista principal
@@ -56,8 +55,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     // Vista de lista y adaptador para cargar datos en ella
     ListView listViewGasolineras;
     ArrayAdapter<Gasolinera> adapter;
-
-
     // Swipe and refresh (para recargar la lista con un swipe)
     SwipeRefreshLayout mSwipeRefreshLayout;
 
@@ -119,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             e.printStackTrace();
         }
 
-       
+        drawerLayout = findViewById(R.id.drawer_layout);
 
         // Muestra el logo en el actionBar
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -410,8 +407,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
 
-
-
         /**
          * doInBackground
          * <p>
@@ -442,8 +437,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         protected void onPostExecute(Boolean res) {
             Toast toast;
-
-
 
             mSwipeRefreshLayout.setRefreshing(false);
 
@@ -614,3 +607,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 }
+
+
+
+
+
+
+
+

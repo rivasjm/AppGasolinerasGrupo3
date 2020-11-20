@@ -6,32 +6,33 @@ import com.isunican.proyectobase.R;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.ProgressBar;
+import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
 
 /*
 ------------------------------------------------------------------
@@ -46,28 +47,34 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public static final String PRECIO_ASC = "Precio (asc)";
     public static final String FLECHA_ARRIBA = "flecha_arriba";
     public static final String DRAWABLE = "drawable";
+    public static final String CANCELAR = "Cancelar";
+    public static final String FICHERO = "datos.txt";
 
     PresenterGasolineras presenterGasolineras;
 
     // Vista de lista y adaptador para cargar datos en ella
     ListView listViewGasolineras;
     ArrayAdapter<Gasolinera> adapter;
-
-    // Barra de progreso circular para mostar progeso de carga
-    ProgressBar progressBar;
-
     // Swipe and refresh (para recargar la lista con un swipe)
     SwipeRefreshLayout mSwipeRefreshLayout;
 
     //Botones de filtro y ordenacion
     Button buttonFiltros;
     Button buttonOrden;
+    ImageButton config;
+    ImageView menu;
+    Button buttonConfig;
 
+
+
+    //DRAWER LAYOUT
+    DrawerLayout drawerLayout;
 
     /*Variables para modificar filtros y ordenaciones*/
     //orden ascendente por defecto
     final String[] buttonString = {PRECIO_ASC};
     final String[] idImgOrdernPrecio = {FLECHA_ARRIBA};
+
     String tipoCombustible = "Gasóleo A"; //Por defecto
     boolean esAsc = true; //Por defecto ascendente
 
@@ -88,28 +95,38 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         this.presenterGasolineras = new PresenterGasolineras();
 
-        // Barra de progreso
-        // https://materialdoc.com/components/progress/
-        progressBar = new ProgressBar(MainActivity.this, null, android.R.attr.progressBarStyleLarge);
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(100, 100);
-        params.addRule(RelativeLayout.CENTER_IN_PARENT);
-        RelativeLayout layout = findViewById(R.id.activity_precio_gasolina);
-        layout.addView(progressBar, params);
+        try {
+            //Lectura inicial del tipo de combustible por defecto
+            tipoCombustible = presenterGasolineras.lecturaCombustiblePorDefecto(this, FICHERO);
+        } catch(Exception e) {
+            try {
+                presenterGasolineras.escrituraCombustiblePorDefecto("Gasóleo A", this, FICHERO);
+            } catch (FileNotFoundException ex) {
+                ex.printStackTrace();
+            }catch (IOException exc){
+                exc.printStackTrace();
+            } catch (PresenterGasolineras.CombustibleNoExistente combustibleNoExistente) {
+                combustibleNoExistente.printStackTrace();
+            }
+        }
+
+        try {
+            tipoCombustible = presenterGasolineras.lecturaCombustiblePorDefecto(this, FICHERO);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        drawerLayout = findViewById(R.id.drawer_layout);
 
         // Muestra el logo en el actionBar
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setIcon(R.drawable.por_defecto_mod);
-
+        getSupportActionBar().hide();
 
         // Swipe and refresh
         // Al hacer swipe en la lista, lanza la tarea asíncrona de carga de datos
         mSwipeRefreshLayout = findViewById(R.id.swiperefresh);
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                new CargaDatosGasolinerasTask(MainActivity.this).execute();
-            }
-        });
+        mSwipeRefreshLayout.setOnRefreshListener(() -> new CargaDatosGasolinerasTask(MainActivity.this).execute());
 
         // Al terminar de inicializar todas las variables
         // se lanza una tarea para cargar los datos de las gasolineras
@@ -117,40 +134,127 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         new CargaDatosGasolinerasTask(this).execute();
 
         //Añadir los listener a los botones
+
         buttonFiltros = findViewById(R.id.buttonFiltros);
         buttonOrden = findViewById(R.id.buttonOrden);
+        config = findViewById(R.id.info);
+        menu = findViewById(R.id.menuNav);
+        buttonConfig = findViewById(R.id.btnConfiguracion);
         buttonFiltros.setOnClickListener(this);
         buttonOrden.setOnClickListener(this);
+        config.setOnClickListener(this);
+        menu.setOnClickListener(this);
+        buttonConfig.setOnClickListener(this);
+
     }
 
-
-    /**
-     * Menú action bar
-     * <p>
-     * Redefine métodos para el uso de un menú de tipo action bar.
-     * <p>
-     * onCreateOptionsMenu
-     * Carga las opciones del menú a partir del fichero de recursos menu/menu.xml
-     * <p>
-     * onOptionsItemSelected
-     * Define las respuestas a las distintas opciones del menú
-     */
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu, menu);
-        return true;
+    public void clickMenu() {
+        openDrawer(drawerLayout);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.itemActualizar) {
-            mSwipeRefreshLayout.setRefreshing(true);
-            new CargaDatosGasolinerasTask(this).execute();
-        } else if (item.getItemId() == R.id.itemInfo) {
-            Intent myIntent = new Intent(MainActivity.this, InfoActivity.class);
-            MainActivity.this.startActivity(myIntent);
+    public void clickConfiguracion() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        // Set the dialog title
+        builder.setTitle("Configuración");
+        // Specify the list array, the items to be selected by default (null for none),
+
+        // Vista escondida del nuevo layout para los diferentes spinners a implementar para los filtros
+        View mView = getLayoutInflater().inflate(R.layout.combustible_por_defecto_layout, null);
+
+        final Spinner mSpinner = (Spinner) mView.findViewById(R.id.combustible_por_defecto);// New spinner object
+        final TextView comb = mView.findViewById(R.id.porDefecto);
+        try {
+            comb.setText("Combustible actual: "+presenterGasolineras.lecturaCombustiblePorDefecto(ac, FICHERO));
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        return true;
+        // El spinner creado contiene todos los items del array de Strings "operacionesArray"
+        final ArrayAdapter<String> adapterSpinner = new ArrayAdapter<String>(
+                this, android.R.layout.simple_spinner_item,
+                getResources().getStringArray(R.array.operacionesArray)){
+            @Override
+            public boolean isEnabled(int position){
+                boolean habilitado;
+                if(position == 0)
+                {
+                    // Disable the first item from Spinner
+                    // First item will be use for hint
+                    habilitado = false;
+                }
+                else
+                {
+                    habilitado = true;
+                }
+                return habilitado;
+            }
+            @Override
+            public View getDropDownView(int position, View convertView,
+                                        ViewGroup parent) {
+                View view = super.getDropDownView(position, convertView, parent);
+                TextView tv = (TextView) view;
+                if(position == 0){
+                    // Set the hint text color gray
+                    tv.setTextColor(Color.GRAY);
+                }
+                else {
+                    tv.setTextColor(Color.BLACK);
+                }
+                return view;
+            }
+        };
+        // Al abrir el spinner la lista se abre hacia abajo
+        adapterSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mSpinner.setAdapter(adapterSpinner);
+
+        // Set the action buttons
+        builder.setPositiveButton("Aplicar", (dialog, id) -> {
+            // User clicked Aceptar, save the item selected in the spinner
+            // If the user does not select nothing, don't do anything
+            if (!mSpinner.getSelectedItem().toString().equalsIgnoreCase("Combustible")) {
+                tipoCombustible = mSpinner.getSelectedItem().toString();
+                try {
+                    presenterGasolineras.escrituraCombustiblePorDefecto(mSpinner.getSelectedItem().toString(), ac, FICHERO);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }catch (IOException ex){
+                    ex.printStackTrace();
+                } catch (PresenterGasolineras.CombustibleNoExistente combustibleNoExistente) {
+                    combustibleNoExistente.printStackTrace();
+                }
+                try {
+                    tipoCombustible = presenterGasolineras.lecturaCombustiblePorDefecto(ac, FICHERO);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            closeDrawer(drawerLayout);
+            refresca();
+        });
+        builder.setNegativeButton(CANCELAR, (dialog, id) -> {
+            dialog.dismiss();
+            closeDrawer(drawerLayout);
+        });
+        builder.setView(mView);
+        builder.create();
+        builder.show();
+    }
+
+    public static void openDrawer(DrawerLayout drawerLayout){
+        drawerLayout.openDrawer(GravityCompat.START);
+    }
+
+    private static void closeDrawer(DrawerLayout drawerLayout){
+        //close drawer layout
+        if(drawerLayout.isDrawerOpen(GravityCompat.START)){
+            drawerLayout.closeDrawer(GravityCompat.START);
+        }
+    }
+
+    @Override
+    protected void onPause(){
+        super.onPause();
+        closeDrawer(drawerLayout);
     }
 
     public void onClick(View v) {
@@ -178,31 +282,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             mSpinner.setAdapter(adapterSpinner);
 
             // Set the action buttons
-            builder.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int id) {
-                    // User clicked Aceptar, save the item selected in the spinner
-                    // If the user does not select nothing, don't do anything
-                    if (!mSpinner.getSelectedItem().toString().equalsIgnoreCase("Tipo de Combustible")) {
-                        tipoCombustible = mSpinner.getSelectedItem().toString();
+            builder.setPositiveButton("Aceptar", (dialog, id) -> {
+                // User clicked Aceptar, save the item selected in the spinner
+                // If the user does not select nothing, don't do anything
+                if (!mSpinner.getSelectedItem().toString().equalsIgnoreCase("Tipo de Combustible")) {
+                    tipoCombustible = mSpinner.getSelectedItem().toString();
 
-                    }
-                    refresca();
                 }
+                refresca();
             });
-            builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int id) {
-                    dialog.dismiss();
-                }
-            });
+            builder.setNegativeButton(CANCELAR, (dialog, id) -> dialog.dismiss());
             builder.setView(mView);
             builder.create();
             builder.show();
 
         } else if (v.getId() == R.id.buttonOrden) {
-
-
             //comienzo de ordenar
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
@@ -218,48 +312,62 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             imgOrdenPrecio.setImageResource(getResources().getIdentifier(idImgOrdernPrecio[0],
                     DRAWABLE, getPackageName()));
 
-            final String[]  valorActualOrdenPrecio={PRECIO_ASC};
-            final String[]  valorActualIconoPrecio={FLECHA_ARRIBA};
+            final String[]  valorActualOrdenPrecio={ buttonString[0]};
+            final String[]  valorActualIconoPrecio={idImgOrdernPrecio[0]};
             final boolean[] ordenActual = {esAsc};
-            mb.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    ordenActual [0] = !ordenActual[0];
-                    if (ordenActual[0]) {
-                        valorActualIconoPrecio[0] = FLECHA_ARRIBA;
-                        valorActualOrdenPrecio[0] = PRECIO_ASC;
-                    } else {
-                        valorActualIconoPrecio[0]= "flecha_abajo";
-                        valorActualOrdenPrecio[0] = "Precio (des)";
+            mb.setOnClickListener(v1 -> {
+                ordenActual [0] = !ordenActual[0];
+                if (ordenActual[0]) {
+                    valorActualIconoPrecio[0] = FLECHA_ARRIBA;
+                    valorActualOrdenPrecio[0] = PRECIO_ASC;
+                } else {
+                    valorActualIconoPrecio[0]= "flecha_abajo";
+                    valorActualOrdenPrecio[0] = "Precio (des)";
 
-                    }
-                    imgOrdenPrecio.setImageResource(getResources().getIdentifier(valorActualIconoPrecio[0],
-                            DRAWABLE, getPackageName()));
-                    mb.setText( valorActualOrdenPrecio[0]);
                 }
+                imgOrdenPrecio.setImageResource(getResources().getIdentifier(valorActualIconoPrecio[0],
+                        DRAWABLE, getPackageName()));
+                mb.setText( valorActualOrdenPrecio[0]);
             });
 
 
-            builder.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int id) {
-                    buttonString[0] = valorActualOrdenPrecio[0];
-                    idImgOrdernPrecio[0] = valorActualIconoPrecio[0];
-                    esAsc= ordenActual[0];
-                    refresca();
-                }
+            builder.setPositiveButton("Aceptar", (dialog, id) -> {
+                buttonString[0] = valorActualOrdenPrecio[0];
+                idImgOrdernPrecio[0] = valorActualIconoPrecio[0];
+                esAsc= ordenActual[0];
+                refresca();
             });
 
-            builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int id) {
-                    dialog.dismiss();
-                }
-            });
+            builder.setNegativeButton(CANCELAR, (dialog, id) -> dialog.dismiss());
             builder.setView(mView);
             builder.create();
             builder.show();
 
+        } else if(v.getId() == R.id.info) {
+            //Creating the instance of PopupMenu
+            PopupMenu popup = new PopupMenu(MainActivity.this, config);
+            //Inflating the Popup using xml file
+            popup.getMenuInflater()
+                    .inflate(R.menu.menu, popup.getMenu());
+
+            //registering popup with OnMenuItemClickListener
+            popup.setOnMenuItemClickListener(item -> {
+                if (item.getItemId() == R.id.itemActualizar) {
+                    mSwipeRefreshLayout.setRefreshing(true);
+                    new CargaDatosGasolinerasTask(MainActivity.this).execute();
+                } else if (item.getItemId() == R.id.itemInfo) {
+                    Intent myIntent = new Intent(MainActivity.this, InfoActivity.class);
+                    MainActivity.this.startActivity(myIntent);
+                }
+                return true;
+            });
+            popup.show(); //showing popup menu
+
+        } else if (v.getId() == R.id.menuNav) {
+            this.clickMenu();
+
+        } else if (v.getId() == R.id.btnConfiguracion) {
+            this.clickConfiguracion();
         }
     }
 
@@ -298,16 +406,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             this.activity = activity;
         }
 
-        /**
-         * onPreExecute
-         * <p>
-         * Metodo ejecutado de forma previa a la ejecucion de la tarea definida en el metodo doInBackground()
-         * Muestra un diálogo de progreso
-         */
-        @Override
-        protected void onPreExecute() {
-            progressBar.setVisibility(View.VISIBLE);  //To show ProgressBar
-        }
 
         /**
          * doInBackground
@@ -339,9 +437,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         protected void onPostExecute(Boolean res) {
             Toast toast;
-
-            // Si el progressDialog estaba activado, lo oculta
-            progressBar.setVisibility(View.GONE);     // To Hide ProgressBar
 
             mSwipeRefreshLayout.setRefreshing(false);
 
@@ -396,22 +491,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
              */
 
             try {
-                listViewGasolineras.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                listViewGasolineras.setOnItemClickListener((a, v, position, id) -> {
 
-                    public void onItemClick(AdapterView<?> a, View v, int position, long id) {
+                    /* Obtengo el elemento directamente de su posicion,
+                     * ya que es la misma que ocupa en la lista
+                     */
+                    Intent myIntent = new Intent(MainActivity.this, DetailActivity.class);
+                    myIntent.putExtra(getResources().getString(R.string.pasoDatosGasolinera),
+                            presenterGasolineras.getGasolineras().get(position));
 
-                        /* Obtengo el elemento directamente de su posicion,
-                         * ya que es la misma que ocupa en la lista
-                         */
-                        Intent myIntent = new Intent(MainActivity.this, DetailActivity.class);
-                        myIntent.putExtra(getResources().getString(R.string.pasoDatosGasolinera),
-                                presenterGasolineras.getGasolineras().get(position));
-                        MainActivity.this.startActivity(myIntent);
+                    myIntent.putExtra(getResources().getString(R.string.pasoTipoCombustible),
+                            tipoCombustible);
+                    MainActivity.this.startActivity(myIntent);
 
-                    }
                 });
-            }
-            catch(Exception e1){
+            } catch(Exception e1) {
                 e1.getStackTrace();
             }
             ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -513,3 +607,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 }
+
+
+
+
+
+
+
+

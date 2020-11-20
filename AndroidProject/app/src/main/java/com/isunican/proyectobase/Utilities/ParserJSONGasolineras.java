@@ -1,11 +1,9 @@
 package com.isunican.proyectobase.Utilities;
 
 import com.isunican.proyectobase.Model.*;
-
 import android.util.JsonReader;
 import android.util.JsonToken;
 import android.util.Log;
-
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -106,6 +104,8 @@ public class ParserJSONGasolineras {
         String localidad = "";
         String provincia = "";
         String direccion = "";
+        double latitud=0.0;
+        double longitud=0.0;
         int id = -1;
         double gasoleoA = 0.0;
         double sinplomo95 = 0.0;
@@ -128,22 +128,25 @@ public class ParserJSONGasolineras {
                 gasoleoA = parseDouble(reader.nextString().replace(",", "."));
             } else if (name.equals("Precio Gasolina 95 E5") && reader.peek() != JsonToken.NULL) {
                 sinplomo95 = parseDouble(reader.nextString().replace(",", "."));
-            }else if(name.equals("Precio Gasolina 98 E5")) {
+            } else if (name.equals("Precio Gasolina 98 E5")) {
                 gasolina98 = parseDouble(reader.nextString().replace(",", "."));
-            }else if(name.equals("Precio Biodiesel")) {
+            } else if (name.equals("Precio Biodiesel")) {
                 biodiesel = parseDouble(reader.nextString().replace(",", "."));
-            }else if(name.equals("Precio Gasoleo Premium")) {
+            } else if (name.equals("Precio Gasoleo Premium")) {
                 premium = parseDouble(reader.nextString().replace(",", "."));
-            }else if(name.equals("Dirección")){
+            } else if (name.equals("Dirección")) {
                 direccion = reader.nextString();
+            }else if (name.equals("Latitud")) {
+                latitud = parseDouble(reader.nextString());
+            }else if (name.equals("Longitud (WGS84)")) {
+                longitud= parseDouble(reader.nextString());
             } else {
                 reader.skipValue();
             }
-
         }
         reader.endObject();
 
-        return new Gasolinera(id, localidad, provincia, direccion, gasoleoA, sinplomo95, gasolina98, biodiesel, premium, rotulo);
+        return new Gasolinera(id, localidad, provincia, direccion, gasoleoA, sinplomo95, gasolina98, biodiesel, premium, rotulo, latitud, longitud);
     }
 
     private static double parseDouble(String str) {
@@ -153,4 +156,5 @@ public class ParserJSONGasolineras {
             return Double.parseDouble(str.replace(",", "."));
         }
     }
+
 }

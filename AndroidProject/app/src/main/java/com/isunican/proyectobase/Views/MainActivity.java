@@ -44,11 +44,11 @@ import android.widget.Toast;
 */
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    public static final String PRECIO_ASC = "Precio (asc)";
-    public static final String FLECHA_ARRIBA = "flecha_arriba";
-    public static final String DRAWABLE = "drawable";
-    public static final String CANCELAR = "Cancelar";
-    public static final String FICHERO = "datos.txt";
+    private static final String PRECIO_ASC = "Precio (asc)";
+    private static final String FLECHA_ARRIBA = "flecha_arriba";
+    private static final String FLECHA_ABAJO = "flecha_abajo";
+    private static final String DRAWABLE = "drawable";
+    private static final String FICHERO = "datos.txt";
 
     PresenterGasolineras presenterGasolineras;
 
@@ -64,8 +64,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     ImageButton config;
     ImageView menu;
     Button buttonConfig;
-
-
+    ImageView iconoOrden;
+    private String id_iconoDefecto = FLECHA_ARRIBA;
 
     //DRAWER LAYOUT
     DrawerLayout drawerLayout;
@@ -74,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //orden ascendente por defecto
     final String[] buttonString = {PRECIO_ASC};
     final String[] idImgOrdernPrecio = {FLECHA_ARRIBA};
+
 
     String tipoCombustible = "Gasóleo A"; //Por defecto
     boolean esAsc = true; //Por defecto ascendente
@@ -140,12 +141,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         config = findViewById(R.id.info);
         menu = findViewById(R.id.menuNav);
         buttonConfig = findViewById(R.id.btnConfiguracion);
+        iconoOrden = findViewById(R.id.iconoOrden);
         buttonFiltros.setOnClickListener(this);
         buttonOrden.setOnClickListener(this);
         config.setOnClickListener(this);
         menu.setOnClickListener(this);
         buttonConfig.setOnClickListener(this);
+        iconoOrden.setOnClickListener(this);
 
+        iconoOrden.setImageResource(getResources().getIdentifier(id_iconoDefecto,
+                DRAWABLE, getPackageName()));
     }
 
     public void clickMenu() {
@@ -167,7 +172,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         try {
             comb.setText("Combustible actual: "+presenterGasolineras.lecturaCombustiblePorDefecto(ac, FICHERO));
         } catch (IOException e) {
-            e.printStackTrace();
         }
         // El spinner creado contiene todos los items del array de Strings "operacionesArray"
         final ArrayAdapter<String> adapterSpinner = new ArrayAdapter<String>(
@@ -231,7 +235,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             closeDrawer(drawerLayout);
             refresca();
         });
-        builder.setNegativeButton(CANCELAR, (dialog, id) -> {
+        builder.setNegativeButton(getResources().getString(R.string.cancelar), (dialog, id) -> {
             dialog.dismiss();
             closeDrawer(drawerLayout);
         });
@@ -281,8 +285,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             adapterSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             mSpinner.setAdapter(adapterSpinner);
 
-            // Set the action buttons
-            builder.setPositiveButton("Aceptar", (dialog, id) -> {
+            // Opcion "Aceptar"
+            builder.setPositiveButton(getResources().getString(R.string.aceptar), (dialog, id) -> {
                 // User clicked Aceptar, save the item selected in the spinner
                 // If the user does not select nothing, don't do anything
                 if (!mSpinner.getSelectedItem().toString().equalsIgnoreCase("Tipo de Combustible")) {
@@ -291,7 +295,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 refresca();
             });
-            builder.setNegativeButton(CANCELAR, (dialog, id) -> dialog.dismiss());
+
+            //Opcion "Cancelar"
+            builder.setNegativeButton(getResources().getString(R.string.cancelar), (dialog, id) -> dialog.dismiss());
             builder.setView(mView);
             builder.create();
             builder.show();
@@ -299,49 +305,45 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else if (v.getId() == R.id.buttonOrden) {
             //comienzo de ordenar
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
             // Vista escondida del nuevo layout para los diferentes spinners a implementar para los filtros
             View mView = getLayoutInflater().inflate(R.layout.ordenar_layout, null);
 
+            builder.setTitle(getResources().getString(R.string.tipo_ordenacion));
 
-            builder.setTitle("Ordenar");
-            final Button mb = (Button) mView.findViewById(R.id.buttonprecio);
-            final ImageView imgOrdenPrecio = mView.findViewById(R.id.iconoOrdenPrecio);
-
-            mb.setText(buttonString[0]);
-            imgOrdenPrecio.setImageResource(getResources().getIdentifier(idImgOrdernPrecio[0],
-                    DRAWABLE, getPackageName()));
-
-            final String[]  valorActualOrdenPrecio={ buttonString[0]};
-            final String[]  valorActualIconoPrecio={idImgOrdernPrecio[0]};
-            final boolean[] ordenActual = {esAsc};
-            mb.setOnClickListener(v1 -> {
-                ordenActual [0] = !ordenActual[0];
-                if (ordenActual[0]) {
-                    valorActualIconoPrecio[0] = FLECHA_ARRIBA;
-                    valorActualOrdenPrecio[0] = PRECIO_ASC;
-                } else {
-                    valorActualIconoPrecio[0]= "flecha_abajo";
-                    valorActualOrdenPrecio[0] = "Precio (des)";
-
-                }
-                imgOrdenPrecio.setImageResource(getResources().getIdentifier(valorActualIconoPrecio[0],
-                        DRAWABLE, getPackageName()));
-                mb.setText( valorActualOrdenPrecio[0]);
-            });
+            final Spinner mSpinner = (Spinner) mView.findViewById(R.id.tipoOrden);    // New spinner object
+            // El spinner creado contiene todos los items del array de Strings "operacionesArray"
+            ArrayAdapter<String> adapterSpinner = new ArrayAdapter<>(MainActivity.this,
+                    android.R.layout.simple_spinner_item,
+                    getResources().getStringArray(R.array.opcionesOrden));
+            // Al abrir el spinner la lista se abre hacia abajo
+            adapterSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            mSpinner.setAdapter(adapterSpinner);
 
 
-            builder.setPositiveButton("Aceptar", (dialog, id) -> {
-                buttonString[0] = valorActualOrdenPrecio[0];
-                idImgOrdernPrecio[0] = valorActualIconoPrecio[0];
-                esAsc= ordenActual[0];
+            //Opcion "Aceptar"
+            builder.setPositiveButton(getResources().getString(R.string.aceptar), (dialog, id) -> {
                 refresca();
             });
 
-            builder.setNegativeButton(CANCELAR, (dialog, id) -> dialog.dismiss());
+            //Opcion "Cancelar"
+            builder.setNegativeButton(getResources().getString(R.string.cancelar), (dialog, id) -> dialog.dismiss());
             builder.setView(mView);
             builder.create();
             builder.show();
+
+        }else if(v.getId() == R.id.iconoOrden){
+            String valorActualconoOrden = "";
+            if(esAsc){
+                valorActualconoOrden = FLECHA_ABAJO;
+            }else{
+                valorActualconoOrden = FLECHA_ARRIBA;
+            }
+            //cambia el tipo orden en caso de que sea ascendente pasa a descendente
+            //y en caso de estar en descendente pasa a ascendente
+            esAsc = !esAsc;
+            //se cambia el icono del orden
+            iconoOrden.setImageResource(getResources().getIdentifier(valorActualconoOrden,
+                    DRAWABLE, getPackageName()));
 
         } else if(v.getId() == R.id.info) {
             //Creating the instance of PopupMenu

@@ -103,18 +103,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             try {
                 presenterGasolineras.escrituraCombustiblePorDefecto("Gasóleo A", this, FICHERO);
             } catch (FileNotFoundException ex) {
-                ex.printStackTrace();
+
             }catch (IOException exc){
-                exc.printStackTrace();
+
             } catch (PresenterGasolineras.CombustibleNoExistente combustibleNoExistente) {
-                combustibleNoExistente.printStackTrace();
+
             }
         }
 
         try {
             tipoCombustible = presenterGasolineras.lecturaCombustiblePorDefecto(this, FICHERO);
         } catch (IOException e) {
-            e.printStackTrace();
+
         }
 
         drawerLayout = findViewById(R.id.drawer_layout);
@@ -220,16 +220,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 try {
                     presenterGasolineras.escrituraCombustiblePorDefecto(mSpinner.getSelectedItem().toString(), ac, FICHERO);
                 } catch (FileNotFoundException e) {
-                    e.printStackTrace();
+
                 }catch (IOException ex){
-                    ex.printStackTrace();
+
                 } catch (PresenterGasolineras.CombustibleNoExistente combustibleNoExistente) {
-                    combustibleNoExistente.printStackTrace();
+
                 }
                 try {
                     tipoCombustible = presenterGasolineras.lecturaCombustiblePorDefecto(ac, FICHERO);
                 } catch (IOException e) {
-                    e.printStackTrace();
+
                 }
             }
             closeDrawer(drawerLayout);
@@ -508,7 +508,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 });
             } catch(Exception e1) {
-                e1.getStackTrace();
+
             }
             ////////////////////////////////////////////////////////////////////////////////////////////////////
         }

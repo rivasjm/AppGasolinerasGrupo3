@@ -47,39 +47,46 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static final String PRECIO_ASC = "Precio (asc)";
     private static final String FLECHA_ARRIBA = "flecha_arriba";
     private static final String FLECHA_ABAJO = "flecha_abajo";
+    private static final String ORDEN_PRECIO = "Precio";
+    private static final String ORDEN_DISTANCIA = "Distancia";
     private static final String DRAWABLE = "drawable";
     private static final String FICHERO = "datos.txt";
 
-    PresenterGasolineras presenterGasolineras;
+
+    //Coordenadas de la ubicacion actual
+    private double latitud = 43.2;
+    private double longitud = -4.03333;
+
+    //El presenter
+    private PresenterGasolineras presenterGasolineras;
+    private PresenterDistancias presenteDistancias;
 
     // Vista de lista y adaptador para cargar datos en ella
-    ListView listViewGasolineras;
-    ArrayAdapter<Gasolinera> adapter;
+    private ListView listViewGasolineras;
+    private ArrayAdapter<Gasolinera> adapter;
     // Swipe and refresh (para recargar la lista con un swipe)
-    SwipeRefreshLayout mSwipeRefreshLayout;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     //Botones de filtro y ordenacion
-    Button buttonFiltros;
-    Button buttonOrden;
-    ImageButton config;
-    ImageView menu;
-    Button buttonConfig;
-    ImageView iconoOrden;
-    private String id_iconoDefecto = FLECHA_ARRIBA;
+    private Button buttonFiltros;
+    private Button buttonOrden;
+    private ImageButton config;
+    private ImageView menu;
+    private Button buttonConfig;
+    private ImageView iconoOrden;
+
 
     //DRAWER LAYOUT
-    DrawerLayout drawerLayout;
+    private DrawerLayout drawerLayout;
 
     /*Variables para modificar filtros y ordenaciones*/
     //orden ascendente por defecto
-    final String[] buttonString = {PRECIO_ASC};
-    final String[] idImgOrdernPrecio = {FLECHA_ARRIBA};
-
-
-    String tipoCombustible = "Gasóleo A"; //Por defecto
+    private String id_iconoOrden = FLECHA_ARRIBA;
+    private String criterioOrdenacion = "Precio";
+    private String tipoCombustible = "Gasóleo A"; //Por defecto
     boolean esAsc = true; //Por defecto ascendente
 
-    Activity ac = this;
+    private Activity ac = this;
 
 
     /**
@@ -95,6 +102,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         this.presenterGasolineras = new PresenterGasolineras();
+        this.presenteDistancias = new PresenterDistancias();
 
         try {
             //Lectura inicial del tipo de combustible por defecto
@@ -149,8 +157,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         buttonConfig.setOnClickListener(this);
         iconoOrden.setOnClickListener(this);
 
-        iconoOrden.setImageResource(getResources().getIdentifier(id_iconoDefecto,
+        //Valores por defecto cuando inicia la aplicacion
+        iconoOrden.setImageResource(getResources().getIdentifier(id_iconoOrden,
                 DRAWABLE, getPackageName()));
+        buttonOrden.setText(getResources().getString(R.string.precio));
     }
 
     public void clickMenu() {
@@ -322,6 +332,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             //Opcion "Aceptar"
             builder.setPositiveButton(getResources().getString(R.string.aceptar), (dialog, id) -> {
+                criterioOrdenacion = mSpinner.getSelectedItem().toString();
+                if(criterioOrdenacion.equals("Precio")){
+                    buttonOrden.setText(getResources().getString(R.string.precio));
+                }else if(criterioOrdenacion.equals("Distancia")){
+                    buttonOrden.setText(getResources().getString(R.string.distancia));
+                }
                 refresca();
             });
 
@@ -344,7 +360,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             //se cambia el icono del orden
             iconoOrden.setImageResource(getResources().getIdentifier(valorActualconoOrden,
                     DRAWABLE, getPackageName()));
-
+            refresca();
         } else if(v.getId() == R.id.info) {
             //Creating the instance of PopupMenu
             PopupMenu popup = new PopupMenu(MainActivity.this, config);
@@ -446,8 +462,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (Boolean.TRUE.equals(res)) {
                 //Recorrer el array adapter para que no muestre las gasolineras con precios negativos
                 presenterGasolineras.eliminaGasolinerasConPrecioNegativo(tipoCombustible);
+                presenteDistancias.cargaDistancias(presenterGasolineras.getGasolineras(), latitud, longitud);
+
                 //ordenacion
-                presenterGasolineras.ordernarGasolineras(esAsc, tipoCombustible);
+                if(criterioOrdenacion.equals(getResources().getString(R.string.precio))) {
+                    presenterGasolineras.ordenarGasolineras(esAsc, tipoCombustible);
+                }else if(criterioOrdenacion.equals(getResources().getString(R.string.distancia))){
+                    presenterGasolineras.ordenarGasolinerasDistancia(esAsc, latitud, longitud);
+                }
+
                 // Definimos el array adapter
                 adapter = new GasolineraArrayAdapter(activity, 0, presenterGasolineras.getGasolineras());
 
@@ -558,7 +581,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             TextView direccion = view.findViewById(R.id.textViewDireccion);
             TextView labelGasolina = view.findViewById(R.id.textViewTipoGasolina);
             TextView precio = view.findViewById(R.id.textViewGasoleoA);
-
+            TextView distancia = view.findViewById(R.id.valorDistancia);
             // Y carga los datos del item
             rotulo.setText(gasolinera.getRotulo());
             direccion.setText(gasolinera.getDireccion());
@@ -566,6 +589,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             double precioCombustible = presenterGasolineras.getPrecioCombustible(tipoCombustible, gasolinera);
             precio.setText(precioCombustible + getResources().getString(R.string.moneda));
 
+            double distanciaKm = presenteDistancias.getDistancia(gasolinera.getIdeess());
+            distanciaKm /=1000;
+            distancia.setText(distanciaKm+"km");
             // Se carga el icono
             cargaIcono(gasolinera, logo);
 

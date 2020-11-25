@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.util.Log;
 
 import com.isunican.proyectobase.Model.*;
+import com.isunican.proyectobase.Utilities.CalculaDistancia;
 import com.isunican.proyectobase.Utilities.ParserJSONGasolineras;
 import com.isunican.proyectobase.Utilities.RemoteFetch;
 
@@ -162,7 +163,7 @@ public class PresenterGasolineras {
      * @param combustible combustible por el que se desea filtar, se utiliza el precio de este combutible
      *                    para ordenar.
      */
-    public void ordernarGasolineras(boolean asc, String combustible) {
+    public void ordenarGasolineras(boolean asc, String combustible) {
         for (int i = 0; i < gasolineras.size(); i++) {
             for (int j = 0; j < gasolineras.size() - 1; j++) {
                 Gasolinera tmp = gasolineras.get(j + 1);
@@ -175,6 +176,38 @@ public class PresenterGasolineras {
                     if (getPrecioCombustible(combustible, gasolineras.get(j)) < getPrecioCombustible(combustible, tmp)) {
                         gasolineras.remove(tmp);
                         gasolineras.add(j, tmp);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Ordena la lista de gasolineras por su distancia respecto de las coordenadas indicadas, de manera
+     * ascendente o descendente segun como se indique.
+     *
+     * @param asc       manera de odernar la lista, si asc es verdadero se orderna de forma ascendente, en
+     *                  caso contrario de forma descendente.
+     * @param latitud   latitud de la posicion repecto de la que se quiere ordenar las gasolineras
+     * @param longitud  longitud de la posicion repecto de la que se quiere ordenar las gasolineras
+     */
+    public void ordenarGasolinerasDistancia(boolean asc, double latitud, double longitud){
+        for (int i = 0; i < gasolineras.size(); i++) {
+            for (int j = 0; j < gasolineras.size() - 1; j++) {
+                Gasolinera tmpA = gasolineras.get(j + 1);
+                Gasolinera tmpB = gasolineras.get(j);
+                double distancia1 = CalculaDistancia.distanciaEntreDosCoordenadas(latitud, longitud, tmpB.getLatitud(), tmpB.getLongitud());
+                double distancia2 = CalculaDistancia.distanciaEntreDosCoordenadas(latitud, longitud, tmpA.getLatitud(), tmpA.getLongitud());
+                if (asc) {
+
+                    if (distancia1 > distancia2) {
+                        gasolineras.remove(tmpA);
+                        gasolineras.add(j, tmpA);
+                    }
+                } else {
+                    if (distancia1 < distancia2) {
+                        gasolineras.remove(tmpA);
+                        gasolineras.add(j, tmpA);
                     }
                 }
             }
@@ -271,6 +304,7 @@ public class PresenterGasolineras {
 
     }
 
-    public class CombustibleNoExistente extends Exception {
-    }
+    public class CombustibleNoExistente extends Exception { }
+
+
 }

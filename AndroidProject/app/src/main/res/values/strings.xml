@@ -43,5 +43,8 @@
     <string name="aceptar">Aceptar</string>
     <string name="cancelar">Cancelar</string>
     <string name="establecer">Establecer</string>
+    <string name="precio">Precio</string>
+    <string name="distancia">Distancia</string>
+    <string name="distanciaView">Distancia:</string>
 
 </resources>

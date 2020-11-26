@@ -54,8 +54,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     //Coordenadas de la ubicacion actual
-    private double latitud = 43.2;
-    private double longitud = -4.03333;
+    public double latitud = 43.2;
+    public double longitud = -4.03333;
 
     //El presenter
     private PresenterGasolineras presenterGasolineras;

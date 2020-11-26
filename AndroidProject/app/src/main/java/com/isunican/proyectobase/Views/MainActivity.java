@@ -3,14 +3,20 @@ package com.isunican.proyectobase.Views;
 import com.isunican.proyectobase.Presenter.*;
 import com.isunican.proyectobase.Model.*;
 import com.isunican.proyectobase.R;
+
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+
+import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -44,7 +50,6 @@ import android.widget.Toast;
 */
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private static final String PRECIO_ASC = "Precio (asc)";
     private static final String FLECHA_ARRIBA = "flecha_arriba";
     private static final String FLECHA_ABAJO = "flecha_abajo";
     private static final String ORDEN_PRECIO = "Precio";
@@ -54,8 +59,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     //Coordenadas de la ubicacion actual
-    private double latitud = 43.2;
-    private double longitud = -4.03333;
+    private double latitud = 43.362193;
+    private double longitud = -4.059438;
 
     //El presenter
     private PresenterGasolineras presenterGasolineras;
@@ -82,12 +87,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     /*Variables para modificar filtros y ordenaciones*/
     //orden ascendente por defecto
     private String id_iconoOrden = FLECHA_ARRIBA;
-    private String criterioOrdenacion = "Precio";
+    private String criterioOrdenacion = ORDEN_PRECIO;
     private String tipoCombustible = "Gasóleo A"; //Por defecto
     boolean esAsc = true; //Por defecto ascendente
 
     private Activity ac = this;
 
+    //
+    private LocationManager locationManager;
 
     /**
      * onCreate
@@ -100,7 +107,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                99);
 
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         this.presenterGasolineras = new PresenterGasolineras();
         this.presenteDistancias = new PresenterDistancias();
 
@@ -333,9 +344,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             //Opcion "Aceptar"
             builder.setPositiveButton(getResources().getString(R.string.aceptar), (dialog, id) -> {
                 criterioOrdenacion = mSpinner.getSelectedItem().toString();
-                if(criterioOrdenacion.equals("Precio")){
+                if(criterioOrdenacion.equals(ORDEN_PRECIO)){
                     buttonOrden.setText(getResources().getString(R.string.precio));
-                }else if(criterioOrdenacion.equals("Distancia")){
+                }else if(criterioOrdenacion.equals(ORDEN_DISTANCIA)){
                     buttonOrden.setText(getResources().getString(R.string.distancia));
                 }
                 refresca();
@@ -465,9 +476,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 presenteDistancias.cargaDistancias(presenterGasolineras.getGasolineras(), latitud, longitud);
 
                 //ordenacion
-                if(criterioOrdenacion.equals(getResources().getString(R.string.precio))) {
+                if(criterioOrdenacion.equals(ORDEN_PRECIO)) {
                     presenterGasolineras.ordenarGasolineras(esAsc, tipoCombustible);
-                }else if(criterioOrdenacion.equals(getResources().getString(R.string.distancia))){
+                }else if(criterioOrdenacion.equals(ORDEN_DISTANCIA)){
                     presenterGasolineras.ordenarGasolinerasDistancia(esAsc, latitud, longitud);
                 }
 
@@ -496,7 +507,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     adapter.clear();
                     toast=Toast.makeText(getApplicationContext(),"No hay conexión a internet",Toast.LENGTH_LONG);
                 }
-
             }
 
 
@@ -591,7 +601,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             double distanciaKm = presenteDistancias.getDistancia(gasolinera.getIdeess());
             distanciaKm /=1000;
-            distancia.setText(distanciaKm+"km");
+            distancia.setText(distanciaKm+"Km");
             // Se carga el icono
             cargaIcono(gasolinera, logo);
 
@@ -605,11 +615,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 params.setMargins(15, 0, 0, 0);
                 tv.setTextSize(11);
                 TextView tmp;
-                tmp = view.findViewById(R.id.textViewGasolina95Label);
-                tmp.setTextSize(11);
                 tmp = view.findViewById(R.id.textViewGasoleoA);
-                tmp.setTextSize(11);
-                tmp = view.findViewById(R.id.textViewGasolina95);
                 tmp.setTextSize(11);
             }
 

@@ -45,6 +45,6 @@
     <string name="establecer">Establecer</string>
     <string name="precio">Precio</string>
     <string name="distancia">Distancia</string>
-    <string name="distanciaView">Distancia:</string>
+    <string name="distanciaView">Distancia</string>
 
 </resources>

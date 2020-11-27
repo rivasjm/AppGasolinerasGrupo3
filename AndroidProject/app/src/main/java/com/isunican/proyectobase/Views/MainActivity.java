@@ -1,25 +1,39 @@
 package com.isunican.proyectobase.Views;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.isunican.proyectobase.Presenter.*;
 import com.isunican.proyectobase.Model.*;
 import com.isunican.proyectobase.R;
+
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+
+import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,7 +58,6 @@ import android.widget.Toast;
 */
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private static final String PRECIO_ASC = "Precio (asc)";
     private static final String FLECHA_ARRIBA = "flecha_arriba";
     private static final String FLECHA_ABAJO = "flecha_abajo";
     private static final String ORDEN_PRECIO = "Precio";
@@ -54,12 +67,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     //Coordenadas de la ubicacion actual
-    public double latitud = 43.2;
-    public double longitud = -4.03333;
+    public double latitud = 0;
+    public double longitud = 0;
 
     //El presenter
     private PresenterGasolineras presenterGasolineras;
-    private PresenterDistancias presenteDistancias;
 
     // Vista de lista y adaptador para cargar datos en ella
     private ListView listViewGasolineras;
@@ -82,12 +94,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     /*Variables para modificar filtros y ordenaciones*/
     //orden ascendente por defecto
     private String id_iconoOrden = FLECHA_ARRIBA;
-    private String criterioOrdenacion = "Precio";
+    private String criterioOrdenacion = ORDEN_PRECIO;
     private String tipoCombustible = "Gasóleo A"; //Por defecto
     boolean esAsc = true; //Por defecto ascendente
 
     private Activity ac = this;
 
+    //
+    private FusedLocationProviderClient fusedLocationProviderClient;
 
     /**
      * onCreate
@@ -100,29 +114,37 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                99);
+
+        //Localizacion
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
         this.presenterGasolineras = new PresenterGasolineras();
-        this.presenteDistancias = new PresenterDistancias();
 
         try {
             //Lectura inicial del tipo de combustible por defecto
             tipoCombustible = presenterGasolineras.lecturaCombustiblePorDefecto(this, FICHERO);
+
         } catch(Exception e) {
+            e.toString();
             try {
                 presenterGasolineras.escrituraCombustiblePorDefecto("Gasóleo A", this, FICHERO);
             } catch (FileNotFoundException ex) {
-
+            ex.toString();
             }catch (IOException exc){
+            exc.toString();
 
             } catch (PresenterGasolineras.CombustibleNoExistente combustibleNoExistente) {
-
+            combustibleNoExistente.toString();
             }
         }
 
         try {
             tipoCombustible = presenterGasolineras.lecturaCombustiblePorDefecto(this, FICHERO);
         } catch (IOException e) {
-
+e.toString();
         }
 
         drawerLayout = findViewById(R.id.drawer_layout);
@@ -180,38 +202,36 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         final Spinner mSpinner = (Spinner) mView.findViewById(R.id.combustible_por_defecto);// New spinner object
         final TextView comb = mView.findViewById(R.id.porDefecto);
         try {
-            comb.setText("Combustible actual: "+presenterGasolineras.lecturaCombustiblePorDefecto(ac, FICHERO));
+            comb.setText("Combustible actual: " + presenterGasolineras.lecturaCombustiblePorDefecto(ac, FICHERO));
         } catch (IOException e) {
+            e.toString();
         }
         // El spinner creado contiene todos los items del array de Strings "operacionesArray"
         final ArrayAdapter<String> adapterSpinner = new ArrayAdapter<String>(
                 this, android.R.layout.simple_spinner_item,
-                getResources().getStringArray(R.array.operacionesArray)){
+                getResources().getStringArray(R.array.operacionesArray)) {
             @Override
-            public boolean isEnabled(int position){
+            public boolean isEnabled(int position) {
                 boolean habilitado;
-                if(position == 0)
-                {
+                if (position == 0) {
                     // Disable the first item from Spinner
                     // First item will be use for hint
                     habilitado = false;
-                }
-                else
-                {
+                } else {
                     habilitado = true;
                 }
                 return habilitado;
             }
+
             @Override
             public View getDropDownView(int position, View convertView,
                                         ViewGroup parent) {
                 View view = super.getDropDownView(position, convertView, parent);
                 TextView tv = (TextView) view;
-                if(position == 0){
+                if (position == 0) {
                     // Set the hint text color gray
                     tv.setTextColor(Color.GRAY);
-                }
-                else {
+                } else {
                     tv.setTextColor(Color.BLACK);
                 }
                 return view;
@@ -230,16 +250,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 try {
                     presenterGasolineras.escrituraCombustiblePorDefecto(mSpinner.getSelectedItem().toString(), ac, FICHERO);
                 } catch (FileNotFoundException e) {
-
+                    e.toString();
                 }catch (IOException ex){
-
+                    ex.toString();
                 } catch (PresenterGasolineras.CombustibleNoExistente combustibleNoExistente) {
-
+                combustibleNoExistente.toString();
                 }
                 try {
                     tipoCombustible = presenterGasolineras.lecturaCombustiblePorDefecto(ac, FICHERO);
                 } catch (IOException e) {
-
+                e.toString();
                 }
             }
             closeDrawer(drawerLayout);
@@ -254,19 +274,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         builder.show();
     }
 
-    public static void openDrawer(DrawerLayout drawerLayout){
+    public static void openDrawer(DrawerLayout drawerLayout) {
         drawerLayout.openDrawer(GravityCompat.START);
     }
 
-    private static void closeDrawer(DrawerLayout drawerLayout){
+    private static void closeDrawer(DrawerLayout drawerLayout) {
         //close drawer layout
-        if(drawerLayout.isDrawerOpen(GravityCompat.START)){
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);
         }
     }
 
     @Override
-    protected void onPause(){
+    protected void onPause() {
         super.onPause();
         closeDrawer(drawerLayout);
     }
@@ -329,13 +349,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             adapterSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             mSpinner.setAdapter(adapterSpinner);
 
-
             //Opcion "Aceptar"
             builder.setPositiveButton(getResources().getString(R.string.aceptar), (dialog, id) -> {
                 criterioOrdenacion = mSpinner.getSelectedItem().toString();
-                if(criterioOrdenacion.equals("Precio")){
+                if (criterioOrdenacion.equals(ORDEN_PRECIO)) {
                     buttonOrden.setText(getResources().getString(R.string.precio));
-                }else if(criterioOrdenacion.equals("Distancia")){
+                } else if (criterioOrdenacion.equals(ORDEN_DISTANCIA)) {
                     buttonOrden.setText(getResources().getString(R.string.distancia));
                 }
                 refresca();
@@ -347,11 +366,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             builder.create();
             builder.show();
 
-        }else if(v.getId() == R.id.iconoOrden){
+        } else if (v.getId() == R.id.iconoOrden) {
             String valorActualconoOrden = "";
-            if(esAsc){
+            if (esAsc) {
                 valorActualconoOrden = FLECHA_ABAJO;
-            }else{
+            } else {
                 valorActualconoOrden = FLECHA_ARRIBA;
             }
             //cambia el tipo orden en caso de que sea ascendente pasa a descendente
@@ -361,7 +380,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             iconoOrden.setImageResource(getResources().getIdentifier(valorActualconoOrden,
                     DRAWABLE, getPackageName()));
             refresca();
-        } else if(v.getId() == R.id.info) {
+        } else if (v.getId() == R.id.info) {
             //Creating the instance of PopupMenu
             PopupMenu popup = new PopupMenu(MainActivity.this, config);
             //Inflating the Popup using xml file
@@ -462,13 +481,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (Boolean.TRUE.equals(res)) {
                 //Recorrer el array adapter para que no muestre las gasolineras con precios negativos
                 presenterGasolineras.eliminaGasolinerasConPrecioNegativo(tipoCombustible);
-                presenteDistancias.cargaDistancias(presenterGasolineras.getGasolineras(), latitud, longitud);
-
+                if (ActivityCompat.checkSelfPermission(this.activity, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                    Log.v("DEBUG", "Permiso Ubicacion Garantizado");
+                    fusedLocationProviderClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
+                        @Override
+                        public void onSuccess(Location location) {
+                            Log.v("DEBUG", "Ha llegado a location");
+                            if (location != null) {
+                                Log.v("DEBUG", "location no es null");
+                                latitud = location.getLatitude();
+                                longitud = location.getLongitude();
+                                Log.v("DEBUG", Double.toString(latitud));
+                                Log.v("DEBUG", Double.toString(longitud));
+                            }
+                        }
+                    });
+                }else{
+                    Log.v("DEBUG", "Permiso Ubicacion NO Garantizado");
+                }
                 //ordenacion
-                if(criterioOrdenacion.equals(getResources().getString(R.string.precio))) {
+                if(criterioOrdenacion.equals(ORDEN_PRECIO)) {
                     presenterGasolineras.ordenarGasolineras(esAsc, tipoCombustible);
-                }else if(criterioOrdenacion.equals(getResources().getString(R.string.distancia))){
-                    presenterGasolineras.ordenarGasolinerasDistancia(esAsc, latitud, longitud);
+                }else if(criterioOrdenacion.equals(ORDEN_DISTANCIA)){
+                    presenterGasolineras.ordenarGasolinerasDistancia(latitud, longitud, esAsc);
                 }
 
                 // Definimos el array adapter
@@ -496,7 +531,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     adapter.clear();
                     toast=Toast.makeText(getApplicationContext(),"No hay conexión a internet",Toast.LENGTH_LONG);
                 }
-
             }
 
 
@@ -531,7 +565,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 });
             } catch(Exception e1) {
-
+                e1.toString();
             }
             ////////////////////////////////////////////////////////////////////////////////////////////////////
         }
@@ -589,9 +623,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             double precioCombustible = presenterGasolineras.getPrecioCombustible(tipoCombustible, gasolinera);
             precio.setText(precioCombustible + getResources().getString(R.string.moneda));
 
-            double distanciaKm = presenteDistancias.getDistancia(gasolinera.getIdeess());
-            distanciaKm /=1000;
-            distancia.setText(distanciaKm+"km");
+            double distanciaKm = presenterGasolineras.getDistancia(latitud, longitud, gasolinera);
+
+            distancia.setText(distanciaKm+"Km");
             // Se carga el icono
             cargaIcono(gasolinera, logo);
 
@@ -605,11 +639,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 params.setMargins(15, 0, 0, 0);
                 tv.setTextSize(11);
                 TextView tmp;
-                tmp = view.findViewById(R.id.textViewGasolina95Label);
-                tmp.setTextSize(11);
                 tmp = view.findViewById(R.id.textViewGasoleoA);
-                tmp.setTextSize(11);
-                tmp = view.findViewById(R.id.textViewGasolina95);
                 tmp.setTextSize(11);
             }
 

@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.isunican.proyectobase.Model.*;
 import com.isunican.proyectobase.Utilities.CalculaDistancia;
+import com.isunican.proyectobase.Utilities.DistanciasComparator;
 import com.isunican.proyectobase.Utilities.ParserJSONGasolineras;
 import com.isunican.proyectobase.Utilities.RemoteFetch;
 
@@ -15,6 +16,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -86,12 +89,12 @@ public class PresenterGasolineras {
      * @return boolean
      */
 
-    public boolean cargaDatosDummy(){
-        this.gasolineras.add(new Gasolinera(1000,SANTANDER,SANTANDER, "Av Valdecilla", 1.299,1.359, 1.3,1.2,2,"AVIA", 0, 0));
-        this.gasolineras.add(new Gasolinera(1053,SANTANDER,SANTANDER, "Plaza Matias Montero", 1.270,1.349,1.22,1.11,1.21,"CAMPSA", 0, 0));
-        this.gasolineras.add(new Gasolinera(420,SANTANDER,SANTANDER, "Area Arrabal Puerto de Raos", 1.249,1.279,1.3,1.2,1.5,"E.E.S.S. MAS, S.L.", 0, 0));
-        this.gasolineras.add(new Gasolinera(9564,SANTANDER,SANTANDER, "Av Parayas", 1.189,1.269,1.11,1.28,1.25,"EASYGAS", 0, 0));
-        this.gasolineras.add(new Gasolinera(1025,SANTANDER,SANTANDER, "Calle el Empalme", 1.259,1.319,1.65,1.27,1.01,"CARREFOUR", 0, 0));
+    public boolean cargaDatosDummy() {
+        this.gasolineras.add(new Gasolinera(1000, SANTANDER, SANTANDER, "Av Valdecilla", 1.299, 1.359, 1.3, 1.2, 2, "AVIA", 0, 0));
+        this.gasolineras.add(new Gasolinera(1053, SANTANDER, SANTANDER, "Plaza Matias Montero", 1.270, 1.349, 1.22, 1.11, 1.21, "CAMPSA", 0, 0));
+        this.gasolineras.add(new Gasolinera(420, SANTANDER, SANTANDER, "Area Arrabal Puerto de Raos", 1.249, 1.279, 1.3, 1.2, 1.5, "E.E.S.S. MAS, S.L.", 0, 0));
+        this.gasolineras.add(new Gasolinera(9564, SANTANDER, SANTANDER, "Av Parayas", 1.189, 1.269, 1.11, 1.28, 1.25, "EASYGAS", 0, 0));
+        this.gasolineras.add(new Gasolinera(1025, SANTANDER, SANTANDER, "Calle el Empalme", 1.259, 1.319, 1.65, 1.27, 1.01, "CARREFOUR", 0, 0));
         return true;
     }
 
@@ -186,32 +189,32 @@ public class PresenterGasolineras {
      * Ordena la lista de gasolineras por su distancia respecto de las coordenadas indicadas, de manera
      * ascendente o descendente segun como se indique.
      *
-     * @param asc       manera de odernar la lista, si asc es verdadero se orderna de forma ascendente, en
-     *                  caso contrario de forma descendente.
-     * @param latitud   latitud de la posicion repecto de la que se quiere ordenar las gasolineras
-     * @param longitud  longitud de la posicion repecto de la que se quiere ordenar las gasolineras
+     * @param asc      manera de odernar la lista, si asc es verdadero se orderna de forma ascendente, en
+     *                 caso contrario de forma descendente.
+     * @param latitud  latitud de la posicion repecto de la que se quiere ordenar las gasolineras
+     * @param longitud longitud de la posicion repecto de la que se quiere ordenar las gasolineras
      */
-    public void ordenarGasolinerasDistancia(boolean asc, double latitud, double longitud){
-        for (int i = 0; i < gasolineras.size(); i++) {
-            for (int j = 0; j < gasolineras.size() - 1; j++) {
-                Gasolinera tmpA = gasolineras.get(j + 1);
-                Gasolinera tmpB = gasolineras.get(j);
-                double distancia1 = CalculaDistancia.distanciaEntreDosCoordenadas(latitud, longitud, tmpB.getLatitud(), tmpB.getLongitud());
-                double distancia2 = CalculaDistancia.distanciaEntreDosCoordenadas(latitud, longitud, tmpA.getLatitud(), tmpA.getLongitud());
-                if (asc) {
+    public void ordenarGasolinerasDistancia(double latitud, double longitud, boolean asc) {
+        DistanciasComparator comparator = new DistanciasComparator(latitud, longitud, asc);
+        Collections.sort(gasolineras, comparator);
+    }
 
-                    if (distancia1 > distancia2) {
-                        gasolineras.remove(tmpA);
-                        gasolineras.add(j, tmpA);
-                    }
-                } else {
-                    if (distancia1 < distancia2) {
-                        gasolineras.remove(tmpA);
-                        gasolineras.add(j, tmpA);
-                    }
-                }
-            }
-        }
+    /**
+     * Devuelve la distancia en kilomentros entre la gasolinera y las coordenadas dadas.
+     *
+     * @param latitud    Latitud de la posicion repecto de la que se quiere calcular la distancia
+     *                   respecto a la gasolinera dada.
+     * @param longitud   Longitud de la posicion repecto de la que se quiere calcular la distancia
+     *                   respecto a la gasolinera dada.
+     * @param gasolinera gasolinera respecto de la que se quiere calcular la distancia.
+     * @return la distancia en kilometros entre la gasolinera y las coordenadas dadas.
+     */
+    public double getDistancia(double latitud, double longitud, Gasolinera gasolinera) {
+        double distancia = Math.round(CalculaDistancia.distanciaEntreDosCoordenadas(latitud, longitud, gasolinera.getLatitud(),
+                gasolinera.getLongitud()));
+        //conversion a kilometros
+        distancia /= 1000;
+        return distancia;
     }
 
     /**
@@ -304,7 +307,8 @@ public class PresenterGasolineras {
 
     }
 
-    public class CombustibleNoExistente extends Exception { }
+    public class CombustibleNoExistente extends Exception {
+    }
 
 
 }

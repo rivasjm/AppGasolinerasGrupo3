@@ -126,22 +126,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         try {
             //Lectura inicial del tipo de combustible por defecto
             tipoCombustible = presenterGasolineras.lecturaCombustiblePorDefecto(this, FICHERO);
-        } catch (Exception e) {
+
+        } catch(Exception e) {
+            e.toString();
             try {
                 presenterGasolineras.escrituraCombustiblePorDefecto("Gasóleo A", this, FICHERO);
             } catch (FileNotFoundException ex) {
-
-            } catch (IOException exc) {
+            ex.toString();
+            }catch (IOException exc){
+            exc.toString();
 
             } catch (PresenterGasolineras.CombustibleNoExistente combustibleNoExistente) {
-
+            combustibleNoExistente.toString();
             }
         }
 
         try {
             tipoCombustible = presenterGasolineras.lecturaCombustiblePorDefecto(this, FICHERO);
         } catch (IOException e) {
-
+e.toString();
         }
 
         drawerLayout = findViewById(R.id.drawer_layout);
@@ -201,6 +204,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         try {
             comb.setText("Combustible actual: " + presenterGasolineras.lecturaCombustiblePorDefecto(ac, FICHERO));
         } catch (IOException e) {
+            e.toString();
         }
         // El spinner creado contiene todos los items del array de Strings "operacionesArray"
         final ArrayAdapter<String> adapterSpinner = new ArrayAdapter<String>(
@@ -246,16 +250,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 try {
                     presenterGasolineras.escrituraCombustiblePorDefecto(mSpinner.getSelectedItem().toString(), ac, FICHERO);
                 } catch (FileNotFoundException e) {
-
-                } catch (IOException ex) {
-
+                    e.toString();
+                }catch (IOException ex){
+                    ex.toString();
                 } catch (PresenterGasolineras.CombustibleNoExistente combustibleNoExistente) {
-
+                combustibleNoExistente.toString();
                 }
                 try {
                     tipoCombustible = presenterGasolineras.lecturaCombustiblePorDefecto(ac, FICHERO);
                 } catch (IOException e) {
-
+                e.toString();
                 }
             }
             closeDrawer(drawerLayout);
@@ -561,7 +565,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 });
             } catch(Exception e1) {
-
+                e1.toString();
             }
             ////////////////////////////////////////////////////////////////////////////////////////////////////
         }

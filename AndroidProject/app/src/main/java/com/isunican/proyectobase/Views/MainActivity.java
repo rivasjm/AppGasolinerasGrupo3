@@ -44,11 +44,11 @@ import android.widget.Toast;
 */
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private static final String PRECIO_ASC = "Precio (asc)";
+
     private static final String FLECHA_ARRIBA = "flecha_arriba";
     private static final String FLECHA_ABAJO = "flecha_abajo";
-    private static final String ORDEN_PRECIO = "Precio";
-    private static final String ORDEN_DISTANCIA = "Distancia";
+
+
     private static final String DRAWABLE = "drawable";
     private static final String FICHERO = "datos.txt";
 
@@ -108,21 +108,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             //Lectura inicial del tipo de combustible por defecto
             tipoCombustible = presenterGasolineras.lecturaCombustiblePorDefecto(this, FICHERO);
         } catch(Exception e) {
+            e.toString();
             try {
                 presenterGasolineras.escrituraCombustiblePorDefecto("Gasóleo A", this, FICHERO);
             } catch (FileNotFoundException ex) {
-
+            ex.toString();
             }catch (IOException exc){
-
+            exc.toString();
             } catch (PresenterGasolineras.CombustibleNoExistente combustibleNoExistente) {
-
+            combustibleNoExistente.toString();
             }
         }
 
         try {
             tipoCombustible = presenterGasolineras.lecturaCombustiblePorDefecto(this, FICHERO);
         } catch (IOException e) {
-
+e.toString();
         }
 
         drawerLayout = findViewById(R.id.drawer_layout);
@@ -182,6 +183,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         try {
             comb.setText("Combustible actual: "+presenterGasolineras.lecturaCombustiblePorDefecto(ac, FICHERO));
         } catch (IOException e) {
+            e.toString();
         }
         // El spinner creado contiene todos los items del array de Strings "operacionesArray"
         final ArrayAdapter<String> adapterSpinner = new ArrayAdapter<String>(
@@ -230,16 +232,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 try {
                     presenterGasolineras.escrituraCombustiblePorDefecto(mSpinner.getSelectedItem().toString(), ac, FICHERO);
                 } catch (FileNotFoundException e) {
-
+                    e.toString();
                 }catch (IOException ex){
-
+                    ex.toString();
                 } catch (PresenterGasolineras.CombustibleNoExistente combustibleNoExistente) {
-
+                combustibleNoExistente.toString();
                 }
                 try {
                     tipoCombustible = presenterGasolineras.lecturaCombustiblePorDefecto(ac, FICHERO);
                 } catch (IOException e) {
-
+                e.toString();
                 }
             }
             closeDrawer(drawerLayout);
@@ -531,7 +533,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 });
             } catch(Exception e1) {
-
+                e1.toString();
             }
             ////////////////////////////////////////////////////////////////////////////////////////////////////
         }

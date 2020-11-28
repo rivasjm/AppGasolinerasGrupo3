@@ -1,10 +1,12 @@
 package com.isunican.proyectobase.Views;
 
+import android.Manifest;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.rule.ActivityTestRule;
+import androidx.test.rule.GrantPermissionRule;
 import androidx.test.runner.AndroidJUnit4;
 import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -32,6 +34,8 @@ import static org.junit.Assert.*;
 @RunWith(AndroidJUnit4.class)
 public class OrdenarGasolinerasPorPrecioUITest {
 
+    @Rule
+    public GrantPermissionRule permissionRule = GrantPermissionRule.grant(Manifest.permission.ACCESS_FINE_LOCATION);
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
 

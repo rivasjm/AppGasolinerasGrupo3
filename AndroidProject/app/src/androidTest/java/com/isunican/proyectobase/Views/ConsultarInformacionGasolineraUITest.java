@@ -1,6 +1,5 @@
 package com.isunican.proyectobase.Views;
 
-import android.Manifest;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -37,7 +36,7 @@ public class ConsultarInformacionGasolineraUITest {
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
     @Rule
-    public GrantPermissionRule permissionRule = GrantPermissionRule.grant(Manifest.permission.ACCESS_FINE_LOCATION);
+    public GrantPermissionRule permissionRule = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION);
 
     @Before
     public void setUp(){

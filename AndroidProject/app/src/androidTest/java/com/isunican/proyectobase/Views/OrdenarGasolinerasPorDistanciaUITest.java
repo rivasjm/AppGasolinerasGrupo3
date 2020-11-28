@@ -1,6 +1,5 @@
 package com.isunican.proyectobase.Views;
 
-import android.Manifest;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import androidx.test.espresso.matcher.ViewMatchers;
@@ -10,7 +9,6 @@ import androidx.test.runner.AndroidJUnit4;
 import com.isunican.proyectobase.Model.Gasolinera;
 import com.isunican.proyectobase.R;
 import com.isunican.proyectobase.Utilities.CalculaDistancia;
-
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -24,7 +22,6 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withSpinnerText;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
-import static org.hamcrest.Matchers.anything;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
@@ -45,10 +42,11 @@ public class OrdenarGasolinerasPorDistanciaUITest {
     Gasolinera g1,g2,g3,gN1,gN2,gN3;
     double distancia1=0, distancia2=0, distancia3=0;
 
-    @Rule
-    public GrantPermissionRule permissionRule = GrantPermissionRule.grant(Manifest.permission.ACCESS_FINE_LOCATION);
+
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
+    @Rule
+    public GrantPermissionRule permissionRule = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION);
 
     @Before
     public void setUp() {

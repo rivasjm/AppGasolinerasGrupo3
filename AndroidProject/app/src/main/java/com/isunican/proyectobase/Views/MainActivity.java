@@ -116,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         ActivityCompat.requestPermissions(this,
                 new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                99);
+                200);
 
         //Localizacion
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
@@ -127,24 +127,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             //Lectura inicial del tipo de combustible por defecto
             tipoCombustible = presenterGasolineras.lecturaCombustiblePorDefecto(this, FICHERO);
 
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.toString();
             try {
                 presenterGasolineras.escrituraCombustiblePorDefecto("Gasóleo A", this, FICHERO);
             } catch (FileNotFoundException ex) {
-            ex.toString();
-            }catch (IOException exc){
-            exc.toString();
+                ex.toString();
+            } catch (IOException exc) {
+                exc.toString();
 
             } catch (PresenterGasolineras.CombustibleNoExistente combustibleNoExistente) {
-            combustibleNoExistente.toString();
+                combustibleNoExistente.toString();
             }
         }
 
         try {
             tipoCombustible = presenterGasolineras.lecturaCombustiblePorDefecto(this, FICHERO);
         } catch (IOException e) {
-e.toString();
+            e.toString();
         }
 
         drawerLayout = findViewById(R.id.drawer_layout);
@@ -251,15 +251,15 @@ e.toString();
                     presenterGasolineras.escrituraCombustiblePorDefecto(mSpinner.getSelectedItem().toString(), ac, FICHERO);
                 } catch (FileNotFoundException e) {
                     e.toString();
-                }catch (IOException ex){
+                } catch (IOException ex) {
                     ex.toString();
                 } catch (PresenterGasolineras.CombustibleNoExistente combustibleNoExistente) {
-                combustibleNoExistente.toString();
+                    combustibleNoExistente.toString();
                 }
                 try {
                     tipoCombustible = presenterGasolineras.lecturaCombustiblePorDefecto(ac, FICHERO);
                 } catch (IOException e) {
-                e.toString();
+                    e.toString();
                 }
             }
             closeDrawer(drawerLayout);
@@ -496,13 +496,13 @@ e.toString();
                             }
                         }
                     });
-                }else{
+                } else {
                     Log.v("DEBUG", "Permiso Ubicacion NO Garantizado");
                 }
                 //ordenacion
-                if(criterioOrdenacion.equals(ORDEN_PRECIO)) {
+                if (criterioOrdenacion.equals(ORDEN_PRECIO)) {
                     presenterGasolineras.ordenarGasolineras(esAsc, tipoCombustible);
-                }else if(criterioOrdenacion.equals(ORDEN_DISTANCIA)){
+                } else if (criterioOrdenacion.equals(ORDEN_DISTANCIA)) {
                     presenterGasolineras.ordenarGasolinerasDistancia(latitud, longitud, esAsc);
                 }
 
@@ -526,10 +526,9 @@ e.toString();
                 // error en la obtencion de datos desde el servidor
                 if (isNetworkConnected()) {
                     toast = Toast.makeText(getApplicationContext(), getResources().getString(R.string.datos_no_obtenidos), Toast.LENGTH_LONG);
-                }
-                else{
+                } else {
                     adapter.clear();
-                    toast=Toast.makeText(getApplicationContext(),"No hay conexión a internet",Toast.LENGTH_LONG);
+                    toast = Toast.makeText(getApplicationContext(), "No hay conexión a internet", Toast.LENGTH_LONG);
                 }
             }
 
@@ -564,7 +563,7 @@ e.toString();
                     MainActivity.this.startActivity(myIntent);
 
                 });
-            } catch(Exception e1) {
+            } catch (Exception e1) {
                 e1.toString();
             }
             ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -625,7 +624,7 @@ e.toString();
 
             double distanciaKm = presenterGasolineras.getDistancia(latitud, longitud, gasolinera);
 
-            distancia.setText(distanciaKm+"Km");
+            distancia.setText(distanciaKm + "Km");
             // Se carga el icono
             cargaIcono(gasolinera, logo);
 

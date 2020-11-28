@@ -1,9 +1,7 @@
 package com.isunican.proyectobase.Views;
 
-import android.Manifest;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-
 import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.rule.GrantPermissionRule;
@@ -16,10 +14,8 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withSpinnerText;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
-import static org.hamcrest.Matchers.anything;
 import com.isunican.proyectobase.Model.Gasolinera;
 import com.isunican.proyectobase.R;
-import com.isunican.proyectobase.Views.MainActivity;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -34,10 +30,11 @@ import static org.junit.Assert.*;
 @RunWith(AndroidJUnit4.class)
 public class OrdenarGasolinerasPorPrecioUITest {
 
-    @Rule
-    public GrantPermissionRule permissionRule = GrantPermissionRule.grant(Manifest.permission.ACCESS_FINE_LOCATION);
+
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
+    @Rule
+    public GrantPermissionRule permissionRule = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION);
 
     private ListView ltmp;
     private Gasolinera gBarata;

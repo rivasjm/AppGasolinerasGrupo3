@@ -114,9 +114,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ActivityCompat.requestPermissions(this,
+
+        /**NO BORRAR!!!!*/
+        /*ActivityCompat.requestPermissions(this,
                 new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                200);
+                200);*/
 
         //Localizacion
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);

@@ -13,6 +13,7 @@ public class DistanciasComparator implements Comparator<Gasolinera> {
     private double longitud;
     private boolean asc;
 
+    public class GasolineraErronea extends Exception{}
     /**
      * Constructor del comparador donde se le indica la latitud y longitud que se
      * van a utilizar para calcular la distancia con respecto a las gasolineras
@@ -29,7 +30,7 @@ public class DistanciasComparator implements Comparator<Gasolinera> {
     }
 
     @Override
-    public int compare(Gasolinera g1, Gasolinera g2) {
+    public int compare(Gasolinera g1, Gasolinera g2){
         double distancia1 = CalculaDistancia.distanciaEntreDosCoordenadas(latitud, longitud, g1.getLatitud(), g1.getLongitud());
         double distancia2 = CalculaDistancia.distanciaEntreDosCoordenadas(latitud, longitud, g2.getLatitud(), g2.getLongitud());
 

@@ -47,4 +47,12 @@ public class DistanciasComparator implements Comparator<Gasolinera> {
             }
         }
     }
+
+    public boolean isAsc() {
+        return asc;
+    }
+
+    public void setAsc(boolean asc) {
+        this.asc = asc;
+    }
 }

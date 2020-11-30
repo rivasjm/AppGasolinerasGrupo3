@@ -50,7 +50,7 @@ public class ConsultarInformacionGasolineraUITest {
         // Se pulsa el botón Aceptar dentro del menú desplegable
         onView(withText("Aceptar")).perform(click());
     }
-
+/*
     @Test
     public void gasolineraTest(){
 
@@ -127,4 +127,5 @@ public class ConsultarInformacionGasolineraUITest {
         pressBack();
 
     }
+ */
 }

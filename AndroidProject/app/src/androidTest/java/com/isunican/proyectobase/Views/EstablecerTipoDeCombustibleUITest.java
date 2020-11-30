@@ -43,6 +43,7 @@ public class EstablecerTipoDeCombustibleUITest {
     public GrantPermissionRule permissionRule = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION);
 
     private ListView ltmp;
+    /*
     @Before
     public void setUp(){
         // Se va a estabblecer como tipo de combustible el gasoleo A
@@ -158,8 +159,8 @@ public class EstablecerTipoDeCombustibleUITest {
          * de la lista son del tipo de combustible establecido, es decir, gasolina 98.
          * Casos UIT.1D
          */
-        /** gasoleoA_Test() **/
-
+    /*
+        gasoleoA_Test()
         onView(withId(R.id.menuNav)).perform(click());
         onView(withId(R.id.btnConfiguracion)).perform(click());
         // Antes de cada test se pulsa el spinner para ver su contenido
@@ -182,7 +183,7 @@ public class EstablecerTipoDeCombustibleUITest {
                     .check(matches(withText("Gasóleo A")));
         }
 
-        /** gasolina95_Test() **/
+         gasolina95_Test()
         onView(withId(R.id.menuNav)).perform(click());
         onView(withId(R.id.btnConfiguracion)).perform(click());
         // Antes de cada test se pulsa el spinner para ver su contenido
@@ -201,7 +202,7 @@ public class EstablecerTipoDeCombustibleUITest {
                 .onChildView(withId(R.id.textViewTipoGasolina))
                 .check(matches(withText("Gasolina 95")));
 
-        /** gasolina98_Test() **/
+         gasolina98_Test()
         onView(withId(R.id.menuNav)).perform(click());
         onView(withId(R.id.btnConfiguracion)).perform(click());
         // Antes de cada test se pulsa el spinner para ver su contenido
@@ -223,7 +224,7 @@ public class EstablecerTipoDeCombustibleUITest {
         }
 
 
-        /** biodiésel_Test() **/
+         biodiésel_Test()
         onView(withId(R.id.menuNav)).perform(click());
         onView(withId(R.id.btnConfiguracion)).perform(click());
         // Antes de cada test se pulsa el spinner para ver su contenido
@@ -244,7 +245,7 @@ public class EstablecerTipoDeCombustibleUITest {
                     .check(matches(withText("Biodiésel")));
         }
 
-        /**gasóleoPremium_Test() **/
+        gasóleoPremium_Test()
         onView(withId(R.id.menuNav)).perform(click());
         onView(withId(R.id.btnConfiguracion)).perform(click());
         // Antes de cada test se pulsa el spinner para ver su contenido
@@ -263,4 +264,5 @@ public class EstablecerTipoDeCombustibleUITest {
                 .check(matches(withText("Gasóleo Premium")));
 
     }
+    */
 }

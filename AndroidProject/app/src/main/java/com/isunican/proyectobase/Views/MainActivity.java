@@ -276,10 +276,60 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         builder.show();
     }
 
+    /**
+     *
+     */
+    private void clickFiltros() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        // Set the dialog title
+        builder.setTitle("Filtros");
+        // Specify the list array, the items to be selected by default (null for none),
+
+        // Vista escondida del nuevo layout para los diferentes spinners a implementar para los filtros
+        View mView = getLayoutInflater().inflate(R.layout.dialog_spinner, null);
+
+        final TextView txtComb = mView.findViewById(R.id.combustibleSeleccionado);
+        txtComb.setText(this.tipoCombustible);
+        final Spinner mSpinner = (Spinner) mView.findViewById(R.id.spinner);    // New spinner object
+        // El spinner creado contiene todos los items del array de Strings "operacionesArray"
+        ArrayAdapter<String> adapterSpinner = new ArrayAdapter<>(MainActivity.this,
+                android.R.layout.simple_spinner_item,
+                getResources().getStringArray(R.array.operacionesArray));
+        // Al abrir el spinner la lista se abre hacia abajo
+        adapterSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mSpinner.setAdapter(adapterSpinner);
+
+        // Opcion "Aceptar"
+        builder.setPositiveButton(getResources().getString(R.string.aceptar), (dialog, id) -> {
+            // User clicked Aceptar, save the item selected in the spinner
+            // If the user does not select nothing, don't do anything
+            if (!mSpinner.getSelectedItem().toString().equalsIgnoreCase("Tipo de Combustible")) {
+                tipoCombustible = mSpinner.getSelectedItem().toString();
+
+            }
+            refresca();
+        });
+
+        //Opcion "Cancelar"
+        builder.setNegativeButton(getResources().getString(R.string.cancelar), (dialog, id) -> dialog.dismiss());
+        builder.setView(mView);
+        builder.create();
+        builder.show();
+    }
+
+    /**
+     *
+     * @param drawerLayout
+     */
     public static void openDrawer(DrawerLayout drawerLayout) {
         drawerLayout.openDrawer(GravityCompat.START);
     }
 
+    /**
+     *
+     * @param drawerLayout
+     */
     private static void closeDrawer(DrawerLayout drawerLayout) {
         //close drawer layout
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
@@ -293,47 +343,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         closeDrawer(drawerLayout);
     }
 
+    /**
+     *
+     * @param v
+     */
     public void onClick(View v) {
 
         if (v.getId() == R.id.buttonFiltros) {
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-            // Set the dialog title
-            builder.setTitle("Filtros");
-            // Specify the list array, the items to be selected by default (null for none),
-
-            // Vista escondida del nuevo layout para los diferentes spinners a implementar para los filtros
-            View mView = getLayoutInflater().inflate(R.layout.dialog_spinner, null);
-
-            final TextView txtComb = mView.findViewById(R.id.combustibleSeleccionado);
-            txtComb.setText(this.tipoCombustible);
-            final Spinner mSpinner = (Spinner) mView.findViewById(R.id.spinner);    // New spinner object
-            // El spinner creado contiene todos los items del array de Strings "operacionesArray"
-            ArrayAdapter<String> adapterSpinner = new ArrayAdapter<>(MainActivity.this,
-                    android.R.layout.simple_spinner_item,
-                    getResources().getStringArray(R.array.operacionesArray));
-            // Al abrir el spinner la lista se abre hacia abajo
-            adapterSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            mSpinner.setAdapter(adapterSpinner);
-
-            // Opcion "Aceptar"
-            builder.setPositiveButton(getResources().getString(R.string.aceptar), (dialog, id) -> {
-                // User clicked Aceptar, save the item selected in the spinner
-                // If the user does not select nothing, don't do anything
-                if (!mSpinner.getSelectedItem().toString().equalsIgnoreCase("Tipo de Combustible")) {
-                    tipoCombustible = mSpinner.getSelectedItem().toString();
-
-                }
-                refresca();
-            });
-
-            //Opcion "Cancelar"
-            builder.setNegativeButton(getResources().getString(R.string.cancelar), (dialog, id) -> dialog.dismiss());
-            builder.setView(mView);
-            builder.create();
-            builder.show();
-
+            clickFiltros();
         } else if (v.getId() == R.id.buttonOrden) {
             //comienzo de ordenar
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -397,6 +414,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 } else if (item.getItemId() == R.id.itemInfo) {
                     Intent myIntent = new Intent(MainActivity.this, InfoActivity.class);
                     MainActivity.this.startActivity(myIntent);
+                }else if(item.getItemId() == R.id.itemFiltro){
+                    clickFiltros();
                 }
                 return true;
             });

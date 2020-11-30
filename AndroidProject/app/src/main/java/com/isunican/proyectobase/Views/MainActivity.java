@@ -31,12 +31,17 @@ import android.util.DisplayMetrics;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -96,7 +101,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private String id_iconoOrden = FLECHA_ARRIBA;
     private String criterioOrdenacion = ORDEN_PRECIO;
     private String tipoCombustible = "Gasóleo A"; //Por defecto
-    boolean esAsc = true; //Por defecto ascendente
+    private boolean esAsc = true; //Por defecto ascendente
+    private LinkedList<String> operacionesOrdenacion = new LinkedList<>();
 
     private Activity ac = this;
 
@@ -185,6 +191,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         iconoOrden.setImageResource(getResources().getIdentifier(id_iconoOrden,
                 DRAWABLE, getPackageName()));
         buttonOrden.setText(getResources().getString(R.string.precio));
+
+        //Se cargan las opciones de ordenacion en la linked list que inyectaremos al spinner correspondiente
+        Collections.addAll(operacionesOrdenacion, getResources().getStringArray(R.array.opcionesOrden));
     }
 
     public void clickMenu() {
@@ -320,6 +329,63 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     /**
      *
+     */
+    private void clickOrdenacion() {
+        //comienzo de ordenar
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        // Vista escondida del nuevo layout para los diferentes spinners a implementar para los filtros
+        View mView = getLayoutInflater().inflate(R.layout.ordenar_layout, null);
+
+        builder.setTitle(getResources().getString(R.string.tipo_ordenacion));
+
+        final Spinner mSpinner = (Spinner) mView.findViewById(R.id.tipoOrden);    // New spinner object
+        // El spinner creado contiene todos los items del array de Strings "operacionesArray"
+        ArrayAdapter<String> adapterSpinner = new ArrayAdapter<>(MainActivity.this,
+                android.R.layout.simple_spinner_item,
+                operacionesOrdenacion);
+
+        //variable donde se guardara la posicion del elemento seleccionado dentro del spinner
+        final int[] posicionSeleccionada = {0};
+        mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                //se guarda la poscion del elemento seleccionado
+                posicionSeleccionada[0] = position;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
+        // Al abrir el spinner la lista se abre hacia abajo
+        adapterSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mSpinner.setAdapter(adapterSpinner);
+
+        //Opcion "Aceptar"
+        builder.setPositiveButton(getResources().getString(R.string.aceptar), (dialog, id) -> {
+            criterioOrdenacion = mSpinner.getSelectedItem().toString();
+            if (criterioOrdenacion.equals(ORDEN_PRECIO)) {
+                buttonOrden.setText(getResources().getString(R.string.precio));
+            } else if (criterioOrdenacion.equals(ORDEN_DISTANCIA)) {
+                buttonOrden.setText(getResources().getString(R.string.distancia));
+            }
+
+            //Se coloca el elemento seleccionado del spinner en la primera posicion
+            String operacionSeleccionada = operacionesOrdenacion.get(posicionSeleccionada[0]);
+            operacionesOrdenacion.remove(posicionSeleccionada[0]);
+            operacionesOrdenacion.addFirst(operacionSeleccionada);
+            refresca();
+        });
+
+        //Opcion "Cancelar"
+        builder.setNegativeButton(getResources().getString(R.string.cancelar), (dialog, id) -> dialog.dismiss());
+        builder.setView(mView);
+        builder.create();
+        builder.show();
+    }
+
+    /**
      * @param drawerLayout
      */
     public static void openDrawer(DrawerLayout drawerLayout) {
@@ -327,7 +393,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     /**
-     *
      * @param drawerLayout
      */
     private static void closeDrawer(DrawerLayout drawerLayout) {
@@ -344,46 +409,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     /**
-     *
      * @param v
      */
     public void onClick(View v) {
 
         if (v.getId() == R.id.buttonFiltros) {
             clickFiltros();
+
         } else if (v.getId() == R.id.buttonOrden) {
-            //comienzo de ordenar
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            // Vista escondida del nuevo layout para los diferentes spinners a implementar para los filtros
-            View mView = getLayoutInflater().inflate(R.layout.ordenar_layout, null);
-
-            builder.setTitle(getResources().getString(R.string.tipo_ordenacion));
-
-            final Spinner mSpinner = (Spinner) mView.findViewById(R.id.tipoOrden);    // New spinner object
-            // El spinner creado contiene todos los items del array de Strings "operacionesArray"
-            ArrayAdapter<String> adapterSpinner = new ArrayAdapter<>(MainActivity.this,
-                    android.R.layout.simple_spinner_item,
-                    getResources().getStringArray(R.array.opcionesOrden));
-            // Al abrir el spinner la lista se abre hacia abajo
-            adapterSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            mSpinner.setAdapter(adapterSpinner);
-
-            //Opcion "Aceptar"
-            builder.setPositiveButton(getResources().getString(R.string.aceptar), (dialog, id) -> {
-                criterioOrdenacion = mSpinner.getSelectedItem().toString();
-                if (criterioOrdenacion.equals(ORDEN_PRECIO)) {
-                    buttonOrden.setText(getResources().getString(R.string.precio));
-                } else if (criterioOrdenacion.equals(ORDEN_DISTANCIA)) {
-                    buttonOrden.setText(getResources().getString(R.string.distancia));
-                }
-                refresca();
-            });
-
-            //Opcion "Cancelar"
-            builder.setNegativeButton(getResources().getString(R.string.cancelar), (dialog, id) -> dialog.dismiss());
-            builder.setView(mView);
-            builder.create();
-            builder.show();
+            clickOrdenacion();
 
         } else if (v.getId() == R.id.iconoOrden) {
             String valorActualconoOrden = "";
@@ -414,7 +448,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 } else if (item.getItemId() == R.id.itemInfo) {
                     Intent myIntent = new Intent(MainActivity.this, InfoActivity.class);
                     MainActivity.this.startActivity(myIntent);
-                }else if(item.getItemId() == R.id.itemFiltro){
+                } else if (item.getItemId() == R.id.itemFiltro) {
                     clickFiltros();
                 }
                 return true;

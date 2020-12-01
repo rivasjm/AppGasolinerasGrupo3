@@ -22,7 +22,7 @@
     global:
     - ANDROID_API=26
     - ANDROID_BUILD_TOOLS=28.0.3
-    - ANDROID_EMULATOR_LEVEL=22
+    - ANDROID_EMULATOR_LEVEL=30
     - ADB_INSTALL_TIMEOUT=20 # minutes
     - ANDROID_ABI="default;armeabi-v7a"
     - ANDROID_TAG=google_apis
@@ -61,7 +61,7 @@
      - ./gradlew clean jacocoTestReport sonarqube
      - mkdir -p build/reports
      - android list targets
-     - echo no | android create avd --force -n test -t "android-"$ANDROID_EMULATOR_LEVEL --abi $default/armeabi-v7a #--tag $ANDROID_TAG
+     - echo no | android create avd --force -n test -t "android-"$ANDROID_EMULATOR_LEVEL --skin 1080-1920 --abi $default/armeabi-v7a #--tag $ANDROID_TAG
      - emulator -avd test -no-window &
      #  - ./gradlew dependencyCheckAnalyze
      #- ./gradlew assembleDebugAndroidTest -PdisablePreDex --continue --stacktrace

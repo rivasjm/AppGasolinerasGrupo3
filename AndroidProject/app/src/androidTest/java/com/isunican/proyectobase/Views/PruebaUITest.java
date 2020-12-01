@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.matcher.ViewMatchers.withId;
 
 @RunWith(AndroidJUnit4.class)
 public class PruebaUITest {
@@ -22,7 +23,6 @@ public class PruebaUITest {
             Thread.sleep(5000);
         } catch (InterruptedException e) {
         }
-        onView(ViewMatchers.withId(R.id.info)).perform(click());
-        onView(ViewMatchers.withText("Filtros")).perform(click());
+        onView(withId(R.id.buttonFiltros)).perform(click());
     }
 }
